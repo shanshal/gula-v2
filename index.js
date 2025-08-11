@@ -6,7 +6,10 @@ const port = 8080;
 const userRoutes = require('./routes/userRoutes');
 const surveyRoutes = require('./routes/surveyRoutes');
 const questionRoutes = require('./routes/questionRoutes');
-const answerRoutes = require('./routes/answerRoutes');  // Note correct import
+const answerRoutes = require('./routes/answerRoutes');
+const packageRoutes = require ('./routes/packageRoutes');
+const protocoles = require ('./protocoles');
+
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -19,6 +22,7 @@ app.use('/users', userRoutes);
 app.use('/surveys', surveyRoutes);
 app.use('/questions', questionRoutes);
 app.use('/answers', answerRoutes);
+app.use('/packages', packageRoutes);
 
 app.listen(port, () => {
   console.log(`App running on port ${port}.`);
