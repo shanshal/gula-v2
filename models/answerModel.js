@@ -46,9 +46,18 @@ const getAnswerByUserAndQuestion = async (userId, questionId) => {
   return res.rows[0];
 };
 
+const getAnswersBySurvey = async (surveyId) => {
+  const res = await pool.query(
+    'SELECT question_id, answer FROM answers WHERE survey_id = $1',
+    [surveyId]
+  );
+  return res.rows;
+};
+
 module.exports = {
   createOrUpdateAnswersBulk,
   getAnswersByUserId,
   getAnswersBySurveyAndUser,
   getAnswerByUserAndQuestion,
+  getAnswersBySurvey,
 };

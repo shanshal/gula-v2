@@ -11,9 +11,15 @@ const getUserById = async (id) => {
 };
 
 const createUser = async (name, email, age, sex, weight) => {
+  // Generate username from email (before @) or use name, make it unique
+  const baseUsername = email ? email.split('@')[0] : name.toLowerCase().replace(/\s+/g, '');
+  const timestamp = Date.now().toString().slice(-4);
+  const username = `${baseUsername}_${timestamp}`;
+  const defaultPassword = 'temp_password_123';
+  
   const res = await pool.query(
-    'INSERT INTO users (name, email, age, sex, weight) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-    [name, email, age, sex, weight]
+    'INSERT INTO users (name, email, age, sex, weight, username, password) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+    [name, email, age, sex, weight, username, defaultPassword]
   );
   return res.rows[0];
 };

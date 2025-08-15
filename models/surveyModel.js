@@ -24,15 +24,15 @@ const createSurvey = async (name) => {
 };
 
 // Edit survey TODO make it possible to edit other params
-const updateSurvey = async (name, id) => {
+const updateSurvey = async (id, name) => {
   await pool.query(
     `UPDATE surveys SET name = $1 WHERE id = $2`,
-    [name,id]
+    [name, id]
   );
 };
 // Delete survey
 const deleteSurvey = async (id) => {
-  await pool.query(`DELETE FROM surveyes where id = $1`, [id])
+  await pool.query(`DELETE FROM surveys WHERE id = $1`, [id]);
 }
 
 
