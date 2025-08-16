@@ -1,0 +1,13 @@
+// Here should handle the results
+const express = require('express');
+const router = express.Router();
+const resultController = require('../controllers/calculateResult');
+
+router.get('/', userController.getUsers);
+router.get('/:id', userController.getUserById);
+router.post('/', userController.createUser);
+router.put('/:id', userController.updateUser);
+router.delete('/:id', userController.deleteUser);
+
+module.exports = router;
+

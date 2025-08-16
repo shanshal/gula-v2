@@ -7,8 +7,9 @@ const userRoutes = require('./routes/userRoutes');
 const surveyRoutes = require('./routes/surveyRoutes');
 const questionRoutes = require('./routes/questionRoutes');
 const answerRoutes = require('./routes/answerRoutes');
-const packageRoutes = require ('./routes/packageRoutes');
-const protocoles = require ('./protocoles');
+const packageRoutes = require('./routes/packageRoutes');
+const resultRoutes = require('./routes/resultRoutes');
+const protocoles = require('./protocoles');
 
 
 // CORS middleware
@@ -35,6 +36,7 @@ app.use('/surveys', surveyRoutes);
 app.use('/questions', questionRoutes);
 app.use('/answers', answerRoutes);
 app.use('/packages', packageRoutes);
+app.use('/results', resultRoutes);
 
 app.listen(port, () => {
   console.log(`App running on port ${port}.`);

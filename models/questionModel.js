@@ -2,9 +2,16 @@ const pool = require('../db');
 
 // Get all questions
 const getQuestions = async () => {
-  const res = await pool.query("SELECT * FROM questions ORDER BY survey_id ASC");
+  const res = await pool.query("SELECT * FROM questions ORDER BY survey_id ASC, order_index ASC");
   return res.rows;
 }
+
+// Get questions by survey_id
+const getQuestionsBySurveyId = async (surveyId) => {
+  const res = await pool.query("SELECT * FROM questions WHERE survey_id = $1 ORDER BY order_index ASC", [surveyId]);
+  return res.rows;
+}
+
 // Get question by id
 const getQuestionById = async (id) => {
   const res = await pool.query("SELECT * FROM questions where id = $1", [id]);
@@ -75,6 +82,7 @@ const deleteQuestion = async (id) => {
 
 module.exports = {
   getQuestions,
+  getQuestionsBySurveyId,
   getQuestionById,
   createQuestion,
   updateQuestion,

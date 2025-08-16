@@ -1,10 +1,21 @@
 const questionModel = require('../models/questionModel');
 
-// Get all questions
+// Get all questions or filter by survey_id
 const getQuestions = async (req, res) => {
   try {
-    const questions = await questionModel.getQuestions();
-    res.status(200).json(questions);
+    const { survey_id } = req.query;
+    
+    if (survey_id) {
+      const surveyIdInt = parseInt(survey_id);
+      if (isNaN(surveyIdInt)) {
+        return res.status(400).json({ error: 'Invalid survey_id parameter' });
+      }
+      const questions = await questionModel.getQuestionsBySurveyId(surveyIdInt);
+      res.status(200).json(questions);
+    } else {
+      const questions = await questionModel.getQuestions();
+      res.status(200).json(questions);
+    }
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

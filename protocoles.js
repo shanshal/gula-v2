@@ -68,9 +68,13 @@ const calculateLoveLanguagesScores = (answers) => {
   };
 };
 
-const calculateDefault (answers) => {
-  return answers.reduce((sum, { answer }) => sum + answer, 0)  // Here answer is the actual answer value don't let it bite you in the ass xoxo
-}
+const calculateDefault = (answers) => {
+  return answers.reduce((sum, { answer }) => {
+    // Convert answer to number if it's not already
+    const numericAnswer = typeof answer === 'number' ? answer : parseInt(answer) || 0;
+    return sum + numericAnswer;
+  }, 0);
+};
 
 
 module.exports = {

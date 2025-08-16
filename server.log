@@ -1,0 +1,6 @@
+App running on port 8080.
+error: relation "surveyes" does not exist
+    at /home/shanshal/Projects/Express/gulaBackend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Object.deleteSurvey (/home/shanshal/Projects/Express/gulaBackend/models/surveyModel.js:35:3)
+    at async deleteSurvey (/home/shanshal/Projects/Express/gulaBackend/controllers/surveyController.js:28:3)
