@@ -1,9 +1,14 @@
-const { Pool } = require('pg');
+// db.js
+const pkg = require('pg');
+const { Pool } = pkg;
+
 const pool = new Pool({
-  user: 'shanshal',
-  host: 'localhost',
-  database: 'gula',
-  password: 'RUSTneversl33ps',
-  port: 5432,
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false } // required for Render
 });
+
+pool.on('connect', () => {
+  console.log('Connected to the database');
+});
+
 module.exports = pool;
