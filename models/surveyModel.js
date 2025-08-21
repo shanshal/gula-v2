@@ -32,7 +32,7 @@ const updateSurvey = async (name, id) => {
 };
 // Delete survey
 const deleteSurvey = async (id) => {
-  await pool.query(`DELETE FROM surveyes where id = $1`, [id])
+  await pool.query(`DELETE FROM surveys where id = $1`, [id])
 }
 
 
