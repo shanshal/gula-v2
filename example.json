@@ -1,0 +1,16 @@
+{
+  "name": "Lifestyle Yes/No Survey",
+  "metadata": {"language": "ar"},
+  "questions": [
+    {"id": "q1", "text": "هل تمارس الرياضة؟", "type": "single_choice", "options": ["نعم", "لا"]},
+    {"id": "q2", "text": "هل تنام 7 ساعات؟", "type": "single_choice", "options": ["نعم", "لا"]}
+  ],
+  "scoring": {"type": "sum", "mappings": {"q1": {"نعم": 1, "لا": 0}, "q2": {"نعم": 1, "لا": 0}}},
+  "interpretation": {
+    "ranges": {
+      "0-0": {"blocks": [{"page": "summary", "title": "منخفض", "body": "بحاجة لتحسين"}]},
+      "1-1": {"blocks": [{"page": "summary", "title": "متوسط", "body": "يمكن التحسين"}]},
+      "2-2": {"blocks": [{"page": "summary", "title": "مرتفع", "body": "ممتاز"}]}
+    }
+  }
+}
