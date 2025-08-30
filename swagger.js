@@ -21,7 +21,7 @@ const swaggerDefinition = {
       description: 'Development server',
     },
     {
-      url: 'https://gula-v2.onrender.com'
+      url: 'https://gula-v2.onrender.com',
       description: 'Testing production'
     }
   ],
