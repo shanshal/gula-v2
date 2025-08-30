@@ -25,8 +25,8 @@ const createSurveyViaJson = async (data) => {
     if (Array.isArray(data.questions)) {
       for (const q of data.questions) {
         const {
-          text:  question_text,
-          type: question_type,
+          text,
+          type,
           is_required = false,
           options = null,
           min_value = null,
@@ -47,13 +47,13 @@ const createSurveyViaJson = async (data) => {
 
         const questionRes = await client.query(
           `INSERT INTO questions
-           (question_text, survey_id, question_type, is_required, options, min_value, max_value, question_order, placeholder, help_text, question_route)
+           (text, survey_id, type, is_required, options, min_value, max_value, order_index, placeholder, help_text, question_route)
            VALUES ($1, $2, $3, $4, $5::jsonb, $6, $7, $8, $9, $10, $11)
            RETURNING *`,
           [
-            question_text,
+            text,
             survey.id,
-            question_type,
+            type,
             is_required,
             normalizedOptions,
             min_value,
