@@ -58,7 +58,7 @@ const createSurveyViaJson = async (data) => {
             normalizedOptions,
             min_value,
             max_value,
-            question_order,
+            order_index,
             placeholder,
             help_text,
             question_route,
