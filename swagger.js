@@ -20,6 +20,10 @@ const swaggerDefinition = {
       url: 'http://localhost:8080',
       description: 'Development server',
     },
+    {
+      url: 'https://gula-v2.onrender.com'
+      description: 'Testing production'
+    }
   ],
   components: {
     schemas: {
