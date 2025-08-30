@@ -15,10 +15,19 @@ const getQuestionById = async (req, res) => {
   try {
     const id = parseInt(req.params.id);
     const question = await questionModel.getQuestionById(id);
-    if (!question) {
-      return res.status(404).json({ error: 'Question not found' });
-    }
+    if (!question) return res.status(404).json({ error: 'Question not found' });
     res.status(200).json(question);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Get questions by survey ID
+const getQuestionsBySurveyId = async (req, res) => {
+  try {
+    const surveyId = parseInt(req.params.surveyId);
+    const questions = await questionModel.getQuestionsBySurveyId(surveyId);
+    res.status(200).json(questions);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -28,27 +37,27 @@ const getQuestionById = async (req, res) => {
 const createQuestion = async (req, res) => {
   try {
     const {
-      text,
+      question_text,
       survey_id,
-      type = 'text',
+      question_type = 'text',
       is_required = false,
       options = null,
       min_value = null,
       max_value = null,
-      order_index = 0,
+      question_order = 0,
       placeholder = null,
       help_text = null,
     } = req.body;
 
     const newQuestion = await questionModel.createQuestion(
-      text,
+      question_text,
       survey_id,
-      type,
+      question_type,
       is_required,
       options,
       min_value,
       max_value,
-      order_index,
+      question_order,
       placeholder,
       help_text
     );
@@ -66,9 +75,8 @@ const updateQuestion = async (req, res) => {
     const updateData = req.body;
 
     const updatedQuestion = await questionModel.updateQuestion(id, updateData);
-    if (!updatedQuestion) {
+    if (!updatedQuestion)
       return res.status(404).json({ error: 'Question not found or no fields to update' });
-    }
     res.status(200).json(updatedQuestion);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -89,6 +97,7 @@ const deleteQuestion = async (req, res) => {
 module.exports = {
   getQuestions,
   getQuestionById,
+  getQuestionsBySurveyId,
   createQuestion,
   updateQuestion,
   deleteQuestion,

@@ -32,5 +32,5 @@ const leaderShipSurveyHandler = (surveyAnswers) => {
   return { auth, demo, lais };
 };
 
-console.log(leaderShipSurveyHandler(surveyAnswers)); 
+ 
 

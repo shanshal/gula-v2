@@ -27,11 +27,11 @@ const getAnswersByQuestionId = async (questionId) => {
 // Get answers by survey id (through questions)
 const getAnswersBySurveyId = async (surveyId) => {
   const res = await pool.query(`
-    SELECT a.*, q.text as question_text, q.type as question_type 
+    SELECT a.*, q.question_text, q.question_type, q.question_order 
     FROM answers a 
     JOIN questions q ON a.question_id = q.id 
     WHERE q.survey_id = $1 
-    ORDER BY a.id ASC
+    ORDER BY q.question_order ASC, a.id ASC
   `, [surveyId]);
   return res.rows;
 };

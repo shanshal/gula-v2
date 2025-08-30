@@ -13,23 +13,23 @@ const getQuestionById = async (id) => {
 
 //Create Question
 const createQuestion = async (
-  text,
+  question_text,
   surveyId,
-  type = 'text',
+  question_type = 'text',
   is_required = false,
   options = null,
   min_value = null,
   max_value = null,
-  order_index = 0,
+  question_order = 0,
   placeholder = null,
   help_text = null
 ) => {
   const res = await pool.query(
     `INSERT INTO questions
-     (text, survey_id, type, is_required, options, min_value, max_value, order_index, placeholder, help_text)
+     (question_text, survey_id, question_type, is_required, options, min_value, max_value, question_order, placeholder, help_text)
      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
      RETURNING *`,
-    [text, surveyId, type, is_required, options, min_value, max_value, order_index, placeholder, help_text]
+    [question_text, surveyId, question_type, is_required, options, min_value, max_value, question_order, placeholder, help_text]
   );
   return res.rows[0];
 };
@@ -70,6 +70,15 @@ const updateQuestion = async (id, updateData) => {
 const deleteQuestion = async (id) => {
   await pool.query(`DELETE FROM questions where id = $1`, [id])
 }
+const getQuestionsBySurveyId = async (surveyId) => {
+  const res = await pool.query(
+    `SELECT * FROM questions 
+     WHERE survey_id = $1
+     ORDER BY question_order ASC, id ASC`,
+    [surveyId]
+  );
+  return res.rows;
+};
 
 
 
@@ -79,4 +88,5 @@ module.exports = {
   createQuestion,
   updateQuestion,
   deleteQuestion,
+  getQuestionsBySurveyId,
 }

@@ -14,20 +14,29 @@ const getUserById = async (req, res) => {
 const createUser = async (req, res) => {
   const { name, email, age, sex, weight } = req.body;
   const newUser = await userModel.createUser(name, email, age, sex, weight);
-  res.status(201).send(`User added with ID: ${newUser.id}`);
+  res.status(201).json({
+    message: `User added with ID: ${newUser.id}`,
+    user: newUser
+  });
 };
 
 const updateUser = async (req, res) => {
   const id = parseInt(req.params.id);
   const { name, email, age, sex, weight } = req.body;
   await userModel.updateUser(id, name, email, age, sex, weight);
-  res.status(200).send(`User updated with ID: ${id}`);
+  res.status(200).json({
+    message: `User updated with ID: ${id}`,
+    id: id
+  });
 };
 
 const deleteUser = async (req, res) => {
   const id = parseInt(req.params.id);
   await userModel.deleteUser(id);
-  res.status(200).send(`User deleted with ID: ${id}`);
+  res.status(200).json({
+    message: `User deleted with ID: ${id}`,
+    id: id
+  });
 };
 
 module.exports = {
