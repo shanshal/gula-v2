@@ -74,7 +74,7 @@ const getQuestionsBySurveyId = async (surveyId) => {
   const res = await pool.query(
     `SELECT * FROM questions 
      WHERE survey_id = $1
-     ORDER BY question_order ASC, id ASC`,
+     ORDER BY order_index ASC, id ASC`,
     [surveyId]
   );
   return res.rows;
