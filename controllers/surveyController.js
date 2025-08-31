@@ -6,14 +6,25 @@ const getSurveys = async(req, res) => {
 };
 const getSurveyById = async (req, res) => {
   const id = parseInt(req.params.id);
-  const survey = await surveyModel.getSurveyById(id);
-  res.status(200).json(survey);
-};
+  try {
+    const fullSurvey = await surveyModel.getSurveyById(id);
+    if (!fullSurvey) return res.status(404).json({ error: 'Survey not found' });
+    res.status(200).json(fullSurvey);
+  } catch (err) {
+    console.error('Error fetching survey:', err);
+    res.status(500).json({ error: 'Failed to fetch survey' });
+  }
+};;
 
 const createSurvey = async (req, res) => {
-  const {name} = req.body;
-  const newSurvey = await surveyModel.createSurvey(name);
-  res.status(201).json(newSurvey);
+  try {
+    const surveyData = req.body;
+    const newSurvey = await surveyModel.createSurvey(surveyData);
+    res.status(201).json(newSurvey);
+  } catch (err) {
+    console.error('Error creating survey via JSON:', err);
+    res.status(500).json({ error: 'Failed to create survey via JSON' });
+  }
 };
 
 const updateSurvey = async (req, res) => {

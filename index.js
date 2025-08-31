@@ -10,7 +10,6 @@ const surveyRoutes = require('./routes/surveyRoutes');
 const questionRoutes = require('./routes/questionRoutes');
 const answerRoutes = require('./routes/answerRoutes');
 const scoringRoutes = require('./routes/scoringRoutes');
-const jsonSurveyRoutes = require('./routes/jsonSurveyRoutes');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -45,10 +44,7 @@ app.get('/', (req, res) => {
 
 app.use('/users', userRoutes);
 app.use('/surveys', surveyRoutes);
-app.use('/questions', questionRoutes);
 app.use('/answers', answerRoutes);
-app.use('/scoring', scoringRoutes);
-app.use('/surveys/json', jsonSurveyRoutes);
 
 
 app.listen(port, () => {

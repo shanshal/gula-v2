@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const surveyController = require('../controllers/surveyController');
-const jsonSurveyController = require('../controllers/jsonSurveyController');
 
 /**
  * @swagger
@@ -34,76 +33,9 @@ const jsonSurveyController = require('../controllers/jsonSurveyController');
 
 /**
  * @swagger
- * /surveys:
+ * /surveys/create:
  *   post:
- *     summary: Create a new survey
- *     tags: [Surveys]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - name
- *             properties:
- *               name:
- *                 type: string
- *     responses:
- *       201:
- *         description: Survey created
- */
-
-/**
- * @swagger
- * /surveys/{id}:
- *   put:
- *     summary: Update survey by ID
- *     tags: [Surveys]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: integer
- *         required: true
- *         description: Survey ID
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *     responses:
- *       200:
- *         description: Survey updated
- */
-
-/**
- * @swagger
- * /surveys/{id}:
- *   delete:
- *     summary: Delete survey by ID
- *     tags: [Surveys]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: integer
- *         required: true
- *         description: Survey ID
- *     responses:
- *       200:
- *         description: Survey deleted
- */
-
-/**
- * @swagger
- * /surveys/json:
- *   post:
- *     summary: Create a new survey with full JSON (questions, scoring, interpretation)
+ *     summary: Create a new survey (JSON body required)
  *     tags: [Surveys]
  *     requestBody:
  *       required: true
@@ -140,17 +72,59 @@ const jsonSurveyController = require('../controllers/jsonSurveyController');
  *                 type: object
  *     responses:
  *       201:
- *         description: Survey with questions created successfully
+ *         description: Survey created successfully
  */
 
-// Standard survey routes
+/**
+ * @swagger
+ * /surveys/{id}:
+ *   put:
+ *     summary: Update a survey by ID
+ *     tags: [Surveys]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: Survey ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Survey updated
+ */
+
+/**
+ * @swagger
+ * /surveys/{id}:
+ *   delete:
+ *     summary: Delete a survey by ID
+ *     tags: [Surveys]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: Survey ID
+ *     responses:
+ *       200:
+ *         description: Survey deleted
+ */
+
+// Routes
 router.get('/', surveyController.getSurveys);
 router.get('/:id', surveyController.getSurveyById);
-router.post('/', surveyController.createSurvey);
+router.post('/create', surveyController.createSurvey);
 router.put('/:id', surveyController.updateSurvey);
 router.delete('/:id', surveyController.deleteSurvey);
-
-// JSON survey route
-router.post('/json', jsonSurveyController.controllerCreateSurveyViaJson);
 
 module.exports = router;
