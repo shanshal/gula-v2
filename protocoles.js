@@ -1,4 +1,4 @@
-const { evalWithVars } = require('../utils/expression')
+
 
 
 //Example for testing
@@ -86,6 +86,31 @@ function scoreGrouped(responses, scoring) {
 }
 
 
+// Simple expression evaluator for formula scoring
+function evalWithVars(expression, vars) {
+  if (!expression || typeof expression !== 'string') return 0;
+  
+  try {
+    // Replace variable references in the expression with their values
+    let evaluableExpression = expression;
+    for (const [varName, value] of Object.entries(vars)) {
+      const regex = new RegExp(`\\b${varName}\\b`, 'g');
+      evaluableExpression = evaluableExpression.replace(regex, value);
+    }
+    
+    // Basic safety check - only allow numbers, operators, and parentheses
+    if (!/^[0-9+\-*/.() ]+$/.test(evaluableExpression)) {
+      throw new Error('Invalid expression');
+    }
+    
+    // Use Function constructor for safe evaluation
+    return new Function('return ' + evaluableExpression)();
+  } catch (error) {
+    console.error('Error evaluating expression:', error);
+    return 0;
+  }
+}
+
 function scoreFormula(responses, scoring) {
   const { mappings = {}, expression } = scoring || {};
   const vals = {};
@@ -97,12 +122,13 @@ function scoreFormula(responses, scoring) {
   const total = Number(evalWithVars(expression, vals)) || 0;
   return { score: total, total, vars: vals };
 }
-module.exports{
+module.exports = {
   leaderShipSurveyHandler,
   scoreSum,
-  scoringMixedSign,
-  scoringFormula,
+  scoreMixedSign,
   scoreGrouped,
-}
+  scoreFormula,
+};
+
  
 

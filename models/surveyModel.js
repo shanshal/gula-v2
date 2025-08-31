@@ -16,7 +16,8 @@ const getSurveyById = async (id) => {
     if (!survey) return null;
 
     const questionsRes = await client.query(
-      `SELECT 
+      `SELECT
+         id,
          question_text, 
          question_type, 
          is_required, 

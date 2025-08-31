@@ -69,6 +69,32 @@ const deleteAnswersByQuestionId = async (questionId) => {
   await pool.query('DELETE FROM answers WHERE question_id = $1', [questionId]);
 };
 
+const getUserAnswersForSurvey = async (userId, surveyId) => {
+  const res = await pool.query(`
+    SELECT DISTINCT ON (a.question_id) a.question_id, a.answer_value, a.answer_text, a.created_at, q.question_order
+    FROM answers a
+    JOIN questions q ON a.question_id = q.id
+    WHERE a.user_id = $1 AND q.survey_id = $2
+    ORDER BY a.question_id, a.created_at DESC
+  `, [userId, surveyId]);
+  return res.rows.reduce((acc, row) => {
+    // Use question_order as the key instead of question_id
+    acc[row.question_order] = parseInt(row.answer_value);
+    return acc;
+  }, {});
+};
+
+// Bulk operations might be the only one we use after all
+const createAnswers = async (userId, answers) => {
+  const createdAnswers = [];
+  for (const ans of answers) {
+    const { question_id, answer_value, answer_text } = ans;
+    const created = await createAnswer(userId, question_id, answer_value, answer_text || null);
+    createdAnswers.push(created);
+  }
+  return createdAnswers;
+};
+
 module.exports = {
   getAnswers,
   getAnswerById,
@@ -80,4 +106,5 @@ module.exports = {
   deleteAnswer,
   deleteAnswersByUserId,
   deleteAnswersByQuestionId,
+  getUserAnswersForSurvey,
 };

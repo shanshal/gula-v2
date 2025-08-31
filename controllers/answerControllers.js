@@ -1,5 +1,5 @@
 const answerModel = require('../models/answerModel.js');
-
+const scoringService = require('../services/scoring.js')
 // Get all answers
 const getAnswers = async (req, res) => {
   try {
@@ -135,6 +135,66 @@ const deleteAnswersByQuestionId = async (req, res) => {
   }
 };
 
+const getUserAnswersForSurvey = async (req, res) => {
+  try {
+    const userId = parseInt(req.params.userId);
+    const surveyId = parseInt(req.params.surveyId);
+
+    const answers = await answerModel.getUserAnswersForSurvey(userId, surveyId);
+    
+    res.status(200).json(answers);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const submitAnswersForSurvey = async (req, res) => {
+  try {
+    const userId = parseInt(req.params.userId);
+    const surveyId = parseInt(req.params.surveyId);
+    const answers = req.body; // array of { question_id, answer_value, answer_text }
+
+    if (!Array.isArray(answers) || answers.length === 0) {
+      return res.status(400).json({ error: 'Answers array is required' });
+    }
+
+    const createdAnswers = [];
+
+    for (const ans of answers) {
+      const { question_id, answer_value, answer_text } = ans;
+
+      if (!question_id || answer_value === undefined) {
+        return res.status(400).json({
+          error: 'question_id and answer_value are required for each answer'
+        });
+      }
+
+      const created = await answerModel.createAnswer(userId, question_id, answer_value, answer_text || null);
+      createdAnswers.push(created);
+    }
+
+    res.status(201).json({
+      success: true,
+      submitted_count: createdAnswers.length,
+      answers: createdAnswers
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+const getSurveyScore = async (req, res) => {
+  try {
+    const userId = parseInt(req.params.userId);
+    const surveyId = parseInt(req.params.surveyId);
+
+    const score = await scoringService.calculateSurveyScore(userId, surveyId);
+    res.status(200).json({ score });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   getAnswers,
   getAnswerById,
@@ -146,4 +206,7 @@ module.exports = {
   deleteAnswer,
   deleteAnswersByUserId,
   deleteAnswersByQuestionId,
+  getUserAnswersForSurvey,
+  submitAnswersForSurvey,
+  getSurveyScore,
 };

@@ -11,6 +11,7 @@ const questionRoutes = require('./routes/questionRoutes');
 const answerRoutes = require('./routes/answerRoutes');
 const scoringRoutes = require('./routes/scoringRoutes');
 
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -45,7 +46,7 @@ app.get('/', (req, res) => {
 app.use('/users', userRoutes);
 app.use('/surveys', surveyRoutes);
 app.use('/answers', answerRoutes);
-
+app.use('/scoring', scoringRoutes);
 
 app.listen(port, () => {
   console.log(`App running on port ${port}.`);
