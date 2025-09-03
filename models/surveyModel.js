@@ -55,10 +55,10 @@ const createSurvey = async (data) => {
         : JSON.stringify({});
 
     const surveyRes = await client.query(
-      `INSERT INTO surveys (name, metadata)
-       VALUES ($1, $2::jsonb)
+      `INSERT INTO surveys (name, metadata, status)
+       VALUES ($1, $2::jsonb, status)
        RETURNING *`,
-      [data.name, metadata]
+      [data.name, metadata, data.status]
     );
     const survey = surveyRes.rows[0];
 
@@ -76,6 +76,7 @@ const createSurvey = async (data) => {
           placeholder = null,
           help_text = null,
           question_route = null,
+          flag = null,
         } = q;
 
         const normalizedOptions =
@@ -87,7 +88,7 @@ const createSurvey = async (data) => {
 
         const questionRes = await client.query(
           `INSERT INTO questions
-           (survey_id, question_text, question_type, is_required, options, min_value, max_value, question_order, placeholder, help_text, question_route)
+           (survey_id, question_text, question_type, is_required, options, min_value, max_value, question_order, placeholder, help_text, question_route, flag)
            VALUES ($1, $2, $3, $4, $5::jsonb, $6, $7, $8, $9, $10, $11)
            RETURNING *`,
           [
@@ -102,6 +103,7 @@ const createSurvey = async (data) => {
             placeholder,
             help_text,
             question_route,
+            flag,
           ]
         );
 

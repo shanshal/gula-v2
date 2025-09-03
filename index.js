@@ -11,6 +11,10 @@ const questionRoutes = require('./routes/questionRoutes');
 const answerRoutes = require('./routes/answerRoutes');
 const scoringRoutes = require('./routes/scoringRoutes');
 
+// Live edit to the survey on the frontend 
+// scoring
+// Interp (Maybe through the metadata)
+// flags
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
