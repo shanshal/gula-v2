@@ -1,0 +1,51 @@
+{
+  "name": "Leadership Style Survey",
+  "metadata": {
+    "category": "mental_health",
+    "language": "ar"
+  },
+  "status": "draft",
+  "questions": [
+    {"text": "يجب الإشراف على الأعضاء عن كثب وإلا فمن غير المرجح أن يؤدوا عملهم.", "type": "radio", "is_required": true, "options": ["1","2","3","4","5"], "question_order": 1},
+    {"text": "من العدل القول إن معظم الأعضاء في المجتمع العام كسالى.", "type": "radio", "is_required": true, "options": ["1","2","3","4","5"], "question_order": 2},
+    {"text": "في المواقف المعقدة، يجب على القادة السماح للأعضاء بحل المشكلات بأنفسهم.", "type": "radio", "is_required": true, "options": ["1","2","3","4","5"], "question_order": 3},
+    {"text": "يرغب الأعضاء في المشاركة في عملية صنع القرار.", "type": "radio", "is_required": true, "options": ["1","2","3","4","5"], "question_order": 4},
+    {"text": "تقديم التوجيه دون ضغط هو مفتاح القيادة الجيدة.", "type": "radio", "is_required": true, "options": ["1","2","3","4","5"], "question_order": 5},
+    {"text": "كقاعدة عامة، يجب مكافأة الأعضاء أو معاقبتهم لتحفيزهم على تحقيق الأهداف.", "type": "radio", "is_required": true, "options": ["1","2","3","4","5"], "question_order": 6},
+    {"text": "تتطلب القيادة عدم التدخل في عمل الأعضاء أثناء قيامهم بعملهم.", "type": "radio", "is_required": true, "options": ["1","2","3","4","5"], "question_order": 7},
+    {"text": "يرغب معظم الأعضاء في التواصل المتكرر والداعم مع قادتهم.", "type": "radio", "is_required": true, "options": ["1","2","3","4","5"], "question_order": 8},
+    {"text": "كقاعدة عامة، يجب على القادة السماح للأعضاء بتقييم عملهم بأنفسهم.", "type": "radio", "is_required": true, "options": ["1","2","3","4","5"], "question_order": 9},
+    {"text": "يشعر معظم الأعضاء بعدم الأمان بشأن عملهم ويحتاجون إلى التوجيه.", "type": "radio", "is_required": true, "options": ["1","2","3","4","5"], "question_order": 10},
+    {"text": "يحتاج القادة إلى مساعدة الأعضاء على قبول مسؤولية إنجاز عملهم.", "type": "radio", "is_required": true, "options": ["1","2","3","4","5"], "question_order": 11},
+    {"text": "يجب على القادة منح الأعضاء الحرية الكاملة لحل المشكلات بأنفسهم.", "type": "radio", "is_required": true, "options": ["1","2","3","4","5"], "question_order": 12},
+    {"text": "في معظم الحالات، يفضل الأعضاء الحصول على القليل من المدخلات من القائد.", "type": "radio", "is_required": true, "options": ["1","2","3","4","5"], "question_order": 13},
+    {"text": "من مهام القائد مساعدة الأعضاء في العثور على ”شغفهم“.", "type": "radio", "is_required": true, "options": ["1","2","3","4","5"], "question_order": 14},
+    {"text": "القائد هو الحكم الرئيسي على إنجازات أعضاء المجموعة.", "type": "radio", "is_required": true, "options": ["1","2","3","4","5"], "question_order": 15},
+    {"text": "القادة الفعالون يصدرون الأوامر ويوضحون الإجراءات.", "type": "radio", "is_required": true, "options": ["1","2","3","4","5"], "question_order": 16},
+    {"text": "بشكل عام، من الأفضل ترك الأعضاء وشأنهم.", "type": "radio", "is_required": true, "options": ["1","2","3","4","5"], "question_order": 17},
+    {"text": "الناس أساسًا أكفاء، وإذا أعطيتهم مهمة، فسوف يؤدونها على أكمل وجه.", "type": "radio", "is_required": true, "options": ["1","2","3","4","5"], "question_order": 18}
+  ],
+  "scoring": {
+    "type": "grouped",
+    "groups": {
+      "authoritarian": [1,2,6,10,15,16],
+      "democratic": [4,5,8,11,14,18],
+      "laissez_faire": [3,7,9,12,13,17]
+    },
+    "mappings": {
+      "1": 1,
+      "2": 2,
+      "3": 3,
+      "4": 4,
+      "5": 5
+    },
+    "group_aggregate": "sum",
+    "thresholds": {
+      "26-30": "عالية جدًا",
+      "21-25": "عالية",
+      "16-20": "متوسطة",
+      "11-15": "منخفضة",
+      "6-10": "منخفضة جدًا"
+    }
+  }
+}

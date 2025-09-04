@@ -1,0 +1,189 @@
+{
+  "name": "Patient Physical Symptoms Survey (PHQ-15)",
+  "metadata": {
+    "category": "mental_health",
+    "language": "ar"
+  },
+  "status": "draft",
+  "questions": [
+    {
+      "text": "ألم في المعدة",
+      "type": "radio",
+      "is_required": true,
+      "options": [
+        "0",
+        "1",
+        "2"
+      ],
+      "question_order": 1
+    },
+    {
+      "text": "ألم في الظهر",
+      "type": "radio",
+      "is_required": true,
+      "options": [
+        "0",
+        "1",
+        "2"
+      ],
+      "question_order": 2
+    },
+    {
+      "text": "ألم في الذراعين أو الساقين أو المفاصل (الركبتين والوركين وما إلى ذلك)",
+      "type": "radio",
+      "is_required": true,
+      "options": [
+        "0",
+        "1",
+        "2"
+      ],
+      "question_order": 3
+    },
+    {
+      "text": "للنساء فقط، في حالة أنك رجل اختر (لم تزعجني أبداً) تشنجات الدورة الشهرية أو مشاكل أخرى متعلقة بالدورة الشهرية",
+      "type": "radio",
+      "is_required": true,
+      "options": [
+        "0",
+        "1",
+        "2"
+      ],
+      "question_order": 4
+    },
+    {
+      "text": "صداع",
+      "type": "radio",
+      "is_required": true,
+      "options": [
+        "0",
+        "1",
+        "2"
+      ],
+      "question_order": 5
+    },
+    {
+      "text": "ألم في الصدر",
+      "type": "radio",
+      "is_required": true,
+      "options": [
+        "0",
+        "1",
+        "2"
+      ],
+      "question_order": 6
+    },
+    {
+      "text": "دوخة",
+      "type": "radio",
+      "is_required": true,
+      "options": [
+        "0",
+        "1",
+        "2"
+      ],
+      "question_order": 7
+    },
+    {
+      "text": "نوبات إغماء",
+      "type": "radio",
+      "is_required": true,
+      "options": [
+        "0",
+        "1",
+        "2"
+      ],
+      "question_order": 8
+    },
+    {
+      "text": "الشعور بخفقان القلب أو تسارعه",
+      "type": "radio",
+      "is_required": true,
+      "options": [
+        "0",
+        "1",
+        "2"
+      ],
+      "question_order": 9
+    },
+    {
+      "text": "ضيق التنفس",
+      "type": "radio",
+      "is_required": true,
+      "options": [
+        "0",
+        "1",
+        "2"
+      ],
+      "question_order": 10
+    },
+    {
+      "text": "ألم أو مشاكل أثناء الجماع",
+      "type": "radio",
+      "is_required": true,
+      "options": [
+        "0",
+        "1",
+        "2"
+      ],
+      "question_order": 11
+    },
+    {
+      "text": "إمساك أو إسهال",
+      "type": "radio",
+      "is_required": true,
+      "options": [
+        "0",
+        "1",
+        "2"
+      ],
+      "question_order": 12
+    },
+    {
+      "text": "غثيان أو غازات أو عسر هضم",
+      "type": "radio",
+      "is_required": true,
+      "options": [
+        "0",
+        "1",
+        "2"
+      ],
+      "question_order": 13
+    },
+    {
+      "text": "الشعور بالتعب أو انخفاض الطاقة",
+      "type": "radio",
+      "is_required": true,
+      "options": [
+        "0",
+        "1",
+        "2"
+      ],
+      "question_order": 14
+    },
+    {
+      "text": "صعوبة في النوم",
+      "type": "radio",
+      "is_required": true,
+      "options": [
+        "0",
+        "1",
+        "2"
+      ],
+      "question_order": 15
+    }
+  ],
+  "scoring": {
+    "type": "sum",
+    "mappings": {
+      "0": 0,
+      "1": 1,
+      "2": 2
+    },
+    "thresholds": {
+      "0-4": "ضئيلة",
+      "5-9": "منخفضة",
+      "10-14": "متوسطة",
+      "15-30": "عالية"
+    }
+  }
+}

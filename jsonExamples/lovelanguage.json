@@ -1,0 +1,490 @@
+{
+  "name": "Love Languages Questionnaire",
+  "metadata": {
+    "category": "mental_health",
+    "language": "ar"
+  },
+  "status": "draft",
+  "questions": [
+    {
+      "text": "اختر أحد الخيارين الذي يعبر عنك أكثر.",
+      "type": "paired-options",
+      "is_required": true,
+      "options": [
+        {
+          "text": "أحب أن أسمع منك كلمات تشجيعيّة.",
+          "group": "A"
+        },
+        {
+          "text": "أحب أن تعانقني.",
+          "group": "E"
+        }
+      ],
+      "question_order": 1
+    },
+    {
+      "text": "اختر أحد الخيارين الذي يعبر عنك أكثر.",
+      "type": "paired-options",
+      "is_required": true,
+      "options": [
+        {
+          "text": "أحب أن نقضي وقتاً وحدنا.",
+          "group": "B"
+        },
+        {
+          "text": "أشعر بالحب عندما تقدم لي مساعدة فعّالة.",
+          "group": "D"
+        }
+      ],
+      "question_order": 2
+    },
+    {
+      "text": "اختر أحد الخيارين الذي يعبر عنك أكثر.",
+      "type": "paired-options",
+      "is_required": true,
+      "options": [
+        {
+          "text": "أحب عندما تعطيني هدايا.",
+          "group": "C"
+        },
+        {
+          "text": "أحب أن أتمشى معك لفترات طويلة.",
+          "group": "B"
+        }
+      ],
+      "question_order": 3
+    },
+    {
+      "text": "اختر أحد الخيارين الذي يعبر عنك أكثر.",
+      "type": "paired-options",
+      "is_required": true,
+      "options": [
+        {
+          "text": "أشعر بالحب عندما تقوم بأشياء لمساعدتي.",
+          "group": "D"
+        },
+        {
+          "text": "أشعر بالحب عندما تعانقني أو تلمسني.",
+          "group": "E"
+        }
+      ],
+      "question_order": 4
+    },
+    {
+      "text": "اختر أحد الخيارين الذي يعبر عنك أكثر.",
+      "type": "paired-options",
+      "is_required": true,
+      "options": [
+        {
+          "text": "أشعر بالحب عندما تحتضنني بين ذراعيك.",
+          "group": "E"
+        },
+        {
+          "text": "أشعر بالحب عندما أتلقى هدية منك.",
+          "group": "C"
+        }
+      ],
+      "question_order": 5
+    },
+    {
+      "text": "اختر أحد الخيارين الذي يعبر عنك أكثر.",
+      "type": "paired-options",
+      "is_required": true,
+      "options": [
+        {
+          "text": "أحب أن أذهب معك إلى أيّ مكان.",
+          "group": "B"
+        },
+        {
+          "text": "أحب أن أمسك بيدك.",
+          "group": "E"
+        }
+      ],
+      "question_order": 6
+    },
+    {
+      "text": "اختر أحد الخيارين الذي يعبر عنك أكثر.",
+      "type": "paired-options",
+      "is_required": true,
+      "options": [
+        {
+          "text": "أشعر بالحب عندما تثني علي.",
+          "group": "A"
+        },
+        {
+          "text": "رموز الحب الماديّة (مثل الهدايا) مهمة جدًا بالنسبة لي.",
+          "group": "C"
+        }
+      ],
+      "question_order": 7
+    },
+    {
+      "text": "اختر أحد الخيارين الذي يعبر عنك أكثر.",
+      "type": "paired-options",
+      "is_required": true,
+      "options": [
+        {
+          "text": "أحب أن أجلس قربك.",
+          "group": "E"
+        },
+        {
+          "text": "أحب عندما تقول لي إنني جذّاب.",
+          "group": "A"
+        }
+      ],
+      "question_order": 8
+    },
+    {
+      "text": "اختر أحد الخيارين الذي يعبر عنك أكثر.",
+      "type": "paired-options",
+      "is_required": true,
+      "options": [
+        {
+          "text": "أحب أن أقضي الوقت معك.",
+          "group": "B"
+        },
+        {
+          "text": "أحب أن أتلقى هدايا رمزية منك.",
+          "group": "C"
+        }
+      ],
+      "question_order": 9
+    },
+    {
+      "text": "اختر أحد الخيارين الذي يعبر عنك أكثر.",
+      "type": "paired-options",
+      "is_required": true,
+      "options": [
+        {
+          "text": "أعرف أنك تحبني عندما تساعدني.",
+          "group": "D"
+        },
+        {
+          "text": "كلماتك بتقبُّلي مهمة بالنسبة لي.",
+          "group": "A"
+        }
+      ],
+      "question_order": 10
+    },
+    {
+      "text": "اختر أحد الخيارين الذي يعبر عنك أكثر.",
+      "type": "paired-options",
+      "is_required": true,
+      "options": [
+        {
+          "text": "أحب أن نقوم بأشياءٍ معاً.",
+          "group": "B"
+        },
+        {
+          "text": "أحب الكلمات اللطيفة التي تقولها لي.",
+          "group": "A"
+        }
+      ],
+      "question_order": 11
+    },
+    {
+      "text": "اختر أحد الخيارين الذي يعبر عنك أكثر.",
+      "type": "paired-options",
+      "is_required": true,
+      "options": [
+        {
+          "text": "أشعر بالكمال عندما نتعانق.",
+          "group": "E"
+        },
+        {
+          "text": "أفعالك تؤثر فيّ أكثر من كلماتك.",
+          "group": "D"
+        }
+      ],
+      "question_order": 12
+    },
+    {
+      "text": "اختر أحد الخيارين الذي يعبر عنك أكثر.",
+      "type": "paired-options",
+      "is_required": true,
+      "options": [
+        {
+          "text": "أقدر مديحك وأحاول تجنب انتقادك.",
+          "group": "A"
+        },
+        {
+          "text": "عدة هدايا بسيطة تعني لي أكثر من هدية واحدة باهظة الثمن.",
+          "group": "C"
+        }
+      ],
+      "question_order": 13
+    },
+    {
+      "text": "اختر أحد الخيارين الذي يعبر عنك أكثر.",
+      "type": "paired-options",
+      "is_required": true,
+      "options": [
+        {
+          "text": "أشعر بأننا أقرب عندما تلمسني.",
+          "group": "E"
+        },
+        {
+          "text": "أشعر بالقرب عندما نتحدث أو نقوم بشيء معًا.",
+          "group": "B"
+        }
+      ],
+      "question_order": 14
+    },
+    {
+      "text": "اختر أحد الخيارين الذي يعبر عنك أكثر.",
+      "type": "paired-options",
+      "is_required": true,
+      "options": [
+        {
+          "text": "أحب أن تثني على إنجازاتي.",
+          "group": "A"
+        },
+        {
+          "text": "أعرف أنك تحبني عندما تقوم من أجلي بأشياء مملّة بالنسبة لك.",
+          "group": "D"
+        }
+      ],
+      "question_order": 15
+    },
+    {
+      "text": "اختر أحد الخيارين الذي يعبر عنك أكثر.",
+      "type": "paired-options",
+      "is_required": true,
+      "options": [
+        {
+          "text": "أحب أن تلمسني عندما تمر بجانبي.",
+          "group": "E"
+        },
+        {
+          "text": "أحب عندما تستمع إليّ بشغف.",
+          "group": "B"
+        }
+      ],
+      "question_order": 16
+    },
+    {
+      "text": "اختر أحد الخيارين الذي يعبر عنك أكثر.",
+      "type": "paired-options",
+      "is_required": true,
+      "options": [
+        {
+          "text": "أستمتع حقًا بتلقي الهدايا منك.",
+          "group": "C"
+        },
+        {
+          "text": "أشعر بالحب عندما تساعدني في مشاريعي المنزل.",
+          "group": "D"
+        }
+      ],
+      "question_order": 17
+    },
+    {
+      "text": "اختر أحد الخيارين الذي يعبر عنك أكثر.",
+      "type": "paired-options",
+      "is_required": true,
+      "options": [
+        {
+          "text": "أحب عندما تمدح مظهري.",
+          "group": "A"
+        },
+        {
+          "text": "أشعر بالحب عندما تستغل وقتك لفهم مشاعري.",
+          "group": "B"
+        }
+      ],
+      "question_order": 18
+    },
+    {
+      "text": "اختر أحد الخيارين الذي يعبر عنك أكثر.",
+      "type": "paired-options",
+      "is_required": true,
+      "options": [
+        {
+          "text": "أشعر بالأمان عندما تلمسني.",
+          "group": "E"
+        },
+        {
+          "text": "خدماتك تجعلني أشعر بالحب.",
+          "group": "D"
+        }
+      ],
+      "question_order": 19
+    },
+    {
+      "text": "اختر أحد الخيارين الذي يعبر عنك أكثر.",
+      "type": "paired-options",
+      "is_required": true,
+      "options": [
+        {
+          "text": "أقدر الأشياء الكثيرة التي تقوم بها من أجلي.",
+          "group": "D"
+        },
+        {
+          "text": "أحب أن أتلقى هدايا من صنع يديك.",
+          "group": "C"
+        }
+      ],
+      "question_order": 20
+    },
+    {
+      "text": "اختر أحد الخيارين الذي يعبر عنك أكثر.",
+      "type": "paired-options",
+      "is_required": true,
+      "options": [
+        {
+          "text": "أستمتع حقًا بالشعور عندما تعطيني انتباهك الكامل.",
+          "group": "B"
+        },
+        {
+          "text": "أستمتع حقًا بالشعور عندما تقوم بخدمة من أجلي.",
+          "group": "D"
+        }
+      ],
+      "question_order": 21
+    },
+    {
+      "text": "اختر أحد الخيارين الذي يعبر عنك أكثر.",
+      "type": "paired-options",
+      "is_required": true,
+      "options": [
+        {
+          "text": "أشعر بالحب عندما تحتفل بعيد ميلادي بهدية.",
+          "group": "C"
+        },
+        {
+          "text": "أشعر بالحب عندما تحتفل بعيد ميلادي بكلمات ذات معنى (مكتوبة أو منطوقة).",
+          "group": "A"
+        }
+      ],
+      "question_order": 22
+    },
+    {
+      "text": "اختر أحد الخيارين الذي يعبر عنك أكثر.",
+      "type": "paired-options",
+      "is_required": true,
+      "options": [
+        {
+          "text": "أشعر بالحب عندما تساعدني في أعمالي المنزلية.",
+          "group": "D"
+        },
+        {
+          "text": "أعرف أنك تفكر بي عندما تهديني هدية.",
+          "group": "C"
+        }
+      ],
+      "question_order": 23
+    },
+    {
+      "text": "اختر أحد الخيارين الذي يعبر عنك أكثر.",
+      "type": "paired-options",
+      "is_required": true,
+      "options": [
+        {
+          "text": "أقدر تَذَكّرك للمناسبات الخاصة بهدية.",
+          "group": "C"
+        },
+        {
+          "text": "أقدر استماعك إليّ بصبر وعدم مقاطعتي.",
+          "group": "B"
+        }
+      ],
+      "question_order": 24
+    },
+    {
+      "text": "اختر أحد الخيارين الذي يعبر عنك أكثر.",
+      "type": "paired-options",
+      "is_required": true,
+      "options": [
+        {
+          "text": "أستمتع بالرحلات الطويلة معك.",
+          "group": "B"
+        },
+        {
+          "text": "أحب أن أعرف أنك مُهتمّ بما يكفي لمساعدتي في مهامي اليومية.",
+          "group": "D"
+        }
+      ],
+      "question_order": 25
+    },
+    {
+      "text": "اختر أحد الخيارين الذي يعبر عنك أكثر.",
+      "type": "paired-options",
+      "is_required": true,
+      "options": [
+        {
+          "text": "القبلة غير المتوقعة تجعلني أشعر بالحب.",
+          "group": "E"
+        },
+        {
+          "text": "إهدائي هدية بلا مناسبة تجعلني أشعر بالحب.",
+          "group": "C"
+        }
+      ],
+      "question_order": 26
+    },
+    {
+      "text": "اختر أحد الخيارين الذي يعبر عنك أكثر.",
+      "type": "paired-options",
+      "is_required": true,
+      "options": [
+        {
+          "text": "أحب أن تخبرني أنّك تقدرني.",
+          "group": "A"
+        },
+        {
+          "text": "أحب أن تنظر إليّ عندما نتحدث.",
+          "group": "B"
+        }
+      ],
+      "question_order": 27
+    },
+    {
+      "text": "اختر أحد الخيارين الذي يعبر عنك أكثر.",
+      "type": "paired-options",
+      "is_required": true,
+      "options": [
+        {
+          "text": "هداياك دائمًا مميزة بالنسبة لي.",
+          "group": "C"
+        },
+        {
+          "text": "أشعر بالحب عندما تقبلني.",
+          "group": "E"
+        }
+      ],
+      "question_order": 28
+    },
+    {
+      "text": "اختر أحد الخيارين الذي يعبر عنك أكثر.",
+      "type": "paired-options",
+      "is_required": true,
+      "options": [
+        {
+          "text": "أشعر بالحب عندما تخبرني كم تقدّرني.",
+          "group": "A"
+        },
+        {
+          "text": "أشعر بالحب عندما تقوم بما أطلبه بحماس.",
+          "group": "D"
+        }
+      ],
+      "question_order": 29
+    },
+    {
+      "text": "اختر أحد الخيارين الذي يعبر عنك أكثر.",
+      "type": "paired-options",
+      "is_required": true,
+      "options": [
+        {
+          "text": "أحتاج إلى أن تعانقني كل يوم.",
+          "group": "E"
+        },
+        {
+          "text": "أحتاج إلى كلمات التأكيد يوميًا.",
+          "group": "A"
+        }
+      ],
+      "question_order": 30
+    }
+  ]
+}
