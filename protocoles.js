@@ -1,18 +1,3 @@
-
-
-
-//Example for testing
-const surveyAnswers = {
-  1: 4,
-  2: 2,
-  3: 5,
-  4: 1,
-  5: 3,
-  6: 4,
-  9: 2,
-};
-
-
 const leaderShipSurveyHandler = (surveyAnswers) => {
   let authQuestions = [1, 2, 6, 10, 15, 16];
   let auth = 0;
@@ -38,97 +23,215 @@ const leaderShipSurveyHandler = (surveyAnswers) => {
 };
 
 function scoreSum(responses, mappings = {}) {
-  let total = 0;
-  for (const [qid, optsMap] of Object.entries(mappings)) {
-    const ans = responses[qid];
-    if (ans == null) continue;
-    const v = optsMap[ans];
-    if (typeof v === 'number') total += v;
+
+  // If no mappings provided, sum all response values directly
+  if (!mappings || Object.keys(mappings).length === 0) {
+    const values = Object.values(responses).filter(v => typeof v === 'number');
+    const total = values.reduce((a, b) => a + b, 0);
+    console.log('scoreSum - no mappings, total:', total);
+    return { score: total, total, breakdown: responses };
   }
-  return { score: total, total };
+
+  // Use mappings to transform response values
+  let total = 0;
+  const breakdown = {};
+  
+  for (const [qid, responseValue] of Object.entries(responses)) {
+    const qidStr = qid.toString();
+    if (mappings[qidStr]) {
+      const mappedValue = mappings[qidStr][responseValue.toString()];
+      if (typeof mappedValue === 'number') {
+        total += mappedValue;
+        breakdown[qidStr] = { original: responseValue, mapped: mappedValue };
+      }
+    }
+  }
+  
+  console.log('scoreSum - with mappings, total:', total);
+  return { score: total, total, breakdown };
 }
 
 function scoreMixedSign(responses, mappings = {}) {
+  console.log('scoreMixedSign - responses:', responses);
+  console.log('scoreMixedSign - mappings:', mappings);
+  
   let total = 0;
-  for (const [qid, optsMap] of Object.entries(mappings)) {
-    const ans = responses[qid];
-    if (ans == null) continue;
-    const v = optsMap[ans];
-    if (typeof v === 'number') total += v;
-  }
-  return { score: total, total };
-}
-function scoreGrouped(responses, scoring) {
-  const { mappings = {}, groups = {}, group_aggregate = 'sum', weights = {} } = scoring || {};
-  const qval = {};
-  for (const [qid, optsMap] of Object.entries(mappings)) {
-    const ans = responses[qid];
-    const v = ans != null ? optsMap[ans] : 0;
-    qval[qid] = typeof v === 'number' ? v : 0;
-  }
-
-  const perGroup = {};
-  for (const [g, qids] of Object.entries(groups)) {
-    const arr = qids.map(id => qval[id] || 0);
-    let val = 0;
-    if (group_aggregate === 'avg') {
-      val = arr.length ? arr.reduce((a,b)=>a+b,0) / arr.length : 0;
-    } else if (group_aggregate === 'weighted_sum') {
-      val = qids.reduce((acc, id) => acc + (qval[id] || 0) * (weights[id] || 1), 0);
-    } else {
-      val = arr.reduce((a,b)=>a+b,0);
+  const breakdown = {};
+  
+  for (const [qid, responseValue] of Object.entries(responses)) {
+    const qidStr = qid.toString();
+    if (mappings[qidStr]) {
+      const mappedValue = mappings[qidStr][responseValue.toString()];
+      if (typeof mappedValue === 'number') {
+        total += mappedValue;
+        breakdown[qidStr] = { original: responseValue, mapped: mappedValue };
+      }
     }
-    perGroup[g] = Number(val);
   }
-
-  const total = Object.values(perGroup).reduce((a,b)=>a+b,0);
-  return { total, perGroup };
+  
+  console.log('scoreMixedSign - total:', total);
+  return { score: total, total, breakdown };
 }
 
+function scoreGrouped(responses, scoring) {
+  console.log('scoreGrouped - responses:', responses);
+  console.log('scoreGrouped - scoring config:', scoring);
+  
+  const { mappings = {}, groups = {}, group_aggregate = 'sum', weights = {} } = scoring || {};
+  
+  // First, map each response value using the mappings
+  const mappedValues = {};
+  for (const [qid, responseValue] of Object.entries(responses)) {
+    const qidStr = qid.toString();
+    if (mappings[qidStr]) {
+      let mappedValue;
+      
+      // Check if the mapping is a nested object (correct format) or a direct value (incorrect format)
+      if (typeof mappings[qidStr] === 'object' && mappings[qidStr] !== null) {
+        // Correct format: { "1": {"1": 1, "2": 2, ...} }
+        mappedValue = mappings[qidStr][responseValue.toString()];
+      } else {
+        // Incorrect format: { "1": 1, "2": 2, ... } - treat as direct mapping
+        // This means the response value should be used directly as the score
+        mappedValue = parseInt(responseValue);
+      }
+      
+      mappedValues[qidStr] = typeof mappedValue === 'number' ? mappedValue : 0;
+    } else {
+      // If no mapping, use the response value directly
+      mappedValues[qidStr] = typeof responseValue === 'number' ? responseValue : parseInt(responseValue) || 0;
+    }
+  }
+  
+  console.log('scoreGrouped - mapped values:', mappedValues);
 
-// Simple expression evaluator for formula scoring
+  // Then calculate group scores
+  const perGroup = {};
+  for (const [groupName, questionIds] of Object.entries(groups)) {
+    const groupValues = questionIds
+      .map(id => mappedValues[id.toString()] || 0)
+      .filter(val => typeof val === 'number');
+    
+    let groupScore = 0;
+    if (group_aggregate === 'avg' && groupValues.length > 0) {
+      groupScore = groupValues.reduce((a, b) => a + b, 0) / groupValues.length;
+    } else if (group_aggregate === 'weighted_sum') {
+      groupScore = questionIds.reduce((acc, id) => {
+        const val = mappedValues[id.toString()] || 0;
+        const weight = weights[id.toString()] || 1;
+        return acc + (val * weight);
+      }, 0);
+    } else {
+      // default: sum
+      groupScore = groupValues.reduce((a, b) => a + b, 0);
+    }
+    
+    perGroup[groupName] = Number(groupScore.toFixed(2));
+  }
+
+  const total = Object.values(perGroup).reduce((a, b) => a + b, 0);
+  
+  console.log('scoreGrouped - per group:', perGroup);
+  console.log('scoreGrouped - total:', total);
+  
+  return { 
+    total: Number(total.toFixed(2)), 
+    perGroup, 
+    breakdown: mappedValues,
+    groupAggregate: group_aggregate
+  };
+}
+
+// Improved expression evaluator
 function evalWithVars(expression, vars) {
   if (!expression || typeof expression !== 'string') return 0;
   
   try {
+    console.log('Evaluating expression:', expression);
+    console.log('With variables:', vars);
+    
     // Replace variable references in the expression with their values
     let evaluableExpression = expression;
     for (const [varName, value] of Object.entries(vars)) {
+      // Make sure we replace whole variable names, not partial matches
       const regex = new RegExp(`\\b${varName}\\b`, 'g');
       evaluableExpression = evaluableExpression.replace(regex, value);
     }
     
-    // Basic safety check - only allow numbers, operators, and parentheses
+    console.log('Expression after variable substitution:', evaluableExpression);
+    
+    // Enhanced safety check - allow numbers, operators, parentheses, and decimal points
     if (!/^[0-9+\-*/.() ]+$/.test(evaluableExpression)) {
-      throw new Error('Invalid expression');
+      throw new Error(`Invalid expression: ${evaluableExpression}`);
     }
     
     // Use Function constructor for safe evaluation
-    return new Function('return ' + evaluableExpression)();
+    const result = new Function('return ' + evaluableExpression)();
+    console.log('Expression result:', result);
+    return result;
   } catch (error) {
     console.error('Error evaluating expression:', error);
     return 0;
   }
 }
 
-function scoreFormula(responses, scoring) {
-  const { mappings = {}, expression } = scoring || {};
-  const vals = {};
-  for (const [qid, optsMap] of Object.entries(mappings)) {
-    const ans = responses[qid];
-    const v = ans != null ? optsMap[ans] : 0;
-    vals[qid] = typeof v === 'number' ? v : 0;
+function pairedOptions(responses, groupsMapping) {
+  // responses: { "1": "option1", "2": "option2", ... }
+  // groupsMapping: { "1": { "option1": "A", "option2": "E" }, ... }
+
+  const groupScores = {};
+
+  for (const [qid, selectedOption] of Object.entries(responses)) {
+    const qidStr = qid.toString();
+    if (groupsMapping[qidStr] && groupsMapping[qidStr][selectedOption]) {
+      const group = groupsMapping[qidStr][selectedOption];
+      if (!groupScores[group]) groupScores[group] = 0;
+      groupScores[group] += 1; // increment 1 point for the chosen option
+    }
   }
-  const total = Number(evalWithVars(expression, vals)) || 0;
-  return { score: total, total, vars: vals };
+
+  return groupScores;
 }
+
+
+function scoreFormula(responses, scoring) {
+  console.log('scoreFormula - responses:', responses);
+  console.log('scoreFormula - scoring config:', scoring);
+  
+  const { mappings = {}, expression } = scoring || {};
+  
+  // Map response values using mappings
+  const mappedValues = {};
+  for (const [qid, responseValue] of Object.entries(responses)) {
+    const qidStr = qid.toString();
+    if (mappings[qidStr]) {
+      const mappedValue = mappings[qidStr][responseValue.toString()];
+      mappedValues[qidStr] = typeof mappedValue === 'number' ? mappedValue : 0;
+    } else {
+      // If no mapping, use the response value directly
+      mappedValues[qidStr] = typeof responseValue === 'number' ? responseValue : 0;
+    }
+  }
+  
+  console.log('scoreFormula - mapped values:', mappedValues);
+  
+  const total = Number(evalWithVars(expression, mappedValues)) || 0;
+  
+  console.log('scoreFormula - final total:', total);
+  
+  return { 
+    score: Number(total.toFixed(2)), 
+    total: Number(total.toFixed(2)), 
+    vars: mappedValues,
+    expression: expression
+  };
+}
+
 module.exports = {
   leaderShipSurveyHandler,
   scoreSum,
   scoreMixedSign,
   scoreGrouped,
   scoreFormula,
+  pairedOptions,
 };
-
- 
-

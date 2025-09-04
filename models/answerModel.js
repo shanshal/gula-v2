@@ -78,8 +78,10 @@ const getUserAnswersForSurvey = async (userId, surveyId) => {
     ORDER BY a.question_id, a.created_at DESC
   `, [userId, surveyId]);
   return res.rows.reduce((acc, row) => {
-    // Use question_order as the key instead of question_id
-    acc[row.question_order] = parseInt(row.answer_value);
+    // Use answer_text as the value for scoring, fallback to answer_value if text is null
+    // Convert numeric answer_value to string for consistent mapping
+    const responseValue = row.answer_text || row.answer_value.toString();
+    acc[row.question_id] = responseValue;
     return acc;
   }, {});
 };
@@ -107,4 +109,5 @@ module.exports = {
   deleteAnswersByUserId,
   deleteAnswersByQuestionId,
   getUserAnswersForSurvey,
+  createAnswers,
 };
