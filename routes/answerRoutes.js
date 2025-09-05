@@ -2,13 +2,18 @@ const express = require('express');
 const router = express.Router();
 const answerController = require('../controllers/answerControllers');
 const { getSurveyScore } = require('../controllers/answerControllers');
+const { 
+  validateIdParam, 
+  validateAnswerSubmission, 
+  validateSingleAnswer 
+} = require('../middleware/validation');
 
 router.get('/user/:userId/survey/:surveyId/score', getSurveyScore);
 router.get('/', answerController.getAnswers);
-router.get('/:id', answerController.getAnswerById);
-router.post('/', answerController.createAnswer);
-router.put('/:id', answerController.updateAnswer);
-router.delete('/:id', answerController.deleteAnswer);
+router.get('/:id', validateIdParam, answerController.getAnswerById);
+router.post('/', validateSingleAnswer, answerController.createAnswer);
+router.put('/:id', validateIdParam, validateSingleAnswer, answerController.updateAnswer);
+router.delete('/:id', validateIdParam, answerController.deleteAnswer);
 router.get('/user/:userId', answerController.getAnswersByUserId);
 router.get('/question/:questionId', answerController.getAnswersByQuestionId);
 router.get('/survey/:surveyId', answerController.getAnswersBySurveyId);
@@ -140,7 +145,7 @@ router.get('/user/:userId/survey/:surveyId', answerController.getUserAnswersForS
  *       500:
  *         description: Internal server error
  */
-router.post('/user/:userId/survey/:surveyId', answerController.submitAnswersForSurvey);
+router.post('/user/:userId/survey/:surveyId', validateAnswerSubmission, answerController.submitAnswersForSurvey);
 
 
 

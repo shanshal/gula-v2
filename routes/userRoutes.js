@@ -1,6 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
+const { 
+  validateUserCreation, 
+  validateIdParam 
+} = require('../middleware/validation');
 
 /**
  * @swagger
@@ -42,10 +46,12 @@ router.get('/', userController.getUsers);
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Invalid user ID
  *       404:
  *         description: User not found
  */
-router.get('/:id', userController.getUserById);
+router.get('/:id', validateIdParam, userController.getUserById);
 
 /**
  * @swagger
@@ -103,7 +109,7 @@ router.get('/:id', userController.getUserById);
  *       400:
  *         description: Invalid input data
  */
-router.post('/', userController.createUser);
+router.post('/', validateUserCreation, userController.createUser);
 
 /**
  * @swagger
@@ -154,7 +160,7 @@ router.post('/', userController.createUser);
  *                   type: integer
  *                   example: 1
  */
-router.put('/:id', userController.updateUser);
+router.put('/:id', validateIdParam, validateUserCreation, userController.updateUser);
 
 /**
  * @swagger
@@ -185,6 +191,6 @@ router.put('/:id', userController.updateUser);
  *                   type: integer
  *                   example: 1
  */
-router.delete('/:id', userController.deleteUser);
+router.delete('/:id', validateIdParam, userController.deleteUser);
 
 module.exports = router;

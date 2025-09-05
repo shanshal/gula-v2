@@ -72,7 +72,9 @@ const createSurvey = async (data) => {
         const q = data.questions[i];
         const {
           text,
+          question_text,
           type,
+          question_type,
           is_required = false,
           options = null,
           min_value = null,
@@ -83,6 +85,18 @@ const createSurvey = async (data) => {
           flag = null,
           weight = 1,
         } = q;
+
+        // Handle both field name formats for backward compatibility
+        const questionText = text || question_text;
+        const questionType = type || question_type;
+
+        // Validate required fields
+        if (!questionText) {
+          throw new Error(`Question ${i + 1}: question_text or text field is required`);
+        }
+        if (!questionType) {
+          throw new Error(`Question ${i + 1}: question_type or type field is required`);
+        }
 
         // Use the array index + 1 as question_order if not provided
         const question_order = q.question_order !== undefined ? q.question_order : (i + 1);
@@ -101,8 +115,8 @@ const createSurvey = async (data) => {
            RETURNING *`,
           [
             survey.id,
-            text,
-            type,
+            questionText,
+            questionType,
             is_required,
             normalizedOptions,
             min_value,
@@ -413,6 +427,123 @@ const updateSurvey = async (updateData, id) => {
   await pool.query(query, values);
 };
 
+// Helper function to deep merge objects
+const deepMerge = (target, source) => {
+  const result = { ...target };
+  
+  for (const key in source) {
+    if (source[key] !== null && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+      // If the target also has this key and it's an object, merge recursively
+      if (result[key] && typeof result[key] === 'object' && !Array.isArray(result[key])) {
+        result[key] = deepMerge(result[key], source[key]);
+      } else {
+        // Otherwise, replace with the source value
+        result[key] = { ...source[key] };
+      }
+    } else {
+      // For primitive values and arrays, replace directly
+      result[key] = source[key];
+    }
+  }
+  
+  return result;
+};
+
+const patchSurvey = async (updateData, id, currentSurvey) => {
+  const client = await pool.connect();
+  
+  try {
+    await client.query("BEGIN");
+    
+    const fields = [];
+    const values = [];
+    let paramIndex = 1;
+
+    // Handle name update
+    if (updateData.name !== undefined) {
+      fields.push(`name = $${paramIndex}`);
+      values.push(updateData.name);
+      paramIndex++;
+    }
+
+    // Handle status update
+    if (updateData.status !== undefined) {
+      fields.push(`status = $${paramIndex}`);
+      values.push(updateData.status);
+      paramIndex++;
+    }
+
+    // Handle metadata partial update (deep merge)
+    if (updateData.metadata !== undefined) {
+      const currentMetadata = currentSurvey.survey?.metadata || {};
+      const mergedMetadata = deepMerge(currentMetadata, updateData.metadata);
+      
+      fields.push(`metadata = $${paramIndex}::jsonb`);
+      values.push(JSON.stringify(mergedMetadata));
+      paramIndex++;
+    }
+
+    // Handle scoring partial update (deep merge)
+    if (updateData.scoring !== undefined) {
+      const currentScoring = currentSurvey.survey?.scoring || {};
+      const mergedScoring = deepMerge(currentScoring, updateData.scoring);
+      
+      fields.push(`scoring = $${paramIndex}`);
+      values.push(JSON.stringify(mergedScoring));
+      paramIndex++;
+    }
+
+    // Handle interpretation update (stored as JSON in scoring or metadata)
+    if (updateData.interpretation !== undefined) {
+      // For now, we'll store interpretation in the survey's metadata
+      const currentMetadata = currentSurvey.survey?.metadata || {};
+      const currentInterpretation = currentMetadata.interpretation || {};
+      const mergedInterpretation = deepMerge(currentInterpretation, updateData.interpretation);
+      
+      const mergedMetadata = {
+        ...currentMetadata,
+        interpretation: mergedInterpretation
+      };
+      
+      // Check if we already updated metadata above
+      const metadataIndex = fields.findIndex(field => field.includes('metadata'));
+      if (metadataIndex !== -1) {
+        // Replace the existing metadata update
+        const existingMetadata = JSON.parse(values[metadataIndex]);
+        values[metadataIndex] = JSON.stringify({
+          ...existingMetadata,
+          interpretation: mergedInterpretation
+        });
+      } else {
+        fields.push(`metadata = $${paramIndex}::jsonb`);
+        values.push(JSON.stringify(mergedMetadata));
+        paramIndex++;
+      }
+    }
+
+    if (fields.length === 0) {
+      throw new Error('No valid fields to update');
+    }
+
+    // Update the survey
+    values.push(id);
+    const query = `UPDATE surveys SET ${fields.join(', ')} WHERE id = $${paramIndex} RETURNING *`;
+    const result = await client.query(query, values);
+    
+    await client.query("COMMIT");
+    
+    // Return the updated survey in the same format as getSurveyById
+    const updatedSurvey = await getSurveyById(id);
+    return updatedSurvey;
+    
+  } catch (error) {
+    await client.query("ROLLBACK");
+    throw error;
+  } finally {
+    client.release();
+  }
+};
+
 const deleteSurvey = async (id) => {
   await pool.query(`DELETE FROM surveys WHERE id = $1`, [id]);
 };
@@ -422,5 +553,6 @@ module.exports = {
   getSurveyById,
   createSurvey,
   updateSurvey,
+  patchSurvey,
   deleteSurvey,
 };
