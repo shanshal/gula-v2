@@ -79,29 +79,32 @@ router.get('/user/:userId/survey/:surveyId', answerController.getUserAnswersForS
  * @swagger
  * /answers/user/{userId}/survey/{surveyId}:
  *   post:
- *     summary: Submit answers for the Leadership Survey (survey ID 13)
+ *     summary: Submit bulk answers for a survey
+ *     description: Submit multiple answers for a specific user and survey in a single request
  *     tags: [Answers]
  *     parameters:
  *       - in: path
  *         name: userId
  *         schema:
  *           type: integer
- *           example: 1
  *         required: true
- *         description: ID of the user submitting answers
+ *         description: ID of the user submitting answers (must be a positive integer)
+ *         example: 1
  *       - in: path
  *         name: surveyId
  *         schema:
  *           type: integer
- *           example: 13
  *         required: true
- *         description: ID of the survey
+ *         description: ID of the survey (must be a positive integer)
+ *         example: 1
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: array
+ *             minItems: 1
+ *             description: Array of answer objects
  *             items:
  *               type: object
  *               required:
@@ -110,14 +113,40 @@ router.get('/user/:userId/survey/:surveyId', answerController.getUserAnswersForS
  *               properties:
  *                 question_id:
  *                   type: integer
- *                   example: 36
+ *                   minimum: 1
+ *                   description: ID of the question being answered
+ *                   example: 1
  *                 answer_value:
- *                   type: integer
- *                   example: 4
+ *                   description: The answer value (can be string, number, or boolean)
+ *                   oneOf:
+ *                     - type: string
+ *                       example: "Yes"
+ *                     - type: number
+ *                       example: 4
+ *                     - type: boolean
+ *                       example: true
  *                 answer_text:
  *                   type: string
  *                   nullable: true
- *                   example: "Everything was great!"
+ *                   description: Optional additional text for the answer
+ *                   example: "This is my detailed response"
+ *           examples:
+ *             simple_answers:
+ *               summary: Simple yes/no answers
+ *               value:
+ *                 - question_id: 1
+ *                   answer_value: "Yes"
+ *                 - question_id: 2
+ *                   answer_value: "No"
+ *             detailed_answers:
+ *               summary: Answers with additional text
+ *               value:
+ *                 - question_id: 1
+ *                   answer_value: "Satisfied"
+ *                   answer_text: "The service was excellent"
+ *                 - question_id: 2
+ *                   answer_value: 4
+ *                   answer_text: "Rating out of 5"
  *     responses:
  *       201:
  *         description: Answers successfully submitted
@@ -131,9 +160,13 @@ router.get('/user/:userId/survey/:surveyId', answerController.getUserAnswersForS
  *                   example: true
  *                 submitted_count:
  *                   type: integer
- *                   example: 18
+ *                   description: Number of answers successfully submitted
+ *                   example: 5
+ *                 message:
+ *                   type: string
+ *                   example: "Answers submitted successfully"
  *       400:
- *         description: Missing required fields
+ *         description: Validation failed
  *         content:
  *           application/json:
  *             schema:
@@ -141,7 +174,20 @@ router.get('/user/:userId/survey/:surveyId', answerController.getUserAnswersForS
  *               properties:
  *                 error:
  *                   type: string
- *                   example: "user_id, question_id, and answer_value are required"
+ *                   example: "Validation failed"
+ *                 details:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       field:
+ *                         type: string
+ *                         example: "answers[0].question_id"
+ *                       message:
+ *                         type: string
+ *                         example: "question_id must be a positive integer"
+ *       404:
+ *         description: User or survey not found
  *       500:
  *         description: Internal server error
  */

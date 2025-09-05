@@ -58,7 +58,7 @@ router.get('/:id', validateIdParam, userController.getUserById);
  * /users:
  *   post:
  *     summary: Create a new user
- *     description: Register a new user for taking surveys
+ *     description: Register a new user for taking surveys with validation
  *     tags: [Users]
  *     requestBody:
  *       required: true
@@ -72,27 +72,45 @@ router.get('/:id', validateIdParam, userController.getUserById);
  *             properties:
  *               name:
  *                 type: string
- *                 description: User's full name
- *                 example: أحمد محمد
+ *                 minLength: 1
+ *                 description: User's full name (required)
+ *                 example: "أحمد محمد"
  *               email:
  *                 type: string
  *                 format: email
- *                 description: User's email address
- *                 example: ahmed@example.com
+ *                 description: User's email address (required, must be valid email)
+ *                 example: "ahmed@example.com"
  *               age:
  *                 type: integer
- *                 description: User's age
+ *                 minimum: 0
+ *                 maximum: 150
+ *                 description: User's age (optional, between 0-150)
  *                 example: 30
  *               sex:
  *                 type: string
- *                 enum: [male, female]
- *                 description: User's gender
- *                 example: male
+ *                 enum: [male, female, other]
+ *                 description: User's gender (optional)
+ *                 example: "male"
  *               weight:
  *                 type: number
- *                 format: float
- *                 description: User's weight in kg
+ *                 minimum: 0
+ *                 maximum: 1000
+ *                 description: User's weight in kg (optional, between 0-1000)
  *                 example: 75.5
+ *           examples:
+ *             basic_user:
+ *               summary: Basic user with required fields only
+ *               value:
+ *                 name: "John Doe"
+ *                 email: "john@example.com"
+ *             complete_user:
+ *               summary: Complete user profile
+ *               value:
+ *                 name: "Sarah Ahmed"
+ *                 email: "sarah@example.com"
+ *                 age: 28
+ *                 sex: "female"
+ *                 weight: 65.5
  *     responses:
  *       201:
  *         description: User created successfully
@@ -105,9 +123,55 @@ router.get('/:id', validateIdParam, userController.getUserById);
  *                   type: string
  *                   example: "User added with ID: 1"
  *                 user:
- *                   $ref: '#/components/schemas/User'
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       example: 1
+ *                     name:
+ *                       type: string
+ *                       example: "John Doe"
+ *                     email:
+ *                       type: string
+ *                       example: "john@example.com"
+ *                     age:
+ *                       type: integer
+ *                       nullable: true
+ *                       example: 30
+ *                     sex:
+ *                       type: string
+ *                       nullable: true
+ *                       example: "male"
+ *                     weight:
+ *                       type: number
+ *                       nullable: true
+ *                       example: 75.5
+ *                     created_at:
+ *                       type: string
+ *                       format: date-time
  *       400:
- *         description: Invalid input data
+ *         description: Validation failed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Validation failed"
+ *                 details:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       field:
+ *                         type: string
+ *                         example: "email"
+ *                       message:
+ *                         type: string
+ *                         example: "Valid email address is required"
+ *       500:
+ *         description: Internal server error
  */
 router.post('/', validateUserCreation, userController.createUser);
 
@@ -115,8 +179,8 @@ router.post('/', validateUserCreation, userController.createUser);
  * @swagger
  * /users/{id}:
  *   put:
- *     summary: Update user
- *     description: Update an existing user's information
+ *     summary: Update user information
+ *     description: Update an existing user's information with validation
  *     tags: [Users]
  *     parameters:
  *       - in: path
@@ -124,27 +188,53 @@ router.post('/', validateUserCreation, userController.createUser);
  *         required: true
  *         schema:
  *           type: integer
- *         description: The user ID
+ *         description: The user ID (must be a positive integer)
+ *         example: 1
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - name
+ *               - email
  *             properties:
  *               name:
  *                 type: string
+ *                 minLength: 1
+ *                 description: User's full name (required)
+ *                 example: "Ahmed Updated"
  *               email:
  *                 type: string
  *                 format: email
+ *                 description: User's email address (required, must be valid email)
+ *                 example: "ahmed.updated@example.com"
  *               age:
  *                 type: integer
+ *                 minimum: 0
+ *                 maximum: 150
+ *                 description: User's age (optional, between 0-150)
+ *                 example: 31
  *               sex:
  *                 type: string
- *                 enum: [male, female]
+ *                 enum: [male, female, other]
+ *                 description: User's gender (optional)
+ *                 example: "male"
  *               weight:
  *                 type: number
- *                 format: float
+ *                 minimum: 0
+ *                 maximum: 1000
+ *                 description: User's weight in kg (optional, between 0-1000)
+ *                 example: 78.0
+ *           examples:
+ *             update_profile:
+ *               summary: Update user profile
+ *               value:
+ *                 name: "Ahmed Updated"
+ *                 email: "ahmed.new@example.com"
+ *                 age: 32
+ *                 weight: 80.5
  *     responses:
  *       200:
  *         description: User updated successfully
@@ -159,6 +249,31 @@ router.post('/', validateUserCreation, userController.createUser);
  *                 id:
  *                   type: integer
  *                   example: 1
+ *       400:
+ *         description: Validation failed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Validation failed"
+ *                 details:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       field:
+ *                         type: string
+ *                         example: "age"
+ *                       message:
+ *                         type: string
+ *                         example: "Age must be a number between 0 and 150"
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Internal server error
  */
 router.put('/:id', validateIdParam, validateUserCreation, userController.updateUser);
 
