@@ -227,6 +227,138 @@ function scoreFormula(responses, scoring) {
   };
 }
 
+// Enhanced paired-options scoring for Love Languages and similar surveys
+function scorePairedOptions(responses, scoring) {
+  console.log('scorePairedOptions - responses:', responses);
+  console.log('scorePairedOptions - scoring config:', scoring);
+  
+  const { mappings = {}, groups = {}, thresholds = {}, group_aggregate = 'sum' } = scoring || {};
+  
+  // Get group mapping
+  const groupMapping = scoring.group_mapping;
+  if (!groupMapping) {
+    throw new Error('group_mapping is required for paired-options scoring');
+  }
+  
+  // Initialize group counters based on the group_mapping values (the love language names)
+  const groupScores = {};
+  Object.values(groupMapping).forEach(categoryName => {
+    groupScores[categoryName] = 0;
+  });
+  
+  // Process each response - simply count the selected groups
+  const processedResponses = {};
+  let validResponses = 0;
+  
+  for (const [questionId, selectedGroup] of Object.entries(responses)) {
+    const qidStr = questionId.toString();
+    
+    // Check if this is a valid group selection for this question
+    if (mappings[qidStr] && mappings[qidStr][selectedGroup]) {
+      // Map the group letter to category and increment counter
+      const category = groupMapping[selectedGroup];
+      if (category && groupScores.hasOwnProperty(category)) {
+        groupScores[category] += 1; // Always add 1 for each selection
+        validResponses++;
+        
+        processedResponses[qidStr] = {
+          selectedGroup,
+          category,
+          score: 1,
+          valid: true
+        };
+      } else {
+        processedResponses[qidStr] = {
+          selectedGroup,
+          category: null,
+          score: 0,
+          valid: false,
+          error: 'Unknown group mapping'
+        };
+      }
+    } else {
+      processedResponses[qidStr] = {
+        selectedGroup,
+        category: null,
+        score: 0,
+        valid: false,
+        error: 'Invalid group for this question'
+      };
+    }
+  }
+  
+  // Calculate additional metrics
+  const totalPossibleQuestions = Object.keys(mappings).length;
+  const results = {};
+  
+  for (const [category, score] of Object.entries(groupScores)) {
+    const percentage = validResponses > 0 ? (score / validResponses) * 100 : 0;
+    const interpretation = getThresholdInterpretation(score, thresholds[category]);
+    
+    results[category] = {
+      score,
+      percentage: Number(percentage.toFixed(1)),
+      maxPossible: totalPossibleQuestions,
+      interpretation: interpretation || (score >= Math.ceil(totalPossibleQuestions * 0.3) ? 'High' : 
+                                      score >= Math.ceil(totalPossibleQuestions * 0.15) ? 'Medium' : 'Low')
+    };
+  }
+  
+  // Create ranking
+  const ranking = Object.entries(results)
+    .map(([name, data]) => ({
+      category: name,
+      score: data.score,
+      percentage: data.percentage,
+      interpretation: data.interpretation
+    }))
+    .sort((a, b) => b.score - a.score)
+    .map((item, index) => ({
+      ...item,
+      rank: index + 1
+    }));
+  
+  // Calculate total score
+  const total = Object.values(groupScores).reduce((a, b) => a + b, 0);
+  
+  console.log('scorePairedOptions - group mapping:', groupMapping);
+  console.log('scorePairedOptions - group scores:', groupScores);
+  console.log('scorePairedOptions - total:', total);
+  
+  return {
+    total: Number(total.toFixed(2)),
+    perGroup: groupScores,
+    breakdown: processedResponses,
+    groupAggregate: group_aggregate,
+    
+    // Enhanced results for paired-options
+    categories: results,
+    ranking,
+    primary_category: ranking[0]?.category || null,
+    secondary_category: ranking[1]?.category || null,
+    total_responses: validResponses,
+    max_possible_responses: totalPossibleQuestions,
+    completion_rate: Number(((validResponses / totalPossibleQuestions) * 100).toFixed(1)),
+    
+    // Metadata
+    valid_responses: validResponses,
+    invalid_responses: Object.keys(responses).length - validResponses
+  };
+}
+
+// Helper function to get threshold interpretation
+function getThresholdInterpretation(score, thresholds) {
+  if (!thresholds) return null;
+  
+  for (const [range, interpretation] of Object.entries(thresholds)) {
+    const [min, max] = range.split('-').map(Number);
+    if (score >= min && score <= max) {
+      return interpretation;
+    }
+  }
+  return null;
+}
+
 module.exports = {
   leaderShipSurveyHandler,
   scoreSum,
@@ -234,4 +366,5 @@ module.exports = {
   scoreGrouped,
   scoreFormula,
   pairedOptions,
+  scorePairedOptions,
 };

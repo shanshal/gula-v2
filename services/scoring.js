@@ -33,8 +33,8 @@ const calculateSurveyScore = async (userId, surveyId) => {
       case 'grouped':
         result = protocoles.scoreGrouped(stringKeyResponses, scoring);
         break;
-    case 'paired-options':
-      result = protocoles.scoreGrouped(stringKeyResponses, scoring);
+      case 'paired-options':
+        result = protocoles.scorePairedOptions(stringKeyResponses, scoring);
         break;
       case 'formula':
         result = protocoles.scoreFormula(stringKeyResponses, scoring);
