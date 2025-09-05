@@ -29,8 +29,8 @@ const createSurvey = async (req, res) => {
 
 const updateSurvey = async (req, res) => {
   const id = parseInt(req.params.id);
-  const {name} = req.body;
-  await surveyModel.updateSurvey(name, id);
+  const {name, scoring, metadata, status} = req.body;
+  await surveyModel.updateSurvey({name, scoring, metadata, status}, id);
   res.status(200).send(`survey updated with id: ${id}`);
 };
 

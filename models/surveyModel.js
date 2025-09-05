@@ -295,8 +295,42 @@ const updateScoringWithQuestionIds = async (scoringConfig, questions) => {
   return updatedScoring;
 };
 
-const updateSurvey = async (name, id) => {
-  await pool.query(`UPDATE surveys SET name = $1 WHERE id = $2`, [name, id]);
+const updateSurvey = async (updateData, id) => {
+  const fields = [];
+  const values = [];
+  let paramIndex = 1;
+
+  if (updateData.name !== undefined) {
+    fields.push(`name = $${paramIndex}`);
+    values.push(updateData.name);
+    paramIndex++;
+  }
+
+  if (updateData.scoring !== undefined) {
+    fields.push(`scoring = $${paramIndex}`);
+    values.push(JSON.stringify(updateData.scoring));
+    paramIndex++;
+  }
+
+  if (updateData.metadata !== undefined) {
+    fields.push(`metadata = $${paramIndex}::jsonb`);
+    values.push(JSON.stringify(updateData.metadata));
+    paramIndex++;
+  }
+
+  if (updateData.status !== undefined) {
+    fields.push(`status = $${paramIndex}`);
+    values.push(updateData.status);
+    paramIndex++;
+  }
+
+  if (fields.length === 0) {
+    throw new Error('No fields to update');
+  }
+
+  values.push(id);
+  const query = `UPDATE surveys SET ${fields.join(', ')} WHERE id = $${paramIndex}`;
+  await pool.query(query, values);
 };
 
 const deleteSurvey = async (id) => {

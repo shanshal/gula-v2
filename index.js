@@ -45,6 +45,7 @@ app.get('/', (req, res) => {
 
 app.use('/users', userRoutes);
 app.use('/surveys', surveyRoutes);
+app.use('/questions', questionRoutes);
 app.use('/answers', answerRoutes);
 app.use('/scoring', scoringRoutes);
 
