@@ -22,14 +22,26 @@ const leaderShipSurveyHandler = (surveyAnswers) => {
   return { auth, demo, lais };
 };
 
-function scoreSum(responses, mappings = {}) {
+function scoreSum(responses, scoring = {}) {
+  const { mappings = {}, weight_overrides = {}, weights = {} } = scoring;
 
   // If no mappings provided, sum all response values directly
   if (!mappings || Object.keys(mappings).length === 0) {
     const values = Object.values(responses).filter(v => typeof v === 'number');
-    const total = values.reduce((a, b) => a + b, 0);
+    let total = 0;
+    const breakdown = {};
+    
+    for (const [qid, value] of Object.entries(responses)) {
+      if (typeof value === 'number') {
+        const weight = weight_overrides[qid.toString()] || weights[qid.toString()] || 1;
+        const weightedValue = value * weight;
+        total += weightedValue;
+        breakdown[qid.toString()] = { original: value, weighted: weightedValue, weight };
+      }
+    }
+    
     console.log('scoreSum - no mappings, total:', total);
-    return { score: total, total, breakdown: responses };
+    return { score: total, total, breakdown };
   }
 
   // Use mappings to transform response values
@@ -41,8 +53,15 @@ function scoreSum(responses, mappings = {}) {
     if (mappings[qidStr]) {
       const mappedValue = mappings[qidStr][responseValue.toString()];
       if (typeof mappedValue === 'number') {
-        total += mappedValue;
-        breakdown[qidStr] = { original: responseValue, mapped: mappedValue };
+        const weight = weight_overrides[qidStr] || weights[qidStr] || 1;
+        const weightedValue = mappedValue * weight;
+        total += weightedValue;
+        breakdown[qidStr] = { 
+          original: responseValue, 
+          mapped: mappedValue,
+          weight: weight,
+          weighted: weightedValue
+        };
       }
     }
   }
@@ -51,9 +70,11 @@ function scoreSum(responses, mappings = {}) {
   return { score: total, total, breakdown };
 }
 
-function scoreMixedSign(responses, mappings = {}) {
+function scoreMixedSign(responses, scoring = {}) {
+  const { mappings = {}, weight_overrides = {}, weights = {} } = scoring;
+  
   console.log('scoreMixedSign - responses:', responses);
-  console.log('scoreMixedSign - mappings:', mappings);
+  console.log('scoreMixedSign - scoring config:', scoring);
   
   let total = 0;
   const breakdown = {};
@@ -63,8 +84,15 @@ function scoreMixedSign(responses, mappings = {}) {
     if (mappings[qidStr]) {
       const mappedValue = mappings[qidStr][responseValue.toString()];
       if (typeof mappedValue === 'number') {
-        total += mappedValue;
-        breakdown[qidStr] = { original: responseValue, mapped: mappedValue };
+        const weight = weight_overrides[qidStr] || weights[qidStr] || 1;
+        const weightedValue = mappedValue * weight;
+        total += weightedValue;
+        breakdown[qidStr] = { 
+          original: responseValue, 
+          mapped: mappedValue,
+          weight: weight,
+          weighted: weightedValue
+        };
       }
     }
   }
@@ -198,24 +226,43 @@ function scoreFormula(responses, scoring) {
   console.log('scoreFormula - responses:', responses);
   console.log('scoreFormula - scoring config:', scoring);
   
-  const { mappings = {}, expression } = scoring || {};
+  const { mappings = {}, expression, weight_overrides = {}, weights = {} } = scoring || {};
   
-  // Map response values using mappings
+  // Map response values using mappings and apply weights
   const mappedValues = {};
+  const weightedValues = {};
+  const breakdown = {};
+  
   for (const [qid, responseValue] of Object.entries(responses)) {
     const qidStr = qid.toString();
+    let mappedValue;
+    
     if (mappings[qidStr]) {
-      const mappedValue = mappings[qidStr][responseValue.toString()];
-      mappedValues[qidStr] = typeof mappedValue === 'number' ? mappedValue : 0;
+      mappedValue = mappings[qidStr][responseValue.toString()];
+      mappedValue = typeof mappedValue === 'number' ? mappedValue : 0;
     } else {
       // If no mapping, use the response value directly
-      mappedValues[qidStr] = typeof responseValue === 'number' ? responseValue : 0;
+      mappedValue = typeof responseValue === 'number' ? responseValue : 0;
     }
+    
+    const weight = weight_overrides[qidStr] || weights[qidStr] || 1;
+    const weightedValue = mappedValue * weight;
+    
+    mappedValues[qidStr] = mappedValue;
+    weightedValues[qidStr] = weightedValue;
+    breakdown[qidStr] = {
+      original: responseValue,
+      mapped: mappedValue,
+      weight: weight,
+      weighted: weightedValue
+    };
   }
   
   console.log('scoreFormula - mapped values:', mappedValues);
+  console.log('scoreFormula - weighted values:', weightedValues);
   
-  const total = Number(evalWithVars(expression, mappedValues)) || 0;
+  // Use weighted values in the expression evaluation
+  const total = Number(evalWithVars(expression, weightedValues)) || 0;
   
   console.log('scoreFormula - final total:', total);
   
@@ -223,6 +270,8 @@ function scoreFormula(responses, scoring) {
     score: Number(total.toFixed(2)), 
     total: Number(total.toFixed(2)), 
     vars: mappedValues,
+    weightedVars: weightedValues,
+    breakdown: breakdown,
     expression: expression
   };
 }
@@ -246,7 +295,10 @@ function scorePairedOptions(responses, scoring) {
     groupScores[categoryName] = 0;
   });
   
-  // Process each response - simply count the selected groups
+  // Get weights configuration
+  const { weight_overrides = {}, weights = {} } = scoring;
+  
+  // Process each response - count the selected groups with weights
   const processedResponses = {};
   let validResponses = 0;
   
@@ -255,22 +307,28 @@ function scorePairedOptions(responses, scoring) {
     
     // Check if this is a valid group selection for this question
     if (mappings[qidStr] && mappings[qidStr][selectedGroup]) {
-      // Map the group letter to category and increment counter
+      // Map the group letter to category and apply weight
       const category = groupMapping[selectedGroup];
       if (category && groupScores.hasOwnProperty(category)) {
-        groupScores[category] += 1; // Always add 1 for each selection
+        const weight = weight_overrides[qidStr] || weights[qidStr] || 1;
+        const weightedScore = 1 * weight; // Base score is 1, multiplied by weight
+        groupScores[category] += weightedScore;
         validResponses++;
         
         processedResponses[qidStr] = {
           selectedGroup,
           category,
-          score: 1,
+          baseScore: 1,
+          weight: weight,
+          score: weightedScore,
           valid: true
         };
       } else {
         processedResponses[qidStr] = {
           selectedGroup,
           category: null,
+          baseScore: 0,
+          weight: 1,
           score: 0,
           valid: false,
           error: 'Unknown group mapping'
@@ -280,6 +338,8 @@ function scorePairedOptions(responses, scoring) {
       processedResponses[qidStr] = {
         selectedGroup,
         category: null,
+        baseScore: 0,
+        weight: 1,
         score: 0,
         valid: false,
         error: 'Invalid group for this question'

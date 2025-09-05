@@ -81,6 +81,7 @@ const createSurvey = async (data) => {
           help_text = null,
           question_route = null,
           flag = null,
+          weight = 1,
         } = q;
 
         // Use the array index + 1 as question_order if not provided
@@ -114,7 +115,8 @@ const createSurvey = async (data) => {
           ]
         );
 
-        questionResults.push(questionRes.rows[0]);
+        const questionWithWeight = { ...questionRes.rows[0], weight };
+        questionResults.push(questionWithWeight);
       }
 
       // Now update the scoring configuration to use the actual question IDs
@@ -193,6 +195,45 @@ const updateSumScoringWithQuestionIds = async (scoringConfig, questions) => {
       updatedMappings[questionId] = mapping;
     }
     updatedScoring.mappings = updatedMappings;
+  }
+
+  // Update weight_overrides to use actual question IDs
+  if (scoringConfig.weight_overrides) {
+    const updatedWeightOverrides = {};
+    for (const [questionKey, weight] of Object.entries(scoringConfig.weight_overrides)) {
+      let questionId;
+      
+      // Check if the key is a question order or question ID
+      if (orderToIdMap[questionKey] !== undefined) {
+        // It's a question order, convert to question ID
+        questionId = orderToIdMap[questionKey];
+      } else if (idToOrderMap[questionKey] !== undefined) {
+        // It's already a question ID, keep as is
+        questionId = questionKey;
+      } else {
+        // Unknown format, keep as is
+        questionId = questionKey;
+      }
+      
+      updatedWeightOverrides[questionId] = weight;
+    }
+    updatedScoring.weight_overrides = updatedWeightOverrides;
+  }
+
+  // Extract weights from question objects and add to scoring config
+  const questionWeights = {};
+  questions.forEach(q => {
+    if (q.weight && q.weight !== 1) {
+      questionWeights[q.id.toString()] = q.weight;
+    }
+  });
+  
+  // Merge question weights with any existing weights, with weight_overrides taking precedence
+  if (Object.keys(questionWeights).length > 0) {
+    updatedScoring.weights = {
+      ...questionWeights,
+      ...updatedScoring.weights
+    };
   }
 
   return updatedScoring;
@@ -290,6 +331,45 @@ const updateScoringWithQuestionIds = async (scoringConfig, questions) => {
       }
       updatedScoring.expression = updatedExpression;
     }
+  }
+
+  // Handle weight_overrides for all scoring types
+  if (scoringConfig.weight_overrides) {
+    const updatedWeightOverrides = {};
+    for (const [questionKey, weight] of Object.entries(scoringConfig.weight_overrides)) {
+      let questionId;
+      
+      // Check if the key is a question order or question ID
+      if (orderToIdMap[questionKey] !== undefined) {
+        // It's a question order, convert to question ID
+        questionId = orderToIdMap[questionKey];
+      } else if (idToOrderMap[questionKey] !== undefined) {
+        // It's already a question ID, keep as is
+        questionId = questionKey;
+      } else {
+        // Unknown format, keep as is
+        questionId = questionKey;
+      }
+      
+      updatedWeightOverrides[questionId] = weight;
+    }
+    updatedScoring.weight_overrides = updatedWeightOverrides;
+  }
+
+  // Extract weights from question objects and add to scoring config
+  const questionWeights = {};
+  questions.forEach(q => {
+    if (q.weight && q.weight !== 1) {
+      questionWeights[q.id.toString()] = q.weight;
+    }
+  });
+  
+  // Merge question weights with any existing weights, with weight_overrides taking precedence
+  if (Object.keys(questionWeights).length > 0) {
+    updatedScoring.weights = {
+      ...questionWeights,
+      ...updatedScoring.weights
+    };
   }
 
   return updatedScoring;

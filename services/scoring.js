@@ -40,11 +40,11 @@ const calculateSurveyScore = async (userId, surveyId) => {
         result = protocoles.scoreFormula(stringKeyResponses, scoring);
         break;
       case 'mixed_sign':
-        result = protocoles.scoreMixedSign(stringKeyResponses, scoring.mappings || {});
+        result = protocoles.scoreMixedSign(stringKeyResponses, scoring);
         break;
       case 'sum':
       default:
-        result = protocoles.scoreSum(stringKeyResponses, scoring.mappings || {});
+        result = protocoles.scoreSum(stringKeyResponses, scoring);
         break;
     }
 
