@@ -196,11 +196,15 @@ function evalWithVars(expression, vars, questionOrderMap = null) {
       }
     }
     
-    // Then handle direct variable references (question IDs)
-    for (const [varName, value] of Object.entries(vars)) {
-      // Make sure we replace whole variable names, not partial matches
-      const regex = new RegExp(`\\b${varName}\\b`, 'g');
-      evaluableExpression = evaluableExpression.replace(regex, value);
+    // Skip direct variable replacement when using question order mapping
+    // The Q variables should have already been replaced above
+    if (!questionOrderMap) {
+      // Only do direct variable replacement if not using Q variables
+      for (const [varName, value] of Object.entries(vars)) {
+        // Make sure we replace whole variable names, not partial matches
+        const regex = new RegExp(`\\b${varName}\\b`, 'g');
+        evaluableExpression = evaluableExpression.replace(regex, value);
+      }
     }
     
     console.log('Expression after variable substitution:', evaluableExpression);
