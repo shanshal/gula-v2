@@ -170,16 +170,33 @@ function scoreGrouped(responses, scoring) {
   };
 }
 
-// Improved expression evaluator
-function evalWithVars(expression, vars) {
+// Improved expression evaluator with question order support
+function evalWithVars(expression, vars, questionOrderMap = null) {
   if (!expression || typeof expression !== 'string') return 0;
   
   try {
     console.log('Evaluating expression:', expression);
     console.log('With variables:', vars);
+    console.log('With question order map:', questionOrderMap);
     
-    // Replace variable references in the expression with their values
     let evaluableExpression = expression;
+    
+    // First, handle Q1, Q2, etc. variables if questionOrderMap is provided
+    if (questionOrderMap) {
+      // Replace Q1, Q2, etc. with actual question IDs
+      for (const [questionOrder, questionId] of Object.entries(questionOrderMap)) {
+        const qVariable = `Q${questionOrder}`;
+        const questionIdStr = questionId.toString();
+        
+        if (vars[questionIdStr] !== undefined) {
+          const regex = new RegExp(`\\b${qVariable}\\b`, 'g');
+          evaluableExpression = evaluableExpression.replace(regex, vars[questionIdStr]);
+          console.log(`Replaced ${qVariable} with ${vars[questionIdStr]} (from question ID ${questionIdStr})`);
+        }
+      }
+    }
+    
+    // Then handle direct variable references (question IDs)
     for (const [varName, value] of Object.entries(vars)) {
       // Make sure we replace whole variable names, not partial matches
       const regex = new RegExp(`\\b${varName}\\b`, 'g');
@@ -222,9 +239,10 @@ function pairedOptions(responses, groupsMapping) {
 }
 
 
-function scoreFormula(responses, scoring) {
+function scoreFormula(responses, scoring, questionOrderMap = null) {
   console.log('scoreFormula - responses:', responses);
   console.log('scoreFormula - scoring config:', scoring);
+  console.log('scoreFormula - questionOrderMap:', questionOrderMap);
   
   const { mappings = {}, expression, weight_overrides = {}, weights = {} } = scoring || {};
   
@@ -241,8 +259,8 @@ function scoreFormula(responses, scoring) {
       mappedValue = mappings[qidStr][responseValue.toString()];
       mappedValue = typeof mappedValue === 'number' ? mappedValue : 0;
     } else {
-      // If no mapping, use the response value directly
-      mappedValue = typeof responseValue === 'number' ? responseValue : 0;
+      // If no mapping, use the response value directly (convert string to number if needed)
+      mappedValue = typeof responseValue === 'number' ? responseValue : parseFloat(responseValue) || 0;
     }
     
     const weight = weight_overrides[qidStr] || weights[qidStr] || 1;
@@ -261,8 +279,8 @@ function scoreFormula(responses, scoring) {
   console.log('scoreFormula - mapped values:', mappedValues);
   console.log('scoreFormula - weighted values:', weightedValues);
   
-  // Use weighted values in the expression evaluation
-  const total = Number(evalWithVars(expression, weightedValues)) || 0;
+  // Use weighted values in the expression evaluation with question order mapping
+  const total = Number(evalWithVars(expression, weightedValues, questionOrderMap)) || 0;
   
   console.log('scoreFormula - final total:', total);
   

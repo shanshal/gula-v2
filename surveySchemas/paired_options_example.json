@@ -1,0 +1,148 @@
+{
+  "name": "Love Languages Assessment",
+  "metadata": {
+    "version": "1.0",
+    "category": "psychology",
+    "language": "en",
+    "created_by": "Relationship Counselor",
+    "description": "Discover your primary love language through paired-choice questions",
+    "estimated_time": "8-10 minutes",
+    "target_audience": "couples"
+  },
+  "status": "draft",
+  "questions": [
+    {
+      "question_text": "Choose the statement that resonates more with you:",
+      "question_type": "paired-options",
+      "question_order": 1,
+      "weight": 1,
+      "is_required": true,
+      "options": [
+        {
+          "text": "I love hearing 'I love you' and other affirming words",
+          "group": "A"
+        },
+        {
+          "text": "I love receiving unexpected hugs and physical affection",
+          "group": "E"
+        }
+      ]
+    },
+    {
+      "question_text": "Choose the statement that resonates more with you:",
+      "question_type": "paired-options",
+      "question_order": 2,
+      "weight": 1,
+      "is_required": true,
+      "options": [
+        {
+          "text": "I feel loved when we spend uninterrupted time together",
+          "group": "B"
+        },
+        {
+          "text": "I feel loved when my partner helps me with tasks",
+          "group": "D"
+        }
+      ]
+    },
+    {
+      "question_text": "Choose the statement that resonates more with you:",
+      "question_type": "paired-options",
+      "question_order": 3,
+      "weight": 1,
+      "is_required": true,
+      "options": [
+        {
+          "text": "I appreciate thoughtful gifts, even small ones",
+          "group": "C"
+        },
+        {
+          "text": "I prefer quality conversations over material things",
+          "group": "B"
+        }
+      ]
+    },
+    {
+      "question_text": "Choose the statement that resonates more with you:",
+      "question_type": "paired-options",
+      "question_order": 4,
+      "weight": 1,
+      "is_required": true,
+      "options": [
+        {
+          "text": "Actions speak louder than words to me",
+          "group": "D"
+        },
+        {
+          "text": "Physical touch makes me feel most connected",
+          "group": "E"
+        }
+      ]
+    },
+    {
+      "question_text": "Choose the statement that resonates more with you:",
+      "question_type": "paired-options",
+      "question_order": 5,
+      "weight": 1,
+      "is_required": true,
+      "options": [
+        {
+          "text": "I treasure meaningful gifts as symbols of love",
+          "group": "C"
+        },
+        {
+          "text": "I value encouraging words and compliments",
+          "group": "A"
+        }
+      ]
+    }
+  ],
+  "scoring": {
+    "type": "paired-options",
+    "groups": {
+      "words_of_affirmation": ["1", "5"],
+      "quality_time": ["2", "3"],
+      "receiving_gifts": ["3", "5"],
+      "acts_of_service": ["2", "4"],
+      "physical_touch": ["1", "4"]
+    },
+    "mappings": {
+      "1": {"A": 1, "E": 1},
+      "2": {"B": 1, "D": 1},
+      "3": {"C": 1, "B": 1},
+      "4": {"D": 1, "E": 1},
+      "5": {"C": 1, "A": 1}
+    },
+    "group_mapping": {
+      "A": "words_of_affirmation",
+      "B": "quality_time",
+      "C": "receiving_gifts",
+      "D": "acts_of_service",
+      "E": "physical_touch"
+    },
+    "thresholds": {
+      "words_of_affirmation": {
+        "0-1": "Not your primary love language",
+        "2": "Your primary love language"
+      },
+      "quality_time": {
+        "0-1": "Not your primary love language",
+        "2": "Your primary love language"
+      },
+      "receiving_gifts": {
+        "0-1": "Not your primary love language",
+        "2": "Your primary love language"
+      },
+      "acts_of_service": {
+        "0-1": "Not your primary love language",
+        "2": "Your primary love language"
+      },
+      "physical_touch": {
+        "0-1": "Not your primary love language",
+        "2": "Your primary love language"
+      }
+    },
+    "group_aggregate": "sum",
+    "description": "Each question presents two options from different love language categories. The category with the highest score is your primary love language."
+  }
+}

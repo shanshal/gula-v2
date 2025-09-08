@@ -1,0 +1,111 @@
+{
+  "name": "Leadership Style Assessment",
+  "metadata": {
+    "version": "1.0",
+    "category": "assessment",
+    "language": "en",
+    "created_by": "HR Department",
+    "description": "Assess leadership tendencies across three styles using grouped scoring",
+    "estimated_time": "10-12 minutes",
+    "target_audience": "managers"
+  },
+  "status": "draft",
+  "questions": [
+    {
+      "question_text": "I prefer to make decisions quickly without extensive consultation",
+      "question_type": "scale",
+      "question_order": 1,
+      "weight": 1,
+      "is_required": true,
+      "min_value": 1,
+      "max_value": 5,
+      "help_text": "1 = Strongly Disagree, 5 = Strongly Agree"
+    },
+    {
+      "question_text": "Team input is essential for effective decision-making",
+      "question_type": "scale",
+      "question_order": 2,
+      "weight": 1,
+      "is_required": true,
+      "min_value": 1,
+      "max_value": 5,
+      "help_text": "1 = Strongly Disagree, 5 = Strongly Agree"
+    },
+    {
+      "question_text": "I believe team members work best with minimal supervision",
+      "question_type": "scale",
+      "question_order": 3,
+      "weight": 1,
+      "is_required": true,
+      "min_value": 1,
+      "max_value": 5,
+      "help_text": "1 = Strongly Disagree, 5 = Strongly Agree"
+    },
+    {
+      "question_text": "Clear rules and procedures are essential for team success",
+      "question_type": "scale",
+      "question_order": 4,
+      "weight": 1,
+      "is_required": true,
+      "min_value": 1,
+      "max_value": 5,
+      "help_text": "1 = Strongly Disagree, 5 = Strongly Agree"
+    },
+    {
+      "question_text": "I encourage team collaboration in problem-solving",
+      "question_type": "scale",
+      "question_order": 5,
+      "weight": 1,
+      "is_required": true,
+      "min_value": 1,
+      "max_value": 5,
+      "help_text": "1 = Strongly Disagree, 5 = Strongly Agree"
+    },
+    {
+      "question_text": "Team members should have freedom to choose their approach",
+      "question_type": "scale",
+      "question_order": 6,
+      "weight": 1,
+      "is_required": true,
+      "min_value": 1,
+      "max_value": 5,
+      "help_text": "1 = Strongly Disagree, 5 = Strongly Agree"
+    }
+  ],
+  "scoring": {
+    "type": "grouped",
+    "groups": {
+      "authoritarian": ["1", "4"],
+      "democratic": ["2", "5"],
+      "laissez_faire": ["3", "6"]
+    },
+    "mappings": {
+      "*": {
+        "1": 1,
+        "2": 2,
+        "3": 3,
+        "4": 4,
+        "5": 5
+      }
+    },
+    "group_aggregate": "sum",
+    "thresholds": {
+      "authoritarian": {
+        "2-4": "Low authoritarian tendency",
+        "5-7": "Moderate authoritarian tendency",
+        "8-10": "High authoritarian tendency"
+      },
+      "democratic": {
+        "2-4": "Low democratic tendency",
+        "5-7": "Moderate democratic tendency",
+        "8-10": "High democratic tendency"
+      },
+      "laissez_faire": {
+        "2-4": "Low laissez-faire tendency",
+        "5-7": "Moderate laissez-faire tendency",
+        "8-10": "High laissez-faire tendency"
+      }
+    },
+    "description": "Groups questions into leadership styles and scores each group separately. Highest scoring group indicates dominant leadership style."
+  }
+}

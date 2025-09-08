@@ -1,0 +1,109 @@
+{
+  "name": "Optimism vs Pessimism Scale",
+  "metadata": {
+    "version": "1.0",
+    "category": "psychology",
+    "language": "en",
+    "created_by": "Clinical Psychologist",
+    "description": "Measure optimistic and pessimistic tendencies with positive and negative scoring",
+    "estimated_time": "5-8 minutes",
+    "target_audience": "adults"
+  },
+  "status": "draft",
+  "questions": [
+    {
+      "question_text": "I usually expect the best outcome in uncertain situations",
+      "question_type": "multiple_choice",
+      "question_order": 1,
+      "weight": 1,
+      "is_required": true,
+      "options": ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
+      "help_text": "Rate how much you agree with this optimistic statement"
+    },
+    {
+      "question_text": "When things go wrong, I tend to assume they'll keep getting worse",
+      "question_type": "multiple_choice",
+      "question_order": 2,
+      "weight": 1,
+      "is_required": true,
+      "options": ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
+      "help_text": "Rate how much you agree with this pessimistic statement"
+    },
+    {
+      "question_text": "I believe that good things will happen to me in the future",
+      "question_type": "multiple_choice",
+      "question_order": 3,
+      "weight": 1,
+      "is_required": true,
+      "options": ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
+      "help_text": "Rate how much you agree with this optimistic statement"
+    },
+    {
+      "question_text": "I often worry that things will turn out badly",
+      "question_type": "multiple_choice",
+      "question_order": 4,
+      "weight": 1,
+      "is_required": true,
+      "options": ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
+      "help_text": "Rate how much you agree with this pessimistic statement"
+    },
+    {
+      "question_text": "I generally look forward to new experiences",
+      "question_type": "multiple_choice",
+      "question_order": 5,
+      "weight": 1,
+      "is_required": true,
+      "options": ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
+      "help_text": "Rate how much you agree with this optimistic statement"
+    }
+  ],
+  "scoring": {
+    "type": "mixed_sign",
+    "mappings": {
+      "1": {
+        "Strongly Disagree": -2,
+        "Disagree": -1,
+        "Neutral": 0,
+        "Agree": 1,
+        "Strongly Agree": 2
+      },
+      "2": {
+        "Strongly Disagree": 2,
+        "Disagree": 1,
+        "Neutral": 0,
+        "Agree": -1,
+        "Strongly Agree": -2
+      },
+      "3": {
+        "Strongly Disagree": -2,
+        "Disagree": -1,
+        "Neutral": 0,
+        "Agree": 1,
+        "Strongly Agree": 2
+      },
+      "4": {
+        "Strongly Disagree": 2,
+        "Disagree": 1,
+        "Neutral": 0,
+        "Agree": -1,
+        "Strongly Agree": -2
+      },
+      "5": {
+        "Strongly Disagree": -2,
+        "Disagree": -1,
+        "Neutral": 0,
+        "Agree": 1,
+        "Strongly Agree": 2
+      }
+    },
+    "thresholds": {
+      "-10--6": "Strong pessimistic tendency",
+      "-5--2": "Mild pessimistic tendency", 
+      "-1-1": "Balanced outlook",
+      "2-5": "Mild optimistic tendency",
+      "6-10": "Strong optimistic tendency"
+    },
+    "max_score": 10,
+    "description": "Measures optimism vs pessimism using mixed positive/negative scoring. Optimistic statements (Q1, Q3, Q5) score positively when agreed with. Pessimistic statements (Q2, Q4) are reverse-scored - disagreeing gives positive points."
+  }
+}

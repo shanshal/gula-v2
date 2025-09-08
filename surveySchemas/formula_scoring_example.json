@@ -1,0 +1,78 @@
+{
+  "name": "Wellness Score Calculator",
+  "metadata": {
+    "version": "1.0",
+    "category": "health",
+    "language": "en",
+    "created_by": "Wellness Coach",
+    "description": "Calculate overall wellness using custom formula with Q variables",
+    "estimated_time": "5-7 minutes",
+    "target_audience": "general"
+  },
+  "status": "draft",
+  "questions": [
+    {
+      "question_text": "Rate your energy level today (1-10)",
+      "question_type": "number",
+      "question_order": 1,
+      "weight": 1,
+      "is_required": true,
+      "min_value": 1,
+      "max_value": 10,
+      "help_text": "1 = Very low energy, 10 = Very high energy"
+    },
+    {
+      "question_text": "Rate your mood today (1-10)",
+      "question_type": "number",
+      "question_order": 2,
+      "weight": 1,
+      "is_required": true,
+      "min_value": 1,
+      "max_value": 10,
+      "help_text": "1 = Very poor mood, 10 = Excellent mood"
+    },
+    {
+      "question_text": "How many hours did you sleep last night?",
+      "question_type": "number",
+      "question_order": 3,
+      "weight": 1,
+      "is_required": true,
+      "min_value": 0,
+      "max_value": 24,
+      "help_text": "Enter total hours of sleep"
+    },
+    {
+      "question_text": "Rate your stress level today (1-10)",
+      "question_type": "number",
+      "question_order": 4,
+      "weight": 1,
+      "is_required": true,
+      "min_value": 1,
+      "max_value": 10,
+      "help_text": "1 = No stress, 10 = Extremely stressed"
+    },
+    {
+      "question_text": "How many minutes of exercise did you get today?",
+      "question_type": "number",
+      "question_order": 5,
+      "weight": 1,
+      "is_required": true,
+      "min_value": 0,
+      "max_value": 480,
+      "help_text": "Include walking, sports, gym, etc."
+    }
+  ],
+  "scoring": {
+    "type": "formula",
+    "expression": "(Q1 + Q2) * 0.3 + Q3 * 0.15 + (11 - Q4) * 0.2 + Q5 * 0.02",
+    "thresholds": {
+      "0-3": "Poor wellness - consider lifestyle changes",
+      "3-5": "Fair wellness - room for improvement",
+      "5-7": "Good wellness - on the right track",
+      "7-8": "Very good wellness - keep it up!",
+      "8-10": "Excellent wellness - optimal health!"
+    },
+    "max_score": 10,
+    "description": "Wellness formula: (Energy + Mood) × 0.3 + Sleep × 0.15 + Inverted Stress × 0.2 + Exercise × 0.02. Stress is inverted (11 - stress) so low stress contributes more to wellness."
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "name": "Customer Satisfaction Survey",
+  "metadata": {
+    "version": "1.0",
+    "category": "feedback",
+    "language": "en",
+    "created_by": "Customer Service Team",
+    "description": "Basic customer satisfaction survey using sum scoring",
+    "estimated_time": "3-5 minutes",
+    "target_audience": "customers"
+  },
+  "status": "draft",
+  "questions": [
+    {
+      "question_text": "How satisfied are you with our product quality?",
+      "question_type": "multiple_choice",
+      "question_order": 1,
+      "weight": 2,
+      "is_required": true,
+      "options": ["Very Dissatisfied", "Dissatisfied", "Neutral", "Satisfied", "Very Satisfied"]
+    },
+    {
+      "question_text": "How would you rate our customer service?",
+      "question_type": "multiple_choice",
+      "question_order": 2,
+      "weight": 1.5,
+      "is_required": true,
+      "options": ["Poor", "Fair", "Good", "Very Good", "Excellent"]
+    },
+    {
+      "question_text": "How likely are you to recommend us? (1-10)",
+      "question_type": "scale",
+      "question_order": 3,
+      "weight": 1,
+      "is_required": true,
+      "min_value": 1,
+      "max_value": 10,
+      "help_text": "1 = Not likely at all, 10 = Extremely likely"
+    }
+  ],
+  "scoring": {
+    "type": "sum",
+    "mappings": {
+      "1": {
+        "Very Dissatisfied": 1,
+        "Dissatisfied": 2,
+        "Neutral": 3,
+        "Satisfied": 4,
+        "Very Satisfied": 5
+      },
+      "2": {
+        "Poor": 1,
+        "Fair": 2,
+        "Good": 3,
+        "Very Good": 4,
+        "Excellent": 5
+      }
+    },
+    "weight_overrides": {
+      "1": 2,
+      "2": 1.5
+    },
+    "thresholds": {
+      "3-8": "Poor satisfaction - needs immediate attention",
+      "9-15": "Fair satisfaction - room for improvement",
+      "16-22": "Good satisfaction - meeting expectations",
+      "23-30": "Excellent satisfaction - exceeding expectations"
+    },
+    "max_score": 30,
+    "description": "Sum of weighted scores: Product Quality (weight 2) + Service (weight 1.5) + Recommendation (weight 1)"
+  }
+}

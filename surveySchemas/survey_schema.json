@@ -1,0 +1,241 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Gula Survey Schema",
+  "description": "JSON Schema for Gula Survey Management Service based on PostgreSQL database structure",
+  "type": "object",
+  "required": ["name", "questions"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Survey name (stored in surveys.name)",
+      "minLength": 1,
+      "examples": ["Customer Satisfaction Survey", "Mental Health Assessment"]
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Flexible metadata stored as JSONB (surveys.metadata)",
+      "properties": {
+        "version": {"type": "string", "examples": ["1.0", "2.1"]},
+        "category": {"type": "string", "examples": ["mental_health", "feedback", "assessment"]},
+        "language": {"type": "string", "examples": ["en", "ar", "es", "fr"]},
+        "created_by": {"type": "string", "examples": ["Healthcare Provider", "Research Team"]},
+        "description": {"type": "string"},
+        "instructions": {"type": "string"},
+        "estimated_time": {"type": "string", "examples": ["5-10 minutes", "15 minutes"]},
+        "target_audience": {"type": "string", "examples": ["general", "adults", "healthcare_workers"]}
+      },
+      "additionalProperties": true
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "published", "archived"],
+      "description": "Survey status with database constraint (surveys.status)",
+      "default": "draft"
+    },
+    "questions": {
+      "type": "array",
+      "description": "Array of survey questions",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["question_text", "question_type"],
+        "properties": {
+          "question_text": {
+            "type": "string",
+            "description": "The question text (questions.question_text - NOT NULL)",
+            "minLength": 1
+          },
+          "question_type": {
+            "type": "string",
+            "enum": ["multiple_choice", "single_choice", "text", "number", "boolean", "scale", "radio", "checkbox", "paired-options"],
+            "description": "Question input type (questions.question_type - NOT NULL)"
+          },
+          "question_order": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Question order (questions.question_order - auto-assigned if not provided)"
+          },
+          "is_required": {
+            "type": "boolean",
+            "description": "Whether question is required (questions.is_required - DEFAULT FALSE)",
+            "default": false
+          },
+          "options": {
+            "oneOf": [
+              {
+                "type": "array",
+                "description": "Standard options for choice questions",
+                "items": {"type": "string"},
+                "examples": [["Yes", "No"], ["Excellent", "Good", "Fair", "Poor"]]
+              },
+              {
+                "type": "array",
+                "description": "Paired options for love languages style questions",
+                "items": {
+                  "type": "object",
+                  "required": ["text", "group"],
+                  "properties": {
+                    "text": {"type": "string"},
+                    "group": {"type": "string"}
+                  }
+                }
+              },
+              {
+                "type": "null",
+                "description": "No options for text/number/scale questions"
+              }
+            ]
+          },
+          "min_value": {
+            "type": ["number", "null"],
+            "description": "Minimum value for numeric questions (questions.min_value - NUMERIC)"
+          },
+          "max_value": {
+            "type": ["number", "null"],
+            "description": "Maximum value for numeric questions (questions.max_value - NUMERIC)"
+          },
+          "placeholder": {
+            "type": ["string", "null"],
+            "description": "Input placeholder text (questions.placeholder)"
+          },
+          "help_text": {
+            "type": ["string", "null"],
+            "description": "Additional help text (questions.help_text)"
+          },
+          "question_route": {
+            "type": ["string", "null"],
+            "description": "Conditional routing logic (questions.question_route)"
+          },
+          "flag": {
+            "type": ["string", "null"],
+            "description": "Special flags or markers (questions.flag)"
+          },
+          "weight": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Question weight for scoring (not stored in DB, used during processing)",
+            "default": 1
+          }
+        }
+      }
+    },
+    "scoring": {
+      "type": "object",
+      "description": "Scoring configuration stored as JSONB (surveys.scoring)",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["sum", "grouped", "paired-options", "formula", "mixed_sign"],
+          "description": "Scoring algorithm type"
+        },
+        "expression": {
+          "type": "string",
+          "description": "Mathematical formula for formula scoring (use Q1, Q2, etc.)",
+          "examples": ["Q1 + Q2 + Q3", "(Q1 + Q2) * 0.4 + Q3 * 0.1 - Q4 * 0.2"]
+        },
+        "mappings": {
+          "type": "object",
+          "description": "Maps answer text to numeric scores by question ID",
+          "patternProperties": {
+            "^[0-9]+$|^\\*$": {
+              "type": "object",
+              "description": "Question ID (or '*' for all) with answer mappings",
+              "examples": [
+                {"yes": 1, "no": 0},
+                {"excellent": 4, "good": 3, "fair": 2, "poor": 1}
+              ]
+            }
+          }
+        },
+        "groups": {
+          "type": "object",
+          "description": "Question groups for grouped scoring",
+          "patternProperties": {
+            "^[a-zA-Z_]+$": {
+              "type": "array",
+              "items": {"type": "string"},
+              "description": "Array of question IDs in this group"
+            }
+          }
+        },
+        "group_mapping": {
+          "type": "object",
+          "description": "Maps option values to group names (paired-options)",
+          "examples": [{"A": "words_of_affirmation", "B": "quality_time"}]
+        },
+        "group_aggregate": {
+          "type": "string",
+          "enum": ["sum", "average", "max", "min"],
+          "description": "How to aggregate scores within groups",
+          "default": "sum"
+        },
+        "weights": {
+          "type": "object",
+          "description": "Default weights by question order",
+          "patternProperties": {
+            "^[0-9]+$": {"type": "number", "minimum": 0}
+          }
+        },
+        "weight_overrides": {
+          "type": "object",
+          "description": "Override weights by question ID (takes priority)",
+          "patternProperties": {
+            "^[0-9]+$": {"type": "number", "minimum": 0}
+          }
+        },
+        "thresholds": {
+          "oneOf": [
+            {
+              "type": "object",
+              "description": "Simple score range interpretations",
+              "patternProperties": {
+                "^[0-9]+-[0-9]+$|^[0-9]+$": {"type": "string"}
+              }
+            },
+            {
+              "type": "object",
+              "description": "Grouped thresholds for grouped scoring",
+              "patternProperties": {
+                "^[a-zA-Z_]+$": {
+                  "type": "object",
+                  "patternProperties": {
+                    "^[0-9]+-[0-9]+$": {"type": "string"}
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "max_score": {
+          "type": "number",
+          "description": "Maximum possible score"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of scoring methodology"
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "name": "Basic Satisfaction Survey",
+      "status": "draft",
+      "questions": [
+        {
+          "question_text": "How satisfied are you?",
+          "question_type": "multiple_choice",
+          "question_order": 1,
+          "options": ["Very Satisfied", "Satisfied", "Neutral", "Dissatisfied"]
+        }
+      ],
+      "scoring": {
+        "type": "sum",
+        "mappings": {
+          "1": {"Very Satisfied": 4, "Satisfied": 3, "Neutral": 2, "Dissatisfied": 1}
+        }
+      }
+    }
+  ]
+}

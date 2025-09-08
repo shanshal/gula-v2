@@ -18,6 +18,14 @@ const calculateSurveyScore = async (userId, surveyId) => {
       stringKeyResponses[questionId.toString()] = value;
     }
 
+    // Build question order map for formula expressions (Q1 -> question_id)
+    const questionOrderMap = {};
+    if (surveyJSON.questions) {
+      for (const question of surveyJSON.questions) {
+        questionOrderMap[question.question_order] = question.id;
+      }
+    }
+
     // Ensure scoring is an object
     let scoring = surveyJSON.survey.scoring;
     if (!scoring || typeof scoring === 'string') {
@@ -27,6 +35,7 @@ const calculateSurveyScore = async (userId, surveyId) => {
     console.log('Survey ID:', surveyId);
     console.log('Scoring config:', JSON.stringify(scoring, null, 2));
     console.log('Responses:', stringKeyResponses);
+    console.log('Question order map:', questionOrderMap);
 
     let result;
     switch (scoring.type) {
@@ -37,7 +46,7 @@ const calculateSurveyScore = async (userId, surveyId) => {
         result = protocoles.scorePairedOptions(stringKeyResponses, scoring);
         break;
       case 'formula':
-        result = protocoles.scoreFormula(stringKeyResponses, scoring);
+        result = protocoles.scoreFormula(stringKeyResponses, scoring, questionOrderMap);
         break;
       case 'mixed_sign':
         result = protocoles.scoreMixedSign(stringKeyResponses, scoring);
