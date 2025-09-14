@@ -23,7 +23,7 @@ const leaderShipSurveyHandler = (surveyAnswers) => {
 };
 
 function scoreSum(responses, scoring = {}) {
-  const { mappings = {}, weight_overrides = {}, weights = {}, thresholds = {} } = scoring;
+  const { mappings = {}, weight_overrides = {}, weights = {}, thresholds = {}, interpretations } = scoring;
 
   // If no mappings provided, sum all response values directly
   if (!mappings || Object.keys(mappings).length === 0) {
@@ -42,15 +42,16 @@ function scoreSum(responses, scoring = {}) {
     
     console.log('scoreSum - no mappings, total:', total);
     
-    // Apply thresholds
-    const interpretation = getThresholdInterpretation(total, thresholds);
+    // Use new interpretations or fall back to legacy thresholds
+    const interpretation = getInterpretation(total, interpretations, thresholds);
     const thresholdData = getThresholdData(total, thresholds);
     
     return { 
       score: total, 
       total, 
       breakdown,
-      interpretation,
+      interpretation: interpretation?.description || getThresholdInterpretation(total, thresholds),
+      interpretationData: interpretation,
       threshold: thresholdData
     };
   }
@@ -79,21 +80,22 @@ function scoreSum(responses, scoring = {}) {
   
   console.log('scoreSum - with mappings, total:', total);
   
-  // Apply thresholds
-  const interpretation = getThresholdInterpretation(total, thresholds);
+  // Use new interpretations or fall back to legacy thresholds
+  const interpretation = getInterpretation(total, interpretations, thresholds);
   const thresholdData = getThresholdData(total, thresholds);
   
   return { 
     score: total, 
     total, 
     breakdown,
-    interpretation,
+    interpretation: interpretation?.description || getThresholdInterpretation(total, thresholds),
+    interpretationData: interpretation,
     threshold: thresholdData
   };
 }
 
 function scoreMixedSign(responses, scoring = {}) {
-  const { mappings = {}, weight_overrides = {}, weights = {}, thresholds = {} } = scoring;
+  const { mappings = {}, weight_overrides = {}, weights = {}, thresholds = {}, interpretations } = scoring;
   
   console.log('scoreMixedSign - responses:', responses);
   console.log('scoreMixedSign - scoring config:', scoring);
@@ -121,15 +123,16 @@ function scoreMixedSign(responses, scoring = {}) {
   
   console.log('scoreMixedSign - total:', total);
   
-  // Apply thresholds
-  const interpretation = getThresholdInterpretation(total, thresholds);
+  // Use new interpretations or fall back to legacy thresholds
+  const interpretation = getInterpretation(total, interpretations, thresholds);
   const thresholdData = getThresholdData(total, thresholds);
   
   return { 
     score: total, 
     total, 
     breakdown,
-    interpretation,
+    interpretation: interpretation?.description || getThresholdInterpretation(total, thresholds),
+    interpretationData: interpretation,
     threshold: thresholdData
   };
 }
@@ -138,7 +141,7 @@ function scoreGrouped(responses, scoring) {
   console.log('scoreGrouped - responses:', responses);
   console.log('scoreGrouped - scoring config:', scoring);
   
-  const { mappings = {}, groups = {}, group_aggregate = 'sum', weights = {}, thresholds = {} } = scoring || {};
+  const { mappings = {}, groups = {}, group_aggregate = 'sum', weights = {}, thresholds = {}, interpretations } = scoring || {};
   
   // First, map each response value using the mappings
   const mappedValues = {};
@@ -169,6 +172,7 @@ function scoreGrouped(responses, scoring) {
   // Then calculate group scores
   const perGroup = {};
   const groupThresholds = {};
+  const groupInterpretations = {};
   
   for (const [groupName, questionIds] of Object.entries(groups)) {
     const groupValues = questionIds
@@ -191,13 +195,20 @@ function scoreGrouped(responses, scoring) {
     
     perGroup[groupName] = Number(groupScore.toFixed(2));
     
-    // Apply thresholds for this group
+    // Use new interpretations or fall back to legacy thresholds for this group
+    const groupInterpretationArray = interpretations && typeof interpretations === 'object' ? interpretations[groupName] : null;
     const groupThreshold = thresholds[groupName];
+    
+    const interpretation = getInterpretation(groupScore, groupInterpretationArray, groupThreshold);
+    const thresholdData = getThresholdData(groupScore, groupThreshold);
+    
+    if (interpretation) {
+      groupInterpretations[groupName] = interpretation;
+    }
+    
     if (groupThreshold) {
-      const interpretation = getThresholdInterpretation(groupScore, groupThreshold);
-      const thresholdData = getThresholdData(groupScore, groupThreshold);
       groupThresholds[groupName] = {
-        interpretation,
+        interpretation: interpretation?.description || getThresholdInterpretation(groupScore, groupThreshold),
         threshold: thresholdData
       };
     }
@@ -205,8 +216,9 @@ function scoreGrouped(responses, scoring) {
 
   const total = Object.values(perGroup).reduce((a, b) => a + b, 0);
   
-  // Apply overall thresholds if they exist
-  const overallInterpretation = getThresholdInterpretation(total, thresholds.overall || thresholds);
+  // Apply overall interpretations/thresholds if they exist
+  const overallInterpretationArray = Array.isArray(interpretations) ? interpretations : null;
+  const overallInterpretation = getInterpretation(total, overallInterpretationArray, thresholds.overall || thresholds);
   const overallThresholdData = getThresholdData(total, thresholds.overall || thresholds);
   
   console.log('scoreGrouped - per group:', perGroup);
@@ -217,9 +229,11 @@ function scoreGrouped(responses, scoring) {
     perGroup, 
     breakdown: mappedValues,
     groupAggregate: group_aggregate,
-    interpretation: overallInterpretation,
+    interpretation: overallInterpretation?.description || getThresholdInterpretation(total, thresholds.overall || thresholds),
+    interpretationData: overallInterpretation,
     threshold: overallThresholdData,
-    groupThresholds
+    groupThresholds,
+    groupInterpretations
   };
 }
 
@@ -341,8 +355,8 @@ function scoreFormula(responses, scoring, questionOrderMap = null) {
   
   console.log('scoreFormula - final total:', total);
   
-  // Apply thresholds
-  const interpretation = getThresholdInterpretation(total, scoring.thresholds || {});
+  // Use new interpretations or fall back to legacy thresholds
+  const interpretation = getInterpretation(total, scoring.interpretations, scoring.thresholds || {});
   const thresholdData = getThresholdData(total, scoring.thresholds || {});
   
   return { 
@@ -352,7 +366,8 @@ function scoreFormula(responses, scoring, questionOrderMap = null) {
     weightedVars: weightedValues,
     breakdown: breakdown,
     expression: expression,
-    interpretation,
+    interpretation: interpretation?.description || getThresholdInterpretation(total, scoring.thresholds || {}),
+    interpretationData: interpretation,
     threshold: thresholdData
   };
 }
@@ -487,7 +502,44 @@ function scorePairedOptions(responses, scoring) {
   };
 }
 
-// Helper function to get threshold interpretation
+// Enhanced function to get interpretation from new interpretations array or legacy thresholds
+function getInterpretation(score, interpretations, legacyThresholds = null) {
+  // Try new interpretations format first
+  if (interpretations && Array.isArray(interpretations)) {
+    const match = interpretations.find(interp => 
+      score >= interp.min_score && score <= interp.max_score
+    );
+    if (match) {
+      return {
+        title: match.title,
+        description: match.description,
+        recommendations: match.recommendations || [],
+        color: match.color,
+        icon: match.icon,
+        theme: match.theme || 'custom',
+        isNew: true
+      };
+    }
+  }
+  
+  // Fall back to legacy thresholds for backward compatibility
+  if (legacyThresholds) {
+    const legacyInterpretation = getThresholdInterpretation(score, legacyThresholds);
+    if (legacyInterpretation) {
+      return {
+        title: 'Score Result',
+        description: legacyInterpretation,
+        recommendations: [],
+        theme: 'custom',
+        isNew: false
+      };
+    }
+  }
+  
+  return null;
+}
+
+// Legacy helper function for backward compatibility
 function getThresholdInterpretation(score, thresholds) {
   if (!thresholds) return null;
   
@@ -621,6 +673,7 @@ module.exports = {
   scoreFormula,
   pairedOptions,
   scorePairedOptions,
+  getInterpretation,
   getThresholdInterpretation,
   getThresholdData
 };

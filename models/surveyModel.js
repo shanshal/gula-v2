@@ -1,5 +1,54 @@
 const pool = require("../db");
 
+// Utility: log a warning when scoring normalization alters keys/structure
+function logNormalizationWarning(original, normalized, surveyId, operation) {
+  try {
+    const orig = original || {};
+    const norm = normalized || {};
+    const changed = JSON.stringify(orig) !== JSON.stringify(norm);
+    if (!changed) return;
+
+    const sectionChanged = (section) => {
+      const a = orig[section];
+      const b = norm[section];
+      if (a == null && b == null) return false;
+      if ((a == null) !== (b == null)) return true;
+      if (typeof a !== 'object' || typeof b !== 'object') return a !== b;
+      // For mappings/weights: compare key sets
+      if (section === 'mappings' || section === 'weights' || section === 'weight_overrides') {
+        const ak = new Set(Object.keys(a));
+        const bk = new Set(Object.keys(b));
+        if (ak.size !== bk.size) return true;
+        for (const k of ak) if (!bk.has(k)) return true;
+        return false;
+      }
+      // For groups: compare per-group arrays
+      if (section === 'groups') {
+        const ag = Object.keys(a || {});
+        const bg = Object.keys(b || {});
+        if (ag.length !== bg.length) return true;
+        for (const g of ag) {
+          const arrA = Array.isArray(a[g]) ? a[g].map(String) : [];
+          const arrB = Array.isArray(b[g]) ? b[g].map(String) : [];
+          if (arrA.length !== arrB.length) return true;
+          for (let i = 0; i < arrA.length; i++) if (arrA[i] !== arrB[i]) return true;
+        }
+        return false;
+      }
+      return JSON.stringify(a) !== JSON.stringify(b);
+    };
+
+    const sections = ['mappings', 'groups', 'weights', 'weight_overrides'];
+    const changedSections = sections.filter(sectionChanged);
+
+    console.warn(
+      `[ScoringNormalization] Survey ${surveyId} ${operation}: normalized scoring config to question IDs. Sections changed: ${changedSections.join(', ') || 'unknown'}`
+    );
+  } catch (e) {
+    console.warn(`[ScoringNormalization] Survey ${surveyId} ${operation}: normalization detected but failed to summarize changes.`);
+  }
+}
+
 const getSurveys = async () => {
   const res = await pool.query("SELECT * FROM surveys ORDER BY id ASC");
   return res.rows;
@@ -136,6 +185,7 @@ const createSurvey = async (data) => {
       // Now update the scoring configuration to use the actual question IDs
       if (data.scoring && (data.scoring.type === 'grouped' || data.scoring.type === 'formula')) {
         const updatedScoring = await updateScoringWithQuestionIds(data.scoring, questionResults);
+        logNormalizationWarning(data.scoring, updatedScoring, survey.id, 'create');
         
         await client.query(
           `UPDATE surveys SET scoring = $1 WHERE id = $2`,
@@ -147,6 +197,7 @@ const createSurvey = async (data) => {
       } else if (data.scoring && data.scoring.type === 'sum') {
         // For sum scoring, we need to convert question order mappings to question ID mappings
         const updatedScoring = await updateSumScoringWithQuestionIds(data.scoring, questionResults);
+        logNormalizationWarning(data.scoring, updatedScoring, survey.id, 'create');
         
         await client.query(
           `UPDATE surveys SET scoring = $1 WHERE id = $2`,
@@ -406,9 +457,13 @@ const updateSurvey = async (updateData, id) => {
     let normalized = updateData.scoring;
     if (normalized && full?.questions) {
       if (normalized.type === 'sum') {
-        normalized = await updateSumScoringWithQuestionIds(normalized, full.questions);
+        const norm = await updateSumScoringWithQuestionIds(normalized, full.questions);
+        logNormalizationWarning(normalized, norm, id, 'update');
+        normalized = norm;
       } else if (normalized.type === 'grouped' || normalized.type === 'formula') {
-        normalized = await updateScoringWithQuestionIds(normalized, full.questions);
+        const norm = await updateScoringWithQuestionIds(normalized, full.questions);
+        logNormalizationWarning(normalized, norm, id, 'update');
+        normalized = norm;
       }
     }
     fields.push(`scoring = $${paramIndex}`);
@@ -499,9 +554,13 @@ const patchSurvey = async (updateData, id, currentSurvey) => {
       let mergedScoring = deepMerge(currentScoring, updateData.scoring);
       // Normalize merged scoring using current questions
       if (mergedScoring?.type === 'sum') {
-        mergedScoring = await updateSumScoringWithQuestionIds(mergedScoring, currentSurvey?.questions || []);
+        const norm = await updateSumScoringWithQuestionIds(mergedScoring, currentSurvey?.questions || []);
+        logNormalizationWarning(mergedScoring, norm, id, 'patch');
+        mergedScoring = norm;
       } else if (mergedScoring?.type === 'grouped' || mergedScoring?.type === 'formula') {
-        mergedScoring = await updateScoringWithQuestionIds(mergedScoring, currentSurvey?.questions || []);
+        const norm = await updateScoringWithQuestionIds(mergedScoring, currentSurvey?.questions || []);
+        logNormalizationWarning(mergedScoring, norm, id, 'patch');
+        mergedScoring = norm;
       }
       fields.push(`scoring = $${paramIndex}`);
       values.push(JSON.stringify(mergedScoring));

@@ -188,19 +188,101 @@
           "oneOf": [
             {
               "type": "object",
-              "description": "Simple score range interpretations",
+              "description": "Legacy: Simple score range interpretations (deprecated, use interpretations instead)",
               "patternProperties": {
                 "^[0-9]+-[0-9]+$|^[0-9]+$": {"type": "string"}
               }
             },
             {
               "type": "object",
-              "description": "Grouped thresholds for grouped scoring",
+              "description": "Legacy: Grouped thresholds for grouped scoring (deprecated, use interpretations instead)",
               "patternProperties": {
                 "^[a-zA-Z_]+$": {
                   "type": "object",
                   "patternProperties": {
                     "^[0-9]+-[0-9]+$": {"type": "string"}
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "interpretations": {
+          "oneOf": [
+            {
+              "type": "array",
+              "description": "Score interpretations for simple scoring types (sum, formula, mixed_sign)",
+              "items": {
+                "type": "object",
+                "required": ["min_score", "max_score", "title", "description"],
+                "properties": {
+                  "min_score": {
+                    "type": "number",
+                    "description": "Minimum score for this interpretation (inclusive)"
+                  },
+                  "max_score": {
+                    "type": "number",
+                    "description": "Maximum score for this interpretation (inclusive)"
+                  },
+                  "title": {
+                    "type": "string",
+                    "description": "Title of this score level"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Detailed explanation of what this score means"
+                  },
+                  "recommendations": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "Array of actionable recommendations"
+                  },
+                  "color": {
+                    "type": "string",
+                    "pattern": "^#[0-9a-fA-F]{6}$",
+                    "description": "Hex color for UI theming"
+                  },
+                  "icon": {
+                    "type": "string",
+                    "description": "Icon name for UI display"
+                  },
+                  "theme": {
+                    "type": "string",
+                    "enum": ["low", "medium", "good", "excellent", "custom"],
+                    "description": "Predefined theme category"
+                  }
+                }
+              }
+            },
+            {
+              "type": "object",
+              "description": "Group-specific interpretations for grouped scoring",
+              "patternProperties": {
+                "^[a-zA-Z_]+$": {
+                  "type": "array",
+                  "description": "Interpretations for this group",
+                  "items": {
+                    "type": "object",
+                    "required": ["min_score", "max_score", "title", "description"],
+                    "properties": {
+                      "min_score": {"type": "number"},
+                      "max_score": {"type": "number"},
+                      "title": {"type": "string"},
+                      "description": {"type": "string"},
+                      "recommendations": {
+                        "type": "array",
+                        "items": {"type": "string"}
+                      },
+                      "color": {
+                        "type": "string",
+                        "pattern": "^#[0-9a-fA-F]{6}$"
+                      },
+                      "icon": {"type": "string"},
+                      "theme": {
+                        "type": "string",
+                        "enum": ["low", "medium", "good", "excellent", "custom"]
+                      }
+                    }
                   }
                 }
               }

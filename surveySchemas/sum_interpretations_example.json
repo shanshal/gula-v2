@@ -1,0 +1,115 @@
+{
+  "name": "Customer Satisfaction Survey (with Interpretations)",
+  "status": "active",
+  "questions": [
+    {
+      "question_text": "How satisfied are you with our product quality?",
+      "question_type": "single_choice",
+      "question_order": 1,
+      "weight": 1,
+      "is_required": true,
+      "options": ["Very Dissatisfied", "Dissatisfied", "Neutral", "Satisfied", "Very Satisfied"]
+    },
+    {
+      "question_text": "How would you rate our customer service?",
+      "question_type": "single_choice", 
+      "question_order": 2,
+      "weight": 1,
+      "is_required": true,
+      "options": ["Poor", "Fair", "Good", "Very Good", "Excellent"]
+    },
+    {
+      "question_text": "How likely are you to recommend us to others?",
+      "question_type": "scale",
+      "question_order": 3,
+      "weight": 1,
+      "is_required": true,
+      "min_value": 1,
+      "max_value": 10,
+      "help_text": "1 = Not likely at all, 10 = Extremely likely"
+    }
+  ],
+  "scoring": {
+    "type": "sum",
+    "mappings": {
+      "1": {
+        "Very Dissatisfied": 1,
+        "Dissatisfied": 2,
+        "Neutral": 3,
+        "Satisfied": 4,
+        "Very Satisfied": 5
+      },
+      "2": {
+        "Poor": 1,
+        "Fair": 2,
+        "Good": 3,
+        "Very Good": 4,
+        "Excellent": 5
+      }
+    },
+    "weight_overrides": {
+      "1": 2,
+      "2": 1.5
+    },
+    "interpretations": [
+      {
+        "min_score": 3,
+        "max_score": 8,
+        "title": "Poor Satisfaction",
+        "description": "Your experience indicates significant areas that need immediate attention. We value your feedback and want to make things right.",
+        "recommendations": [
+          "Contact our customer service team for immediate assistance",
+          "Consider trying our premium support option",
+          "We'll follow up personally to address your concerns"
+        ],
+        "color": "#ff6b6b",
+        "icon": "alert-triangle",
+        "theme": "low"
+      },
+      {
+        "min_score": 9,
+        "max_score": 15,
+        "title": "Fair Satisfaction",
+        "description": "You're having an okay experience, but we know we can do better. There's definitely room for improvement.",
+        "recommendations": [
+          "Check out our help center for tips and tricks",
+          "Consider upgrading to get access to more features",
+          "Share specific feedback to help us improve"
+        ],
+        "color": "#ffa726",
+        "icon": "info",
+        "theme": "medium"
+      },
+      {
+        "min_score": 16,
+        "max_score": 22,
+        "title": "Good Satisfaction",
+        "description": "Great! You're having a positive experience with us. We're meeting your expectations and you're generally satisfied.",
+        "recommendations": [
+          "Explore advanced features you might not know about",
+          "Join our community to connect with other users",
+          "Consider leaving a review to help others"
+        ],
+        "color": "#66bb6a",
+        "icon": "check-circle",
+        "theme": "good"
+      },
+      {
+        "min_score": 23,
+        "max_score": 30,
+        "title": "Excellent Satisfaction",
+        "description": "Outstanding! You're having an exceptional experience. We're exceeding your expectations and you're our biggest advocate.",
+        "recommendations": [
+          "Share your success story with our community",
+          "Refer friends and family to earn rewards",
+          "Consider becoming a brand ambassador"
+        ],
+        "color": "#2e7d32",
+        "icon": "star",
+        "theme": "excellent"
+      }
+    ],
+    "max_score": 30,
+    "description": "Sum of weighted scores: Product Quality (weight 2) + Service (weight 1.5) + Recommendation (weight 1)"
+  }
+}

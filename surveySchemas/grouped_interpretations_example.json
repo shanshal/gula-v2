@@ -1,0 +1,219 @@
+{
+  "name": "Leadership Style Assessment (with Interpretations)",
+  "status": "active",
+  "questions": [
+    {
+      "question_text": "I prefer to make decisions without consulting my team",
+      "question_type": "scale",
+      "question_order": 1,
+      "weight": 1,
+      "is_required": true,
+      "min_value": 1,
+      "max_value": 5,
+      "help_text": "1 = Strongly Disagree, 5 = Strongly Agree"
+    },
+    {
+      "question_text": "Team input is essential for effective decision-making",
+      "question_type": "scale",
+      "question_order": 2,
+      "weight": 1,
+      "is_required": true,
+      "min_value": 1,
+      "max_value": 5,
+      "help_text": "1 = Strongly Disagree, 5 = Strongly Agree"
+    },
+    {
+      "question_text": "I let team members work independently with minimal supervision",
+      "question_type": "scale",
+      "question_order": 3,
+      "weight": 1,
+      "is_required": true,
+      "min_value": 1,
+      "max_value": 5,
+      "help_text": "1 = Strongly Disagree, 5 = Strongly Agree"
+    },
+    {
+      "question_text": "Clear directives from leadership are necessary for team success",
+      "question_type": "scale",
+      "question_order": 4,
+      "weight": 1,
+      "is_required": true,
+      "min_value": 1,
+      "max_value": 5,
+      "help_text": "1 = Strongly Disagree, 5 = Strongly Agree"
+    },
+    {
+      "question_text": "I encourage team collaboration and consensus-building",
+      "question_type": "scale",
+      "question_order": 5,
+      "weight": 1,
+      "is_required": true,
+      "min_value": 1,
+      "max_value": 5,
+      "help_text": "1 = Strongly Disagree, 5 = Strongly Agree"
+    },
+    {
+      "question_text": "Team members should have freedom to choose their approach",
+      "question_type": "scale",
+      "question_order": 6,
+      "weight": 1,
+      "is_required": true,
+      "min_value": 1,
+      "max_value": 5,
+      "help_text": "1 = Strongly Disagree, 5 = Strongly Agree"
+    }
+  ],
+  "scoring": {
+    "type": "grouped",
+    "groups": {
+      "authoritarian": ["1", "4"],
+      "democratic": ["2", "5"],
+      "laissez_faire": ["3", "6"]
+    },
+    "mappings": {
+      "*": {
+        "1": 1,
+        "2": 2,
+        "3": 3,
+        "4": 4,
+        "5": 5
+      }
+    },
+    "group_aggregate": "sum",
+    "interpretations": {
+      "authoritarian": [
+        {
+          "min_score": 2,
+          "max_score": 4,
+          "title": "Low Authoritarian Style",
+          "description": "You rarely use authoritarian leadership approaches. You tend to avoid top-down decision making and prefer collaborative methods.",
+          "recommendations": [
+            "Consider situations where directive leadership might be needed",
+            "Practice giving clear instructions when urgency is required",
+            "Balance collaboration with decisive action when necessary"
+          ],
+          "color": "#4caf50",
+          "icon": "users",
+          "theme": "low"
+        },
+        {
+          "min_score": 5,
+          "max_score": 7,
+          "title": "Moderate Authoritarian Style",
+          "description": "You balance authoritarian approaches appropriately, using directive leadership when the situation calls for it.",
+          "recommendations": [
+            "Continue to assess when directive vs collaborative approaches work best",
+            "Develop skills in both leadership styles",
+            "Communicate the reasoning behind your leadership choices"
+          ],
+          "color": "#ff9800",
+          "icon": "balance-scale",
+          "theme": "medium"
+        },
+        {
+          "min_score": 8,
+          "max_score": 10,
+          "title": "High Authoritarian Style",
+          "description": "You prefer directive, top-down leadership approaches and like to maintain control over decisions and processes.",
+          "recommendations": [
+            "Consider incorporating more team input in non-urgent situations",
+            "Practice delegating authority to develop team members",
+            "Be mindful of team morale and engagement levels"
+          ],
+          "color": "#f44336",
+          "icon": "crown",
+          "theme": "high"
+        }
+      ],
+      "democratic": [
+        {
+          "min_score": 2,
+          "max_score": 4,
+          "title": "Low Democratic Style",
+          "description": "You tend to make decisions independently rather than seeking team input and collaboration.",
+          "recommendations": [
+            "Practice involving team members in decision-making processes",
+            "Ask for input even on decisions you could make alone",
+            "Create regular opportunities for team feedback and suggestions"
+          ],
+          "color": "#f44336",
+          "icon": "user-x",
+          "theme": "low"
+        },
+        {
+          "min_score": 5,
+          "max_score": 7,
+          "title": "Moderate Democratic Style",
+          "description": "You sometimes involve your team in decisions and value their input when appropriate.",
+          "recommendations": [
+            "Increase team involvement in strategic decisions",
+            "Develop better processes for gathering and incorporating feedback",
+            "Practice facilitating team discussions and consensus-building"
+          ],
+          "color": "#ff9800",
+          "icon": "users",
+          "theme": "medium"
+        },
+        {
+          "min_score": 8,
+          "max_score": 10,
+          "title": "High Democratic Style",
+          "description": "You strongly value team input and collaboration in decision-making processes. You believe in shared leadership.",
+          "recommendations": [
+            "Continue fostering team collaboration and shared ownership",
+            "Ensure democratic processes don't slow down urgent decisions",
+            "Help team members develop decision-making skills"
+          ],
+          "color": "#4caf50",
+          "icon": "users",
+          "theme": "excellent"
+        }
+      ],
+      "laissez_faire": [
+        {
+          "min_score": 2,
+          "max_score": 4,
+          "title": "Low Laissez-Faire Style",
+          "description": "You prefer to stay closely involved and provide regular guidance rather than giving complete autonomy.",
+          "recommendations": [
+            "Practice giving team members more independence",
+            "Trust your team to make decisions within their expertise",
+            "Focus on outcomes rather than controlling processes"
+          ],
+          "color": "#f44336",
+          "icon": "eye",
+          "theme": "low"
+        },
+        {
+          "min_score": 5,
+          "max_score": 7,
+          "title": "Moderate Laissez-Faire Style",
+          "description": "You balance oversight with autonomy, giving team members freedom while maintaining appropriate guidance.",
+          "recommendations": [
+            "Continue to calibrate the right level of autonomy for each team member",
+            "Provide clear expectations while allowing flexibility in execution",
+            "Regular check-ins to ensure team members feel supported"
+          ],
+          "color": "#ff9800",
+          "icon": "compass",
+          "theme": "medium"
+        },
+        {
+          "min_score": 8,
+          "max_score": 10,
+          "title": "High Laissez-Faire Style",
+          "description": "You strongly believe in giving team members complete autonomy and minimal supervision. You trust them to self-manage.",
+          "recommendations": [
+            "Ensure team members have the skills and resources for independence",
+            "Maintain regular check-ins to provide support when needed",
+            "Be available for guidance while respecting their autonomy"
+          ],
+          "color": "#4caf50",
+          "icon": "unlock",
+          "theme": "excellent"
+        }
+      ]
+    },
+    "description": "Groups questions into leadership styles and scores each group separately. Provides detailed interpretations for each style."
+  }
+}
