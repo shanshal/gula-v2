@@ -401,8 +401,18 @@ const updateSurvey = async (updateData, id) => {
   }
 
   if (updateData.scoring !== undefined) {
+    // Normalize scoring keys using current survey questions
+    const full = await getSurveyById(id);
+    let normalized = updateData.scoring;
+    if (normalized && full?.questions) {
+      if (normalized.type === 'sum') {
+        normalized = await updateSumScoringWithQuestionIds(normalized, full.questions);
+      } else if (normalized.type === 'grouped' || normalized.type === 'formula') {
+        normalized = await updateScoringWithQuestionIds(normalized, full.questions);
+      }
+    }
     fields.push(`scoring = $${paramIndex}`);
-    values.push(JSON.stringify(updateData.scoring));
+    values.push(JSON.stringify(normalized));
     paramIndex++;
   }
 
@@ -486,8 +496,13 @@ const patchSurvey = async (updateData, id, currentSurvey) => {
     // Handle scoring partial update (deep merge)
     if (updateData.scoring !== undefined) {
       const currentScoring = currentSurvey.survey?.scoring || {};
-      const mergedScoring = deepMerge(currentScoring, updateData.scoring);
-      
+      let mergedScoring = deepMerge(currentScoring, updateData.scoring);
+      // Normalize merged scoring using current questions
+      if (mergedScoring?.type === 'sum') {
+        mergedScoring = await updateSumScoringWithQuestionIds(mergedScoring, currentSurvey?.questions || []);
+      } else if (mergedScoring?.type === 'grouped' || mergedScoring?.type === 'formula') {
+        mergedScoring = await updateScoringWithQuestionIds(mergedScoring, currentSurvey?.questions || []);
+      }
       fields.push(`scoring = $${paramIndex}`);
       values.push(JSON.stringify(mergedScoring));
       paramIndex++;
