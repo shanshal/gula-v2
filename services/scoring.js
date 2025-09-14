@@ -2,6 +2,99 @@ const answerModel = require('../models/answerModel');
 const surveyModel = require('../models/surveyModel');
 const protocoles = require('../protocoles');
 
+// Normalize scoring config keys to use DB question IDs instead of question order
+// This ensures mappings/groups/weights match the response keys (which are DB IDs)
+function normalizeScoringConfig(scoring, surveyJSON) {
+  try {
+    if (!scoring || !surveyJSON?.questions) return scoring;
+
+    const questions = surveyJSON.questions;
+    const orderToId = {};
+    const idSet = new Set();
+    const orderSet = new Set();
+
+    for (const q of questions) {
+      if (q?.id != null) idSet.add(Number(q.id));
+      if (q?.question_order != null) orderSet.add(Number(q.question_order));
+      if (q?.question_order != null && q?.id != null) {
+        orderToId[Number(q.question_order)] = Number(q.id);
+      }
+    }
+
+    const isNumericKey = (k) => /^\d+$/.test(k);
+    const isOrderKey = (k) => isNumericKey(k) && orderSet.has(Number(k));
+    const isIdKey = (k) => isNumericKey(k) && idSet.has(Number(k));
+
+    const remapKeyIfOrder = (k) => {
+      if (isOrderKey(k)) {
+        const id = orderToId[Number(k)];
+        return id != null ? String(id) : k;
+      }
+      return k;
+    };
+
+    const remapArrayIndicesToIds = (arr) => {
+      if (!Array.isArray(arr)) return arr;
+      return arr.map((n) => {
+        const num = Number(n);
+        if (!Number.isFinite(num)) return n;
+        // Prefer mapping order->id; if not found and it's already an id, keep as number
+        if (orderToId[num] != null) return Number(orderToId[num]);
+        if (idSet.has(num)) return num;
+        return num; // leave as-is
+      });
+    };
+
+    // Create a shallow clone to avoid mutating original
+    const normalized = { ...scoring };
+
+    // Normalize mappings: keys should be DB IDs as strings
+    if (normalized.mappings && typeof normalized.mappings === 'object') {
+      const newMappings = {};
+      for (const [k, v] of Object.entries(normalized.mappings)) {
+        const targetKey = remapKeyIfOrder(k);
+        newMappings[targetKey] = v; // keep value mapping shape unchanged
+      }
+      normalized.mappings = newMappings;
+    }
+
+    // Normalize groups: arrays should contain DB IDs (numbers)
+    if (normalized.groups && typeof normalized.groups === 'object') {
+      const newGroups = {};
+      for (const [groupName, arr] of Object.entries(normalized.groups)) {
+        newGroups[groupName] = remapArrayIndicesToIds(arr);
+      }
+      normalized.groups = newGroups;
+    }
+
+    // Normalize weights and weight_overrides: keys should be DB IDs as strings
+    if (normalized.weights && typeof normalized.weights === 'object') {
+      const newWeights = {};
+      for (const [k, v] of Object.entries(normalized.weights)) {
+        const targetKey = remapKeyIfOrder(k);
+        newWeights[targetKey] = v;
+      }
+      normalized.weights = newWeights;
+    }
+
+    if (normalized.weight_overrides && typeof normalized.weight_overrides === 'object') {
+      const newOverrides = {};
+      for (const [k, v] of Object.entries(normalized.weight_overrides)) {
+        const targetKey = remapKeyIfOrder(k);
+        newOverrides[targetKey] = v;
+      }
+      normalized.weight_overrides = newOverrides;
+    }
+
+    // Thresholds are based on score ranges or group names and do not need remapping
+
+    return normalized;
+  } catch (e) {
+    console.error('Error normalizing scoring config:', e);
+    return scoring;
+  }
+}
+
 const calculateSurveyScore = async (userId, surveyId) => {
   try {
     const surveyJSON = await surveyModel.getSurveyById(surveyId);
@@ -32,28 +125,32 @@ const calculateSurveyScore = async (userId, surveyId) => {
       scoring = { type: scoring || 'sum' };
     }
 
+    // Normalize scoring config to use DB question IDs if it was authored with question orders
+    const normalizedScoring = normalizeScoringConfig(scoring, surveyJSON);
+
     console.log('Survey ID:', surveyId);
-    console.log('Scoring config:', JSON.stringify(scoring, null, 2));
+    console.log('Scoring config (normalized):', JSON.stringify(normalizedScoring, null, 2));
     console.log('Responses:', stringKeyResponses);
     console.log('Question order map:', questionOrderMap);
 
     let result;
-    switch (scoring.type) {
+    switch (normalizedScoring.type) {
       case 'grouped':
-        result = protocoles.scoreGrouped(stringKeyResponses, scoring);
+        result = protocoles.scoreGrouped(stringKeyResponses, normalizedScoring);
         break;
       case 'paired-options':
-        result = protocoles.scorePairedOptions(stringKeyResponses, scoring);
+        result = protocoles.scorePairedOptions(stringKeyResponses, normalizedScoring);
         break;
       case 'formula':
-        result = protocoles.scoreFormula(stringKeyResponses, scoring, questionOrderMap);
+        // For formula, continue to use order-based Q variables via questionOrderMap
+        result = protocoles.scoreFormula(stringKeyResponses, normalizedScoring, questionOrderMap);
         break;
       case 'mixed_sign':
-        result = protocoles.scoreMixedSign(stringKeyResponses, scoring);
+        result = protocoles.scoreMixedSign(stringKeyResponses, normalizedScoring);
         break;
       case 'sum':
       default:
-        result = protocoles.scoreSum(stringKeyResponses, scoring);
+        result = protocoles.scoreSum(stringKeyResponses, normalizedScoring);
         break;
     }
 
@@ -62,7 +159,7 @@ const calculateSurveyScore = async (userId, surveyId) => {
       ...result,
       surveyId: parseInt(surveyId),
       userId: parseInt(userId),
-      scoringType: scoring.type,
+      scoringType: normalizedScoring.type,
       responseCount: Object.keys(stringKeyResponses).length
     };
 
