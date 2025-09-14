@@ -1,0 +1,130 @@
+{
+  "name": "Mental Health Screening Survey",
+  "status": "active",
+  "questions": [
+    {
+      "question_text": "How often have you been bothered by feeling down, depressed, or hopeless?",
+      "question_type": "single_choice",
+      "question_order": 1,
+      "weight": 1,
+      "is_required": true,
+      "options": ["Not at all", "Several days", "More than half the days", "Nearly every day"]
+    },
+    {
+      "question_text": "How often have you had trouble falling or staying asleep, or sleeping too much?",
+      "question_type": "single_choice",
+      "question_order": 2,
+      "weight": 1,
+      "is_required": true,
+      "options": ["Not at all", "Several days", "More than half the days", "Nearly every day"]
+    },
+    {
+      "question_text": "How often have you felt tired or had little energy?",
+      "question_type": "single_choice",
+      "question_order": 3,
+      "weight": 1,
+      "is_required": true,
+      "options": ["Not at all", "Several days", "More than half the days", "Nearly every day"]
+    },
+    {
+      "question_text": "How often have you had trouble concentrating on things?",
+      "question_type": "single_choice",
+      "question_order": 4,
+      "weight": 1,
+      "is_required": true,
+      "options": ["Not at all", "Several days", "More than half the days", "Nearly every day"]
+    },
+    {
+      "question_text": "How often have you had thoughts that you would be better off dead?",
+      "question_type": "single_choice",
+      "question_order": 5,
+      "weight": 2,
+      "is_required": true,
+      "options": ["Not at all", "Several days", "More than half the days", "Nearly every day"]
+    }
+  ],
+  "scoring": {
+    "type": "sum",
+    "mappings": {
+      "*": {
+        "Not at all": 0,
+        "Several days": 1,
+        "More than half the days": 2,
+        "Nearly every day": 3
+      }
+    },
+    "weight_overrides": {
+      "5": 2
+    },
+    "interpretations": [
+      {
+        "min_score": 0,
+        "max_score": 4,
+        "title": "Minimal Symptoms",
+        "description": "You're showing minimal signs of depression or anxiety. Your responses suggest you're managing well overall with good mental health indicators.",
+        "recommendations": [
+          "Continue maintaining your current healthy habits",
+          "Keep up regular exercise and social connections", 
+          "Practice stress management techniques like meditation",
+          "Monitor your mood and seek support if things change"
+        ],
+        "color": "#4caf50",
+        "icon": "check-circle",
+        "theme": "good"
+      },
+      {
+        "min_score": 5,
+        "max_score": 9,
+        "title": "Mild to Moderate Symptoms",
+        "description": "You're experiencing some symptoms that may be affecting your daily life. This is common and there are effective ways to address these feelings.",
+        "recommendations": [
+          "Consider speaking with a counselor or therapist",
+          "Reach out to trusted friends or family members",
+          "Establish regular sleep and exercise routines",
+          "Practice relaxation techniques like deep breathing",
+          "Consider mindfulness or meditation apps",
+          "If symptoms persist, consult with a healthcare provider"
+        ],
+        "color": "#ff9800",
+        "icon": "info",
+        "theme": "medium"
+      },
+      {
+        "min_score": 10,
+        "max_score": 15,
+        "title": "Moderate to Severe Symptoms - Please Seek Help",
+        "description": "Your responses indicate you may be experiencing significant depression or anxiety symptoms. It's important to reach out for professional support - you don't have to handle this alone.",
+        "recommendations": [
+          "🚨 PRIORITY: Contact a mental health professional immediately",
+          "Reach out to a crisis helpline if you're in distress",
+          "Talk to your doctor about your symptoms",
+          "Consider contacting a therapist or counselor",
+          "Let trusted friends or family know how you're feeling",
+          "If you're having thoughts of self-harm, go to the nearest emergency room"
+        ],
+        "color": "#f44336",
+        "icon": "alert-triangle",
+        "theme": "low"
+      },
+      {
+        "min_score": 16,
+        "max_score": 21,
+        "title": "Severe Symptoms - Immediate Help Needed",
+        "description": "Your responses suggest you're experiencing severe symptoms that require immediate professional attention. Please reach out for help right away - effective treatment is available.",
+        "recommendations": [
+          "🆘 URGENT: Contact emergency services or go to the nearest emergency room",
+          "Call a crisis helpline: National Suicide Prevention Lifeline: 988",
+          "Contact your doctor or a mental health professional immediately",
+          "Do not stay alone - reach out to trusted friends or family",
+          "Consider inpatient treatment if recommended by professionals",
+          "Remember: You are not alone, and help is available"
+        ],
+        "color": "#d32f2f",
+        "icon": "warning",
+        "theme": "low"
+      }
+    ],
+    "max_score": 21,
+    "description": "Weighted sum scoring with emphasis on self-harm indicators. Provides graduated response based on symptom severity."
+  }
+}
