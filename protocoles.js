@@ -23,7 +23,7 @@ const leaderShipSurveyHandler = (surveyAnswers) => {
 };
 
 function scoreSum(responses, scoring = {}) {
-  const { mappings = {}, weight_overrides = {}, weights = {} } = scoring;
+  const { mappings = {}, weight_overrides = {}, weights = {}, thresholds = {} } = scoring;
 
   // If no mappings provided, sum all response values directly
   if (!mappings || Object.keys(mappings).length === 0) {
@@ -41,7 +41,18 @@ function scoreSum(responses, scoring = {}) {
     }
     
     console.log('scoreSum - no mappings, total:', total);
-    return { score: total, total, breakdown };
+    
+    // Apply thresholds
+    const interpretation = getThresholdInterpretation(total, thresholds);
+    const thresholdData = getThresholdData(total, thresholds);
+    
+    return { 
+      score: total, 
+      total, 
+      breakdown,
+      interpretation,
+      threshold: thresholdData
+    };
   }
 
   // Use mappings to transform response values
@@ -67,11 +78,22 @@ function scoreSum(responses, scoring = {}) {
   }
   
   console.log('scoreSum - with mappings, total:', total);
-  return { score: total, total, breakdown };
+  
+  // Apply thresholds
+  const interpretation = getThresholdInterpretation(total, thresholds);
+  const thresholdData = getThresholdData(total, thresholds);
+  
+  return { 
+    score: total, 
+    total, 
+    breakdown,
+    interpretation,
+    threshold: thresholdData
+  };
 }
 
 function scoreMixedSign(responses, scoring = {}) {
-  const { mappings = {}, weight_overrides = {}, weights = {} } = scoring;
+  const { mappings = {}, weight_overrides = {}, weights = {}, thresholds = {} } = scoring;
   
   console.log('scoreMixedSign - responses:', responses);
   console.log('scoreMixedSign - scoring config:', scoring);
@@ -98,14 +120,25 @@ function scoreMixedSign(responses, scoring = {}) {
   }
   
   console.log('scoreMixedSign - total:', total);
-  return { score: total, total, breakdown };
+  
+  // Apply thresholds
+  const interpretation = getThresholdInterpretation(total, thresholds);
+  const thresholdData = getThresholdData(total, thresholds);
+  
+  return { 
+    score: total, 
+    total, 
+    breakdown,
+    interpretation,
+    threshold: thresholdData
+  };
 }
 
 function scoreGrouped(responses, scoring) {
   console.log('scoreGrouped - responses:', responses);
   console.log('scoreGrouped - scoring config:', scoring);
   
-  const { mappings = {}, groups = {}, group_aggregate = 'sum', weights = {} } = scoring || {};
+  const { mappings = {}, groups = {}, group_aggregate = 'sum', weights = {}, thresholds = {} } = scoring || {};
   
   // First, map each response value using the mappings
   const mappedValues = {};
@@ -135,6 +168,8 @@ function scoreGrouped(responses, scoring) {
 
   // Then calculate group scores
   const perGroup = {};
+  const groupThresholds = {};
+  
   for (const [groupName, questionIds] of Object.entries(groups)) {
     const groupValues = questionIds
       .map(id => mappedValues[id.toString()] || 0)
@@ -155,9 +190,24 @@ function scoreGrouped(responses, scoring) {
     }
     
     perGroup[groupName] = Number(groupScore.toFixed(2));
+    
+    // Apply thresholds for this group
+    const groupThreshold = thresholds[groupName];
+    if (groupThreshold) {
+      const interpretation = getThresholdInterpretation(groupScore, groupThreshold);
+      const thresholdData = getThresholdData(groupScore, groupThreshold);
+      groupThresholds[groupName] = {
+        interpretation,
+        threshold: thresholdData
+      };
+    }
   }
 
   const total = Object.values(perGroup).reduce((a, b) => a + b, 0);
+  
+  // Apply overall thresholds if they exist
+  const overallInterpretation = getThresholdInterpretation(total, thresholds.overall || thresholds);
+  const overallThresholdData = getThresholdData(total, thresholds.overall || thresholds);
   
   console.log('scoreGrouped - per group:', perGroup);
   console.log('scoreGrouped - total:', total);
@@ -166,7 +216,10 @@ function scoreGrouped(responses, scoring) {
     total: Number(total.toFixed(2)), 
     perGroup, 
     breakdown: mappedValues,
-    groupAggregate: group_aggregate
+    groupAggregate: group_aggregate,
+    interpretation: overallInterpretation,
+    threshold: overallThresholdData,
+    groupThresholds
   };
 }
 
@@ -288,13 +341,19 @@ function scoreFormula(responses, scoring, questionOrderMap = null) {
   
   console.log('scoreFormula - final total:', total);
   
+  // Apply thresholds
+  const interpretation = getThresholdInterpretation(total, scoring.thresholds || {});
+  const thresholdData = getThresholdData(total, scoring.thresholds || {});
+  
   return { 
     score: Number(total.toFixed(2)), 
     total: Number(total.toFixed(2)), 
     vars: mappedValues,
     weightedVars: weightedValues,
     breakdown: breakdown,
-    expression: expression
+    expression: expression,
+    interpretation,
+    threshold: thresholdData
   };
 }
 
@@ -433,12 +492,125 @@ function getThresholdInterpretation(score, thresholds) {
   if (!thresholds) return null;
   
   for (const [range, interpretation] of Object.entries(thresholds)) {
-    const [min, max] = range.split('-').map(Number);
-    if (score >= min && score <= max) {
-      return interpretation;
+    if (range.includes('-')) {
+      const [min, max] = range.split('-').map(Number);
+      if (score >= min && score <= max) {
+        return interpretation;
+      }
+    } else {
+      // Handle single value thresholds (e.g., "5": "interpretation")
+      const threshold = Number(range);
+      if (score === threshold) {
+        return interpretation;
+      }
     }
   }
   return null;
+}
+
+// Enhanced function to get comprehensive threshold data
+function getThresholdData(score, thresholds) {
+  if (!thresholds || Object.keys(thresholds).length === 0) {
+    return null;
+  }
+  
+  // Parse all thresholds to find which one the score falls into
+  const thresholdRanges = [];
+  for (const [range, interpretation] of Object.entries(thresholds)) {
+    if (range.includes('-')) {
+      const [min, max] = range.split('-').map(Number);
+      thresholdRanges.push({
+        min,
+        max,
+        range,
+        interpretation,
+        isMatch: score >= min && score <= max
+      });
+    } else {
+      const threshold = Number(range);
+      thresholdRanges.push({
+        min: threshold,
+        max: threshold,
+        range,
+        interpretation,
+        isMatch: score === threshold
+      });
+    }
+  }
+  
+  // Sort by min value to establish order
+  thresholdRanges.sort((a, b) => a.min - b.min);
+  
+  // Find current threshold
+  const currentThreshold = thresholdRanges.find(t => t.isMatch);
+  
+  // Find next and previous thresholds
+  const currentIndex = currentThreshold ? thresholdRanges.indexOf(currentThreshold) : -1;
+  const nextThreshold = currentIndex >= 0 && currentIndex < thresholdRanges.length - 1 
+    ? thresholdRanges[currentIndex + 1] 
+    : null;
+  const previousThreshold = currentIndex > 0 
+    ? thresholdRanges[currentIndex - 1] 
+    : null;
+  
+  // Calculate progress within current range
+  let progress = 0;
+  if (currentThreshold && currentThreshold.max > currentThreshold.min) {
+    progress = ((score - currentThreshold.min) / (currentThreshold.max - currentThreshold.min)) * 100;
+  }
+  
+  // Find which "page" or level this represents (for multiple result pages)
+  let level = 0;
+  let levelName = 'unknown';
+  if (currentThreshold) {
+    level = currentIndex + 1;
+    // Extract level name from interpretation or use generic names
+    const interpretation = currentThreshold.interpretation.toLowerCase();
+    if (interpretation.includes('poor') || interpretation.includes('low')) {
+      levelName = 'low';
+    } else if (interpretation.includes('fair') || interpretation.includes('medium') || interpretation.includes('moderate')) {
+      levelName = 'medium';
+    } else if (interpretation.includes('good') || interpretation.includes('high')) {
+      levelName = 'high';
+    } else if (interpretation.includes('excellent') || interpretation.includes('very')) {
+      levelName = 'excellent';
+    } else {
+      levelName = `level_${level}`;
+    }
+  }
+  
+  return {
+    score,
+    current: currentThreshold ? {
+      range: currentThreshold.range,
+      min: currentThreshold.min,
+      max: currentThreshold.max,
+      interpretation: currentThreshold.interpretation,
+      progress: Math.round(progress)
+    } : null,
+    next: nextThreshold ? {
+      range: nextThreshold.range,
+      min: nextThreshold.min,
+      max: nextThreshold.max,
+      interpretation: nextThreshold.interpretation,
+      pointsToNext: nextThreshold.min - score
+    } : null,
+    previous: previousThreshold ? {
+      range: previousThreshold.range,
+      min: previousThreshold.min,
+      max: previousThreshold.max,
+      interpretation: previousThreshold.interpretation
+    } : null,
+    level,
+    levelName,
+    totalLevels: thresholdRanges.length,
+    allThresholds: thresholdRanges.map(t => ({
+      range: t.range,
+      min: t.min,
+      max: t.max,
+      interpretation: t.interpretation
+    }))
+  };
 }
 
 module.exports = {
@@ -449,4 +621,6 @@ module.exports = {
   scoreFormula,
   pairedOptions,
   scorePairedOptions,
+  getThresholdInterpretation,
+  getThresholdData
 };

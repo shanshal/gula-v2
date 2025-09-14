@@ -57,14 +57,44 @@ const calculateSurveyScore = async (userId, surveyId) => {
         break;
     }
 
-    // Add some metadata to the result
-    return {
+    // Add metadata and result page information
+    const enhancedResult = {
       ...result,
       surveyId: parseInt(surveyId),
       userId: parseInt(userId),
       scoringType: scoring.type,
       responseCount: Object.keys(stringKeyResponses).length
     };
+
+    // Add result page information based on thresholds
+    if (result.threshold) {
+      enhancedResult.resultPage = {
+        level: result.threshold.level,
+        levelName: result.threshold.levelName,
+        totalLevels: result.threshold.totalLevels,
+        pageId: `result_page_${result.threshold.level}`,
+        pageName: result.threshold.current?.interpretation || 'Unknown Result'
+      };
+    } else if (result.groupThresholds) {
+      // For grouped scoring, find the primary group's result page
+      const primaryGroup = Object.keys(result.perGroup).reduce((a, b) => 
+        result.perGroup[a] > result.perGroup[b] ? a : b
+      );
+      const primaryThreshold = result.groupThresholds[primaryGroup];
+      
+      if (primaryThreshold?.threshold) {
+        enhancedResult.resultPage = {
+          level: primaryThreshold.threshold.level,
+          levelName: primaryThreshold.threshold.levelName,
+          totalLevels: primaryThreshold.threshold.totalLevels,
+          pageId: `result_page_${primaryGroup}_${primaryThreshold.threshold.level}`,
+          pageName: primaryThreshold.threshold.current?.interpretation || `${primaryGroup} Result`,
+          primaryGroup
+        };
+      }
+    }
+
+    return enhancedResult;
 
   } catch (error) {
     console.error('Error calculating survey score:', error);
