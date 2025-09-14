@@ -163,8 +163,75 @@ const calculateSurveyScore = async (userId, surveyId) => {
       responseCount: Object.keys(stringKeyResponses).length
     };
 
-    // Add result page information based on thresholds
-    if (result.threshold) {
+    // Helper: pick an authored result page from survey schema if present
+    const pickAuthoredResultPage = () => {
+      const scoring = surveyJSON?.survey?.scoring || {};
+      const rp = scoring.result_pages;
+      if (!rp) return null;
+
+      const getOverallScore = () => {
+        if (typeof result.score === 'number') return result.score;
+        if (typeof result.total === 'number') return result.total;
+        return 0;
+      };
+
+      const matchPage = (pages, score, groupName = null) => {
+        if (!Array.isArray(pages)) return null;
+        for (let i = 0; i < pages.length; i++) {
+          const p = pages[i] || {};
+          // Support either explicit min/max or a "range" string like "3-7"
+          let min = p.min;
+          let max = p.max;
+          if ((min == null || max == null) && typeof p.range === 'string' && p.range.includes('-')) {
+            const [mi, ma] = p.range.split('-').map(Number);
+            if (Number.isFinite(mi)) min = mi;
+            if (Number.isFinite(ma)) max = ma;
+          }
+          if (!Number.isFinite(min) || !Number.isFinite(max)) continue;
+          if (score >= min && score <= max) {
+            return {
+              ...p,
+              pageId: p.pageId || (groupName ? `result_page_${groupName}_${i + 1}` : `result_page_${i + 1}`),
+              group: groupName || p.group || null,
+            };
+          }
+        }
+        return null;
+      };
+
+      if (normalizedScoring.type === 'grouped' && result?.perGroup) {
+        const primaryGroup = Object.keys(result.perGroup).reduce((a, b) =>
+          result.perGroup[a] > result.perGroup[b] ? a : b
+        );
+        const groupScore = result.perGroup[primaryGroup];
+
+        // Try group-specific pages first
+        if (rp.groups && rp.groups[primaryGroup]) {
+          const page = matchPage(rp.groups[primaryGroup], groupScore, primaryGroup);
+          if (page) return { ...page, primaryGroup };
+        }
+
+        // Fallback to overall pages using overall total
+        if (Array.isArray(rp.overall)) {
+          const page = matchPage(rp.overall, getOverallScore(), null);
+          if (page) return { ...page, primaryGroup };
+        }
+        return null;
+      } else {
+        // Non-grouped: try overall pages by total/score
+        if (Array.isArray(rp.overall)) {
+          const page = matchPage(rp.overall, getOverallScore(), null);
+          if (page) return page;
+        }
+        return null;
+      }
+    };
+
+    // Prefer authored result pages if present; otherwise keep threshold-derived hint for backward compatibility
+    const authoredPage = pickAuthoredResultPage();
+    if (authoredPage) {
+      enhancedResult.resultPage = authoredPage;
+    } else if (result.threshold) {
       enhancedResult.resultPage = {
         level: result.threshold.level,
         levelName: result.threshold.levelName,
@@ -173,12 +240,11 @@ const calculateSurveyScore = async (userId, surveyId) => {
         pageName: result.threshold.current?.interpretation || 'Unknown Result'
       };
     } else if (result.groupThresholds) {
-      // For grouped scoring, find the primary group's result page
-      const primaryGroup = Object.keys(result.perGroup).reduce((a, b) => 
+      // For grouped scoring, find the primary group's result page based on thresholds
+      const primaryGroup = Object.keys(result.perGroup).reduce((a, b) =>
         result.perGroup[a] > result.perGroup[b] ? a : b
       );
       const primaryThreshold = result.groupThresholds[primaryGroup];
-      
       if (primaryThreshold?.threshold) {
         enhancedResult.resultPage = {
           level: primaryThreshold.threshold.level,

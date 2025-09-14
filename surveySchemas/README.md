@@ -131,6 +131,7 @@ CREATE TABLE users (
 
 ### Scoring
 - `GET /scoring/:surveyId/user/:userId/score` - Calculate and return score
+- `GET /scoring/:surveyId/result-pages` - List all possible result pages (authored or auto-generated)
 
 ### User Management
 - `GET /users` - List users
@@ -190,6 +191,50 @@ See the individual JSON files for complete working examples:
 - `paired_options_example.json` - Love languages style
 - `formula_scoring_example.json` - Mathematical expressions
 - `mixed_sign_example.json` - Positive/negative scoring
+
+## 🧩 Authored Result Pages (in Schema)
+
+You can fully define result pages inside the survey schema. The backend will use these pages when returning a user’s score and when listing result pages. Structure:
+
+```
+"scoring": {
+  "type": "sum" | "grouped" | "formula" | "paired-options" | "mixed_sign",
+  ...
+  "result_pages": {
+    "overall": [
+      {
+        "min": 0,
+        "max": 10,
+        "title": "منخفض",
+        "subtitle": "نوصي بخطة تحسين مبسطة",
+        "description": "تفسيرات ونصائح مفصلة لهذه الدرجة",
+        "recommendations": ["افعل كذا", "تجنّب كذا"],
+        "theme": "low",
+        "color": "#ff6b6b",
+        "pageId": "result_page_1"  // optional
+      }
+    ],
+    "groups": {
+      "leadership": [
+        { "min": 0, "max": 5, "title": "قيادة منخفضة", "theme": "low" },
+        { "min": 6, "max": 10, "title": "قيادة متوسطة", "theme": "medium" }
+      ],
+      "communication": [
+        { "min": 0, "max": 5, "title": "تواصل منخفض" }
+      ]
+    }
+  }
+}
+```
+
+Notes:
+- Use numeric `min`/`max` (inclusive). Alternatively, you can provide `range` as a string like `"3-7"`.
+- For grouped scoring, group names must match `scoring.groups` keys.
+- If `result_pages` is present, it is used in preference to thresholds for page content. Thresholds can still be provided for numerical level logic if desired.
+
+### How it appears in responses
+- `GET /scoring/:surveyId/user/:userId/score` includes `resultPage` with your authored fields (and `primaryGroup` for grouped when applicable).
+- `GET /scoring/:surveyId/result-pages` enumerates authored pages (overall and groups). If `result_pages` is absent, the endpoint falls back to threshold-based auto pages.
 
 ## 🔍 Error Handling
 

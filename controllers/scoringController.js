@@ -20,30 +20,92 @@ const getSurveyResultPages = async (req, res) => {
       return res.status(404).json({ error: 'Survey not found' });
     }
 
-    const scoring = surveyJSON.survey.scoring;
-    if (!scoring || !scoring.thresholds) {
-      return res.json({ 
-        pages: [], 
-        message: 'No result pages configured for this survey' 
+    const scoring = surveyJSON.survey.scoring || {};
+
+    // If authored result pages exist in schema, return them directly
+    if (scoring.result_pages) {
+      const rp = scoring.result_pages;
+      const pages = [];
+
+      // Overall pages
+      if (Array.isArray(rp.overall)) {
+        rp.overall.forEach((p, idx) => {
+          pages.push({
+            pageId: p.pageId || `result_page_${idx + 1}`,
+            level: p.level || idx + 1,
+            levelName: p.levelName || getLevelName(p.title || p.interpretation || ''),
+            range: p.range || undefined,
+            min: p.min,
+            max: p.max,
+            interpretation: p.interpretation || p.title || '',
+            template: {
+              title: p.title || p.interpretation || `Result ${idx + 1}`,
+              subtitle: p.subtitle || 'Your survey results',
+              description: p.description || '',
+              recommendations: p.recommendations || [],
+              styling: {
+                theme: p.theme || getLevelName(p.title || p.interpretation || ''),
+                color: p.color || getThemeColor(p.title || p.interpretation || ''),
+              }
+            },
+            group: null
+          });
+        });
+      }
+
+      // Group pages
+      if (rp.groups && typeof rp.groups === 'object') {
+        for (const [groupName, arr] of Object.entries(rp.groups)) {
+          if (!Array.isArray(arr)) continue;
+          arr.forEach((p, idx) => {
+            pages.push({
+              pageId: p.pageId || `result_page_${groupName}_${idx + 1}`,
+              level: p.level || idx + 1,
+              levelName: p.levelName || getLevelName(p.title || p.interpretation || ''),
+              range: p.range || undefined,
+              min: p.min,
+              max: p.max,
+              interpretation: p.interpretation || p.title || '',
+              template: {
+                title: p.title || p.interpretation || `Result ${idx + 1}`,
+                subtitle: p.subtitle || `Your ${groupName} results`,
+                description: p.description || '',
+                recommendations: p.recommendations || [],
+                styling: {
+                  theme: p.theme || getLevelName(p.title || p.interpretation || ''),
+                  color: p.color || getThemeColor(p.title || p.interpretation || ''),
+                }
+              },
+              group: groupName
+            });
+          });
+        }
+      }
+
+      return res.json({
+        surveyId: parseInt(surveyId),
+        scoringType: scoring.type,
+        totalPages: pages.length,
+        pages
       });
     }
 
+    // Fallback to thresholds-based auto pages
+    if (!scoring.thresholds) {
+      return res.json({ pages: [], message: 'No result pages configured for this survey' });
+    }
+
     const pages = [];
-    
-    // Handle different threshold structures
     if (scoring.type === 'grouped' && typeof scoring.thresholds === 'object') {
-      // Grouped thresholds
       for (const [groupName, groupThresholds] of Object.entries(scoring.thresholds)) {
         if (typeof groupThresholds === 'object') {
           const sortedRanges = Object.entries(groupThresholds)
             .map(([range, interpretation]) => {
-              const [min, max] = range.includes('-') 
-                ? range.split('-').map(Number) 
-                : [Number(range), Number(range)];
+              const [min, max] = range.includes('-') ? range.split('-').map(Number) : [Number(range), Number(range)];
               return { range, min, max, interpretation, group: groupName };
             })
             .sort((a, b) => a.min - b.min);
-          
+
           sortedRanges.forEach((threshold, index) => {
             pages.push({
               pageId: `result_page_${groupName}_${index + 1}`,
@@ -60,16 +122,13 @@ const getSurveyResultPages = async (req, res) => {
         }
       }
     } else {
-      // Simple thresholds
       const sortedRanges = Object.entries(scoring.thresholds)
         .map(([range, interpretation]) => {
-          const [min, max] = range.includes('-') 
-            ? range.split('-').map(Number) 
-            : [Number(range), Number(range)];
+          const [min, max] = range.includes('-') ? range.split('-').map(Number) : [Number(range), Number(range)];
           return { range, min, max, interpretation };
         })
         .sort((a, b) => a.min - b.min);
-      
+
       sortedRanges.forEach((threshold, index) => {
         pages.push({
           pageId: `result_page_${index + 1}`,
@@ -84,12 +143,7 @@ const getSurveyResultPages = async (req, res) => {
       });
     }
 
-    res.json({
-      surveyId: parseInt(surveyId),
-      scoringType: scoring.type,
-      totalPages: pages.length,
-      pages
-    });
+    res.json({ surveyId: parseInt(surveyId), scoringType: scoring.type, totalPages: pages.length, pages });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
