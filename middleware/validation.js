@@ -468,6 +468,85 @@ const validateUserCreation = (req, res, next) => {
   }
 };
 
+// Sign up validation (includes password)
+const validateSignUp = (req, res, next) => {
+  try {
+    const { name, email, password, age, sex, weight } = req.body;
+    const errors = [];
+
+    // Required fields
+    if (!isString(name)) {
+      errors.push({ field: 'name', message: 'Name is required and must be a non-empty string' });
+    }
+
+    if (!isString(email) || !isValidEmail(email)) {
+      errors.push({ field: 'email', message: 'Valid email address is required' });
+    }
+
+    if (!isString(password) || password.length < 6) {
+      errors.push({ field: 'password', message: 'Password is required and must be at least 6 characters long' });
+    }
+
+    // Optional fields validation
+    if (age !== undefined && (!isNumber(age) || age < 0 || age > 150)) {
+      errors.push({ field: 'age', message: 'Age must be a number between 0 and 150' });
+    }
+
+    if (sex !== undefined && !['male', 'female', 'other'].includes(sex)) {
+      errors.push({ field: 'sex', message: 'Sex must be one of: male, female, other' });
+    }
+
+    if (weight !== undefined && (!isNumber(weight) || weight < 0 || weight > 1000)) {
+      errors.push({ field: 'weight', message: 'Weight must be a number between 0 and 1000 kg' });
+    }
+
+    if (errors.length > 0) {
+      return res.status(400).json({
+        error: 'Validation failed',
+        details: errors
+      });
+    }
+
+    next();
+  } catch (error) {
+    res.status(500).json({
+      error: 'Validation error',
+      message: error.message
+    });
+  }
+};
+
+// Sign in validation
+const validateSignIn = (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const errors = [];
+
+    // Required fields
+    if (!isString(email) || !isValidEmail(email)) {
+      errors.push({ field: 'email', message: 'Valid email address is required' });
+    }
+
+    if (!isString(password) || password.length === 0) {
+      errors.push({ field: 'password', message: 'Password is required' });
+    }
+
+    if (errors.length > 0) {
+      return res.status(400).json({
+        error: 'Validation failed',
+        details: errors
+      });
+    }
+
+    next();
+  } catch (error) {
+    res.status(500).json({
+      error: 'Validation error',
+      message: error.message
+    });
+  }
+};
+
 // Answer submission validation (for bulk answer submission)
 const validateAnswerSubmission = (req, res, next) => {
   try {
@@ -601,6 +680,8 @@ module.exports = {
   validateSurveyUpdate,
   validateSurveyPatch,
   validateUserCreation,
+  validateSignUp,
+  validateSignIn,
   validateAnswerSubmission,
   validateSingleAnswer,
   validateIdParam,

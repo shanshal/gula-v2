@@ -665,184 +665,9 @@ function getThresholdData(score, thresholds) {
   };
 }
 
-// Custom functions registry for scoreFunction
-const customFunctions = {
-  calculateStrokeRisk: (responses, mappedValues, weightedValues, scoring) => {
-    console.log('calculateStrokeRisk - responses:', responses);
-    console.log('calculateStrokeRisk - scoring config:', scoring);
-    
-    const { custom_scoring } = scoring;
-    if (!custom_scoring) {
-      console.error('No custom_scoring configuration found');
-      return 0;
-    }
-    
-    const { red_factors, yellow_factors, green_factors } = custom_scoring;
-    
-    let redCount = 0;
-    let yellowCount = 0;
-    let greenCount = 0;
-    
-    // Count risk factors by color/severity
-    for (const [qid, answer] of Object.entries(responses)) {
-      const qidStr = qid.toString();
-      
-      if (red_factors?.red_answers?.[qidStr]?.includes(answer)) {
-        redCount++;
-        console.log(`Red factor found: Q${qidStr} = ${answer}`);
-      } else if (yellow_factors?.yellow_answers?.[qidStr]?.includes(answer)) {
-        yellowCount++;
-        console.log(`Yellow factor found: Q${qidStr} = ${answer}`);
-      } else if (green_factors?.green_answers?.[qidStr]?.includes(answer)) {
-        greenCount++;
-        console.log(`Green factor found: Q${qidStr} = ${answer}`);
-      }
-    }
-    
-    console.log(`Risk factors - Red: ${redCount}, Yellow: ${yellowCount}, Green: ${greenCount}`);
-    
-    // Apply priority logic from the original diagram:
-    // High risk: red >= 3 (score 3-8)
-    // Medium risk: yellow 4-6 (score 4-6) 
-    // Low risk: green 6-8 (score 6-8)
-    
-    if (redCount >= 3) {
-      const score = Math.min(8, 3 + redCount); // High risk range: 3-8
-      console.log(`High risk detected: ${score}`);
-      return score;
-    } else if (yellowCount >= 4 && yellowCount <= 6) {
-      console.log(`Medium risk detected: ${yellowCount}`);
-      return yellowCount; // Medium risk range: 4-6
-    } else if (greenCount >= 6 && greenCount <= 8) {
-      console.log(`Low risk detected: ${greenCount}`);
-      return greenCount; // Low risk range: 6-8
-    }
-    
-    // Default fallback: calculate based on mixed factors
-    const totalFactors = redCount * 3 + yellowCount * 1 + greenCount * 0;
-    const fallbackScore = Math.min(8, Math.max(1, totalFactors));
-    console.log(`Fallback risk calculation: ${fallbackScore}`);
-    return fallbackScore;
-  },
+// Custom functions removed due to security concerns with code injection
 
-  calculateBMI: (responses, mappedValues, weightedValues, scoring) => {
-    const weight = parseFloat(responses['weight']);
-    const height = parseFloat(responses['height']);
-    
-    if (!weight || !height || height === 0) {
-      return 0; // Invalid data
-    }
-    
-    // Convert height from cm to m if needed
-    const heightInMeters = height > 10 ? height / 100 : height;
-    const bmi = weight / (heightInMeters * heightInMeters);
-    
-    // Return BMI category score
-    if (bmi < 18.5) return 1;      // Underweight
-    if (bmi < 25) return 2;        // Normal
-    if (bmi < 30) return 3;        // Overweight
-    return 4;                      // Obese
-  },
-
-  calculateMentalHealthRisk: (responses, mappedValues, weightedValues, scoring) => {
-    // Example: PHQ-9 with suicide risk override
-    let totalScore = Object.values(mappedValues).reduce((a, b) => a + b, 0);
-    
-    // Special rule: If suicide ideation question exists and > 1, force severe category
-    if (mappedValues['9'] && mappedValues['9'] > 1) {
-      return Math.max(totalScore, 20); // Force severe depression score
-    }
-    
-    return totalScore;
-  }
-};
-
-// Enhanced scoreFunction for custom logic
-function scoreFunction(responses, scoring, questionOrderMap = null) {
-  console.log('scoreFunction - responses:', responses);
-  console.log('scoreFunction - scoring config:', scoring);
-  
-  const { mappings = {}, custom_function, weight_overrides = {}, weights = {} } = scoring || {};
-  
-  if (!custom_function) {
-    throw new Error('custom_function is required for function scoring');
-  }
-  
-  // Map response values using mappings and apply weights (same as scoreFormula)
-  const mappedValues = {};
-  const weightedValues = {};
-  const breakdown = {};
-  
-  for (const [qid, responseValue] of Object.entries(responses)) {
-    const qidStr = qid.toString();
-    let mappedValue;
-    
-    if (mappings[qidStr]) {
-      mappedValue = mappings[qidStr][responseValue.toString()];
-      mappedValue = typeof mappedValue === 'number' ? mappedValue : 0;
-    } else {
-      // If no mapping, use the response value directly (convert string to number if needed)
-      mappedValue = typeof responseValue === 'number' ? responseValue : parseFloat(responseValue) || 0;
-    }
-    
-    const weight = weight_overrides[qidStr] || weights[qidStr] || 1;
-    const weightedValue = mappedValue * weight;
-    
-    mappedValues[qidStr] = mappedValue;
-    weightedValues[qidStr] = weightedValue;
-    breakdown[qidStr] = {
-      original: responseValue,
-      mapped: mappedValue,
-      weight: weight,
-      weighted: weightedValue
-    };
-  }
-  
-  console.log('scoreFunction - mapped values:', mappedValues);
-  console.log('scoreFunction - weighted values:', weightedValues);
-  
-  // Call custom function
-  let result = 0;
-  try {
-    if (customFunctions[custom_function]) {
-      result = customFunctions[custom_function](responses, mappedValues, weightedValues, scoring);
-      console.log('scoreFunction - custom function result:', result);
-    } else {
-      throw new Error(`Custom function '${custom_function}' not found. Available functions: ${Object.keys(customFunctions).join(', ')}`);
-    }
-  } catch (error) {
-    console.error('Error calling custom function:', error);
-    result = 0;
-  }
-  
-  // Handle complex return objects from custom functions
-  let total, metadata;
-  if (typeof result === 'object' && result !== null) {
-    total = result.score || 0;
-    metadata = { ...result };
-    delete metadata.score; // Remove score from metadata to avoid duplication
-  } else {
-    total = Number(result) || 0;
-    metadata = {};
-  }
-  
-  console.log('scoreFunction - final total:', total);
-  
-  // Use new interpretations or fall back to legacy thresholds
-  const interpretation = getInterpretation(total, scoring.interpretations, scoring.thresholds || {});
-  const thresholdData = getThresholdData(total, scoring.thresholds || {});
-  
-  return { 
-    score: Number(total.toFixed(2)), 
-    total: Number(total.toFixed(2)), 
-    breakdown: breakdown,
-    customFunction: custom_function,
-    metadata: metadata,
-    interpretation: interpretation?.description || getThresholdInterpretation(total, scoring.thresholds || {}),
-    interpretationData: interpretation,
-    threshold: thresholdData
-  };
-}
+// scoreFunction removed due to security concerns with code injection
 
 module.exports = {
   leaderShipSurveyHandler,
@@ -850,11 +675,9 @@ module.exports = {
   scoreMixedSign,
   scoreGrouped,
   scoreFormula,
-  scoreFunction,
   pairedOptions,
   scorePairedOptions,
   getInterpretation,
   getThresholdInterpretation,
-  getThresholdData,
-  customFunctions
+  getThresholdData
 };

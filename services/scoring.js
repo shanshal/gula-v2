@@ -145,10 +145,7 @@ const calculateSurveyScore = async (userId, surveyId) => {
         // For formula, continue to use order-based Q variables via questionOrderMap
         result = protocoles.scoreFormula(stringKeyResponses, normalizedScoring, questionOrderMap);
         break;
-      case 'function':
-        // For custom functions, pass questionOrderMap for potential use
-        result = protocoles.scoreFunction(stringKeyResponses, normalizedScoring, questionOrderMap);
-        break;
+      // case 'function': removed due to security concerns with code injection
       case 'mixed_sign':
         result = protocoles.scoreMixedSign(stringKeyResponses, normalizedScoring);
         break;

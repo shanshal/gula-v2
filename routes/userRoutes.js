@@ -1,8 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
+const { authenticateToken } = require('../middleware/auth');
 const { 
-  validateUserCreation, 
+  validateUserCreation,
+  validateSignUp,
+  validateSignIn,
   validateIdParam 
 } = require('../middleware/validation');
 
@@ -307,5 +310,192 @@ router.put('/:id', validateIdParam, validateUserCreation, userController.updateU
  *                   example: 1
  */
 router.delete('/:id', validateIdParam, userController.deleteUser);
+
+/**
+ * @swagger
+ * /users/signup:
+ *   post:
+ *     summary: Sign up a new user
+ *     description: Create a new user account with email and password
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - email
+ *               - password
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: User's full name
+ *                 example: "أحمد محمد"
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: User's email address
+ *                 example: "ahmed@example.com"
+ *               password:
+ *                 type: string
+ *                 minLength: 6
+ *                 description: User's password (minimum 6 characters)
+ *                 example: "mypassword123"
+ *               age:
+ *                 type: integer
+ *                 minimum: 0
+ *                 maximum: 150
+ *                 description: User's age (optional)
+ *                 example: 30
+ *               sex:
+ *                 type: string
+ *                 enum: [male, female, other]
+ *                 description: User's gender (optional)
+ *                 example: "male"
+ *               weight:
+ *                 type: number
+ *                 minimum: 0
+ *                 maximum: 1000
+ *                 description: User's weight in kg (optional)
+ *                 example: 75.5
+ *     responses:
+ *       201:
+ *         description: Account created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Account created successfully"
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       example: 1
+ *                     name:
+ *                       type: string
+ *                       example: "أحمد محمد"
+ *                     email:
+ *                       type: string
+ *                       example: "ahmed@example.com"
+ *                 token:
+ *                   type: string
+ *                   description: JWT authentication token
+ *                   example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+ *       400:
+ *         description: Validation failed or user already exists
+ */
+router.post('/signup', validateSignUp, userController.signUp);
+
+/**
+ * @swagger
+ * /users/signin:
+ *   post:
+ *     summary: Sign in existing user
+ *     description: Authenticate user with email and password
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: User's email address
+ *                 example: "ahmed@example.com"
+ *               password:
+ *                 type: string
+ *                 description: User's password
+ *                 example: "mypassword123"
+ *     responses:
+ *       200:
+ *         description: Signed in successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Signed in successfully"
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       example: 1
+ *                     name:
+ *                       type: string
+ *                       example: "أحمد محمد"
+ *                     email:
+ *                       type: string
+ *                       example: "ahmed@example.com"
+ *                 token:
+ *                   type: string
+ *                   description: JWT authentication token
+ *                   example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+ *       401:
+ *         description: Invalid credentials
+ *       400:
+ *         description: Validation failed
+ */
+router.post('/signin', validateSignIn, userController.signIn);
+
+/**
+ * @swagger
+ * /users/profile:
+ *   get:
+ *     summary: Get user profile
+ *     description: Get the authenticated user's profile information
+ *     tags: [Authentication]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User profile retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       example: 1
+ *                     name:
+ *                       type: string
+ *                       example: "أحمد محمد"
+ *                     email:
+ *                       type: string
+ *                       example: "ahmed@example.com"
+ *                     age:
+ *                       type: integer
+ *                       example: 30
+ *                     sex:
+ *                       type: string
+ *                       example: "male"
+ *                     weight:
+ *                       type: number
+ *                       example: 75.5
+ *                     created_at:
+ *                       type: string
+ *                       format: date-time
+ *       401:
+ *         description: Authentication required
+ */
+router.get('/profile', authenticateToken, userController.getProfile);
 
 module.exports = router;

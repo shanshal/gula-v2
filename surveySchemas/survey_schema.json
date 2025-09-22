@@ -126,23 +126,13 @@
       "properties": {
         "type": {
           "type": "string",
-          "enum": ["sum", "grouped", "paired-options", "formula", "function", "mixed_sign"],
+          "enum": ["sum", "grouped", "paired-options", "formula", "mixed_sign"],
           "description": "Scoring algorithm type"
         },
         "expression": {
           "type": "string",
           "description": "Mathematical formula for formula scoring (use Q1, Q2, etc.)",
           "examples": ["Q1 + Q2 + Q3", "(Q1 + Q2) * 0.4 + Q3 * 0.1 - Q4 * 0.2"]
-        },
-        "custom_function": {
-          "type": "string",
-          "description": "Name of custom function for function scoring type",
-          "examples": ["calculateStrokeRisk", "calculateBMI", "calculateMentalHealthRisk"]
-        },
-        "custom_scoring": {
-          "type": "object",
-          "description": "Additional configuration data for custom functions",
-          "additionalProperties": true
         },
         "mappings": {
           "type": "object",
