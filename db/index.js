@@ -1,12 +1,12 @@
 const { Pool } = require("pg");
 
 const pool = new Pool({
-  user: 'shanshal',
-  host: 'localhost',
-  database: 'gula_v2',
-  password: 'RUSTneversl33ps',
-  port: 5432,
-  });
+  user: process.env.PGUSER || 'shanshal',
+  host: process.env.PGHOST || 'localhost',
+  database: process.env.PGDATABASE || 'gula_v2_app',
+  password: process.env.PGPASSWORD || 'RUSTneversl33ps',
+  port: Number(process.env.PGPORT) || 5432,
+});
 
 /*
 const pool = new Pool({
