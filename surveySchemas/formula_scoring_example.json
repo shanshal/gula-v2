@@ -1,0 +1,122 @@
+{
+  "name": {
+    "en": "Wellness Score Calculator",
+    "ar": "حاسبة مؤشر العافية"
+  },
+  "metadata": {
+    "version": "1.1",
+    "category": "health",
+    "language": "multilingual",
+    "created_by": "Wellness Coach",
+    "description": {
+      "en": "Calculates a composite wellness index using weighted lifestyle indicators.",
+      "ar": "يحسب مؤشرًا مركبًا للعافية باستخدام مؤشرات نمط الحياة الموزونة."
+    },
+    "instructions": {
+      "en": "Provide numeric scores for the past 24 hours on a scale from 1 to 10 unless noted otherwise.",
+      "ar": "أدخل درجات رقمية لآخر ٢٤ ساعة على مقياس من ١ إلى ١٠ ما لم يُذكر خلاف ذلك."
+    },
+    "estimated_time": {
+      "en": "3 minutes",
+      "ar": "٣ دقائق"
+    },
+    "target_audience": {
+      "en": "General population",
+      "ar": "عموم الناس"
+    }
+  },
+  "status": "draft",
+  "questions": [
+    {
+      "question_text": {
+        "en": "Rate your energy level today (1-10).",
+        "ar": "قيّم مستوى طاقتك اليوم (من ١ إلى ١٠)."
+      },
+      "question_type": "number",
+      "question_order": 1,
+      "weight": 1,
+      "is_required": true,
+      "min_value": 1,
+      "max_value": 10,
+      "help_text": {
+        "en": "1 = Exhausted, 10 = Fully energized.",
+        "ar": "١ = منهك، ١٠ = مفعم بالطاقة."
+      }
+    },
+    {
+      "question_text": {
+        "en": "How many hours did you sleep last night?",
+        "ar": "كم ساعة نمت الليلة الماضية؟"
+      },
+      "question_type": "number",
+      "question_order": 2,
+      "weight": 1,
+      "is_required": true,
+      "min_value": 0,
+      "max_value": 24,
+      "help_text": {
+        "en": "Round to the nearest half hour.",
+        "ar": "قرّب لأقرب نصف ساعة."
+      }
+    },
+    {
+      "question_text": {
+        "en": "Rate your stress level today (1-10).",
+        "ar": "قيّم مستوى التوتر لديك اليوم (من ١ إلى ١٠)."
+      },
+      "question_type": "number",
+      "question_order": 3,
+      "weight": 1,
+      "is_required": true,
+      "min_value": 1,
+      "max_value": 10,
+      "help_text": {
+        "en": "1 = No stress, 10 = Extremely stressed.",
+        "ar": "١ = بلا توتر، ١٠ = توتر شديد جدًا."
+      }
+    },
+    {
+      "question_text": {
+        "en": "Minutes of intentional movement or exercise today.",
+        "ar": "دقائق الحركة أو التمارين المتعمدة اليوم."
+      },
+      "question_type": "number",
+      "question_order": 4,
+      "weight": 1,
+      "is_required": true,
+      "min_value": 0,
+      "max_value": 480,
+      "help_text": {
+        "en": "Include walking, sports, or home workouts.",
+        "ar": "يشمل المشي والرياضة والتمارين المنزلية."
+      }
+    }
+  ],
+  "scoring": {
+    "type": "formula",
+    "expression": "(Q1 * 0.35) + (Q2 * 0.1) + ((11 - Q3) * 0.3) + (Q4 * 0.02)",
+    "thresholds": {
+      "0-3": {
+        "en": "Low wellness — prioritize rest and support.",
+        "ar": "عافية منخفضة — أعطِ الأولوية للراحة وطلب الدعم."
+      },
+      "3-5": {
+        "en": "Fair wellness — small adjustments can help.",
+        "ar": "عافية متوسطة — يمكن للتغييرات البسيطة أن تساعد."
+      },
+      "5-7": {
+        "en": "Good wellness — keep healthy routines going.",
+        "ar": "عافية جيدة — حافظ على عاداتك الصحية."
+      },
+      "7-10": {
+        "en": "Excellent wellness — you are thriving today!",
+        "ar": "عافية ممتازة — أنت بأفضل حال اليوم!"
+      }
+    },
+    "max_score": 10,
+    "description": {
+      "en": "Formula blends energy, rest, stress inversion, and activity minutes to create a 0-10 wellness index.",
+      "ar": "يمزج المؤشر بين الطاقة والراحة وعكس التوتر ودقائق النشاط لإنتاج درجة عافية من ٠ إلى ١٠."
+    }
+  }
+}

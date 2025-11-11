@@ -1,0 +1,401 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Gula Survey Schema",
+  "description": "JSON Schema for Gula Survey Management Service based on PostgreSQL database structure",
+  "type": "object",
+  "definitions": {
+    "localized_string": {
+      "type": "object",
+      "required": ["en", "ar"],
+      "properties": {
+        "en": {"type": "string", "minLength": 1},
+        "ar": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "localized_string_or_null": {
+      "oneOf": [
+        {"$ref": "#/definitions/localized_string"},
+        {"type": "null"}
+      ]
+    },
+    "localized_string_array": {
+      "type": "array",
+      "items": {"$ref": "#/definitions/localized_string"},
+      "minItems": 1
+    },
+    "localized_option": {
+      "type": "object",
+      "required": ["value", "text"],
+      "properties": {
+        "value": {"type": "string", "minLength": 1},
+        "text": {"$ref": "#/definitions/localized_string"},
+        "group": {"type": "string"},
+        "metadata": {"type": "object", "additionalProperties": true}
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": ["name", "questions"],
+  "properties": {
+    "name": {
+      "$ref": "#/definitions/localized_string",
+      "description": "Survey display name in multiple languages (stored alongside surveys.name translations)",
+      "examples": [
+        {"en": "Customer Satisfaction Survey", "ar": "استبيان رضا العملاء"},
+        {"en": "Mental Health Assessment", "ar": "تقييم الصحة النفسية"}
+      ]
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Flexible metadata stored as JSONB (surveys.metadata)",
+      "properties": {
+        "version": {"type": "string", "examples": ["1.0", "2.1"]},
+        "category": {"type": "string", "examples": ["mental_health", "feedback", "assessment"]},
+        "language": {"type": "string", "examples": ["en", "ar", "es", "fr"]},
+        "created_by": {"type": "string", "examples": ["Healthcare Provider", "Research Team"]},
+        "description": {"$ref": "#/definitions/localized_string"},
+        "instructions": {"$ref": "#/definitions/localized_string"},
+        "estimated_time": {
+          "$ref": "#/definitions/localized_string",
+          "examples": [
+            {"en": "5-10 minutes", "ar": "٥-١٠ دقائق"},
+            {"en": "15 minutes", "ar": "١٥ دقيقة"}
+          ]
+        },
+        "target_audience": {
+          "$ref": "#/definitions/localized_string",
+          "examples": [
+            {"en": "general", "ar": "عام"},
+            {"en": "adults", "ar": "البالغون"},
+            {"en": "healthcare workers", "ar": "العاملون في الرعاية الصحية"}
+          ]
+        }
+      },
+      "additionalProperties": true
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "published", "archived"],
+      "description": "Survey status with database constraint (surveys.status)",
+      "default": "draft"
+    },
+    "questions": {
+      "type": "array",
+      "description": "Array of survey questions",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["question_text", "question_type"],
+        "properties": {
+          "question_text": {
+            "$ref": "#/definitions/localized_string",
+            "description": "Localized question prompt (questions.question_text - NOT NULL)"
+          },
+          "question_type": {
+            "type": "string",
+            "enum": ["multiple_choice", "single_choice", "text", "number", "boolean", "scale", "radio", "checkbox", "paired-options"],
+            "description": "Question input type (questions.question_type - NOT NULL)"
+          },
+          "question_order": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Question order (questions.question_order - auto-assigned if not provided)"
+          },
+          "is_required": {
+            "type": "boolean",
+            "description": "Whether question is required (questions.is_required - DEFAULT FALSE)",
+            "default": false
+          },
+          "options": {
+            "oneOf": [
+              {
+                "type": "array",
+                "description": "Localized options for choice-based questions",
+                "minItems": 1,
+                "items": {"$ref": "#/definitions/localized_option"},
+                "examples": [[
+                  {
+                    "value": "yes",
+                    "text": {"en": "Yes", "ar": "نعم"}
+                  },
+                  {
+                    "value": "no",
+                    "text": {"en": "No", "ar": "لا"}
+                  }
+                ]]
+              },
+              {
+                "type": "null",
+                "description": "No options for text/number/scale questions"
+              }
+            ]
+          },
+          "min_value": {
+            "type": ["number", "null"],
+            "description": "Minimum value for numeric questions (questions.min_value - NUMERIC)"
+          },
+          "max_value": {
+            "type": ["number", "null"],
+            "description": "Maximum value for numeric questions (questions.max_value - NUMERIC)"
+          },
+          "placeholder": {
+            "$ref": "#/definitions/localized_string_or_null",
+            "description": "Localized placeholder text (questions.placeholder)"
+          },
+          "help_text": {
+            "$ref": "#/definitions/localized_string_or_null",
+            "description": "Localized help text (questions.help_text)"
+          },
+          "question_route": {
+            "type": ["string", "null"],
+            "description": "Conditional routing logic (questions.question_route)"
+          },
+          "flag": {
+            "type": ["string", "null"],
+            "description": "Special flags or markers (questions.flag)"
+          },
+          "weight": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Question weight for scoring (not stored in DB, used during processing)",
+            "default": 1
+          }
+        }
+      }
+    },
+    "scoring": {
+      "type": "object",
+      "description": "Scoring configuration stored as JSONB (surveys.scoring)",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["sum", "grouped", "paired-options", "formula", "mixed_sign"],
+          "description": "Scoring algorithm type"
+        },
+        "expression": {
+          "type": "string",
+          "description": "Mathematical formula for formula scoring (use Q1, Q2, etc.)",
+          "examples": ["Q1 + Q2 + Q3", "(Q1 + Q2) * 0.4 + Q3 * 0.1 - Q4 * 0.2"]
+        },
+        "mappings": {
+          "type": "object",
+          "description": "Maps option values to numeric scores by question ID",
+          "patternProperties": {
+            "^[0-9]+$|^\\*$": {
+              "type": "object",
+              "description": "Question ID (or '*' for all) with value-to-score mappings",
+              "additionalProperties": {"type": "number"},
+              "examples": [
+                {"yes": 1, "no": 0},
+                {"excellent": 4, "good": 3, "fair": 2, "poor": 1}
+              ]
+            }
+          }
+        },
+        "groups": {
+          "type": "object",
+          "description": "Question groups for grouped scoring",
+          "patternProperties": {
+            "^[a-zA-Z_]+$": {
+              "type": "array",
+              "items": {"type": "string"},
+              "description": "Array of question IDs in this group"
+            }
+          }
+        },
+        "group_mapping": {
+          "type": "object",
+          "description": "Maps option values to group names (paired-options)",
+          "examples": [{"A": "words_of_affirmation", "B": "quality_time"}]
+        },
+        "group_aggregate": {
+          "type": "string",
+          "enum": ["sum", "average", "max", "min"],
+          "description": "How to aggregate scores within groups",
+          "default": "sum"
+        },
+        "weights": {
+          "type": "object",
+          "description": "Default weights by question order",
+          "patternProperties": {
+            "^[0-9]+$": {"type": "number", "minimum": 0}
+          }
+        },
+        "weight_overrides": {
+          "type": "object",
+          "description": "Override weights by question ID (takes priority)",
+          "patternProperties": {
+            "^[0-9]+$": {"type": "number", "minimum": 0}
+          }
+        },
+        "thresholds": {
+          "oneOf": [
+            {
+              "type": "object",
+              "description": "Legacy: Simple score range interpretations (deprecated, use interpretations instead)",
+              "patternProperties": {
+                "^[0-9]+-[0-9]+$|^[0-9]+$": {"$ref": "#/definitions/localized_string"}
+              }
+            },
+            {
+              "type": "object",
+              "description": "Legacy: Grouped thresholds for grouped scoring (deprecated, use interpretations instead)",
+              "patternProperties": {
+                "^[a-zA-Z_]+$": {
+                  "type": "object",
+                  "patternProperties": {
+                    "^[0-9]+-[0-9]+$": {"$ref": "#/definitions/localized_string"}
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "interpretations": {
+          "oneOf": [
+            {
+              "type": "array",
+              "description": "Score interpretations for simple scoring types (sum, formula, mixed_sign)",
+              "items": {
+                "type": "object",
+                "required": ["min_score", "max_score", "title", "description"],
+                "properties": {
+                  "min_score": {
+                    "type": "number",
+                    "description": "Minimum score for this interpretation (inclusive)"
+                  },
+                  "max_score": {
+                    "type": "number",
+                    "description": "Maximum score for this interpretation (inclusive)"
+                  },
+                  "title": {
+                    "$ref": "#/definitions/localized_string",
+                    "description": "Localized title of this score level"
+                  },
+                  "description": {
+                    "$ref": "#/definitions/localized_string",
+                    "description": "Localized explanation of what this score means"
+                  },
+                  "recommendations": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/localized_string"},
+                    "description": "Localized actionable recommendations"
+                  },
+                  "color": {
+                    "type": "string",
+                    "pattern": "^#[0-9a-fA-F]{6}$",
+                    "description": "Hex color for UI theming"
+                  },
+                  "icon": {
+                    "type": "string",
+                    "description": "Icon name for UI display"
+                  },
+                  "theme": {
+                    "type": "string",
+                    "enum": ["low", "medium", "good", "excellent", "custom"],
+                    "description": "Predefined theme category"
+                  }
+                }
+              }
+            },
+            {
+              "type": "object",
+              "description": "Group-specific interpretations for grouped scoring",
+              "patternProperties": {
+                "^[a-zA-Z_]+$": {
+                  "type": "array",
+                  "description": "Interpretations for this group",
+                  "items": {
+                    "type": "object",
+                    "required": ["min_score", "max_score", "title", "description"],
+                    "properties": {
+                      "min_score": {"type": "number"},
+                      "max_score": {"type": "number"},
+                      "title": {"$ref": "#/definitions/localized_string"},
+                      "description": {"$ref": "#/definitions/localized_string"},
+                      "recommendations": {
+                        "type": "array",
+                        "items": {"$ref": "#/definitions/localized_string"}
+                      },
+                      "color": {
+                        "type": "string",
+                        "pattern": "^#[0-9a-fA-F]{6}$"
+                      },
+                      "icon": {"type": "string"},
+                      "theme": {
+                        "type": "string",
+                        "enum": ["low", "medium", "good", "excellent", "custom"]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "max_score": {
+          "type": "number",
+          "description": "Maximum possible score"
+        },
+        "description": {
+          "$ref": "#/definitions/localized_string",
+          "description": "Localized description of scoring methodology"
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "name": {
+        "en": "Basic Satisfaction Survey",
+        "ar": "استبيان الرضا الأساسي"
+      },
+      "status": "draft",
+      "questions": [
+        {
+          "question_text": {
+            "en": "How satisfied are you?",
+            "ar": "ما مدى رضاك؟"
+          },
+          "question_type": "single_choice",
+          "question_order": 1,
+          "options": [
+            {
+              "value": "very_satisfied",
+              "text": {"en": "Very Satisfied", "ar": "راضٍ جدًا"}
+            },
+            {
+              "value": "satisfied",
+              "text": {"en": "Satisfied", "ar": "راضٍ"}
+            },
+            {
+              "value": "neutral",
+              "text": {"en": "Neutral", "ar": "محايد"}
+            },
+            {
+              "value": "dissatisfied",
+              "text": {"en": "Dissatisfied", "ar": "غير راضٍ"}
+            }
+          ]
+        }
+      ],
+      "scoring": {
+        "type": "sum",
+        "mappings": {
+          "1": {
+            "very_satisfied": 4,
+            "satisfied": 3,
+            "neutral": 2,
+            "dissatisfied": 1
+          }
+        },
+        "description": {
+          "en": "Higher scores represent a greater level of satisfaction.",
+          "ar": "كلما ارتفعت الدرجة زاد مستوى الرضا."
+        }
+      }
+    }
+  ]
+}

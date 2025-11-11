@@ -1,0 +1,123 @@
+{
+  "name": {
+    "en": "Customer Satisfaction Survey",
+    "ar": "استبيان رضا العملاء"
+  },
+  "metadata": {
+    "version": "1.0",
+    "category": "feedback",
+    "language": "multilingual",
+    "created_by": "Customer Service Team",
+    "description": {
+      "en": "Baseline customer satisfaction survey scored with weighted sums.",
+      "ar": "استبيان أساسي لرضا العملاء يُحسب بمجموعات موزونة."
+    },
+    "estimated_time": {
+      "en": "5 minutes",
+      "ar": "٥ دقائق"
+    },
+    "target_audience": {
+      "en": "Customers",
+      "ar": "العملاء"
+    }
+  },
+  "status": "draft",
+  "questions": [
+    {
+      "question_text": {
+        "en": "How satisfied are you with our product quality?",
+        "ar": "ما مدى رضاك عن جودة منتجنا؟"
+      },
+      "question_type": "single_choice",
+      "question_order": 1,
+      "weight": 2,
+      "is_required": true,
+      "options": [
+        {"value": "very_dissatisfied", "text": {"en": "Very dissatisfied", "ar": "غير راضٍ تمامًا"}},
+        {"value": "dissatisfied", "text": {"en": "Dissatisfied", "ar": "غير راضٍ"}},
+        {"value": "neutral", "text": {"en": "Neutral", "ar": "محايد"}},
+        {"value": "satisfied", "text": {"en": "Satisfied", "ar": "راضٍ"}},
+        {"value": "very_satisfied", "text": {"en": "Very satisfied", "ar": "راضٍ جدًا"}}
+      ]
+    },
+    {
+      "question_text": {
+        "en": "How would you rate our customer service?",
+        "ar": "كيف تقيّم خدمة العملاء لدينا؟"
+      },
+      "question_type": "single_choice",
+      "question_order": 2,
+      "weight": 1.5,
+      "is_required": true,
+      "options": [
+        {"value": "poor", "text": {"en": "Poor", "ar": "ضعيفة"}},
+        {"value": "fair", "text": {"en": "Fair", "ar": "متوسطة"}},
+        {"value": "good", "text": {"en": "Good", "ar": "جيدة"}},
+        {"value": "very_good", "text": {"en": "Very good", "ar": "جيدة جدًا"}},
+        {"value": "excellent", "text": {"en": "Excellent", "ar": "ممتازة"}}
+      ]
+    },
+    {
+      "question_text": {
+        "en": "How likely are you to recommend us? (1-10)",
+        "ar": "ما مدى احتمالية أن توصي بنا؟ (١-١٠)"
+      },
+      "question_type": "scale",
+      "question_order": 3,
+      "weight": 1,
+      "is_required": true,
+      "min_value": 1,
+      "max_value": 10,
+      "help_text": {
+        "en": "1 = Not likely at all, 10 = Extremely likely.",
+        "ar": "١ = غير محتمل إطلاقًا، ١٠ = محتمل جدًا."
+      }
+    }
+  ],
+  "scoring": {
+    "type": "sum",
+    "mappings": {
+      "1": {
+        "very_dissatisfied": 1,
+        "dissatisfied": 2,
+        "neutral": 3,
+        "satisfied": 4,
+        "very_satisfied": 5
+      },
+      "2": {
+        "poor": 1,
+        "fair": 2,
+        "good": 3,
+        "very_good": 4,
+        "excellent": 5
+      }
+    },
+    "weight_overrides": {
+      "1": 2,
+      "2": 1.5
+    },
+    "thresholds": {
+      "3-8": {
+        "en": "Poor satisfaction — needs immediate attention",
+        "ar": "رضا ضعيف — يحتاج إلى اهتمام فوري"
+      },
+      "9-15": {
+        "en": "Fair satisfaction — room for improvement",
+        "ar": "رضا متوسط — مجال للتحسين"
+      },
+      "16-22": {
+        "en": "Good satisfaction — meeting expectations",
+        "ar": "رضا جيد — يلبي التوقعات"
+      },
+      "23-30": {
+        "en": "Excellent satisfaction — exceeding expectations",
+        "ar": "رضا ممتاز — يتجاوز التوقعات"
+      }
+    },
+    "max_score": 30,
+    "description": {
+      "en": "Sum of weighted scores: product quality (×2) + service (×1.5) + recommendation (×1).",
+      "ar": "مجموع الدرجات الموزونة: جودة المنتج (×٢) + الخدمة (×١٫٥) + التوصية (×١)."
+    }
+  }
+}

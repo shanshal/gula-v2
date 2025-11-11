@@ -1,0 +1,199 @@
+{
+  "name": {
+    "en": "Optimism vs Pessimism Scale",
+    "ar": "مقياس التفاؤل مقابل التشاؤم"
+  },
+  "metadata": {
+    "version": "1.1",
+    "category": "psychology",
+    "language": "multilingual",
+    "created_by": "Clinical Psychologist",
+    "description": {
+      "en": "Measures optimistic and pessimistic thinking patterns using mixed positive and negative scoring.",
+      "ar": "يقيس أنماط التفكير المتفائلة والمتشائمة باستخدام درجات إيجابية وسلبية مختلطة."
+    },
+    "estimated_time": {
+      "en": "6 minutes",
+      "ar": "٦ دقائق"
+    },
+    "target_audience": {
+      "en": "Adults",
+      "ar": "البالغون"
+    }
+  },
+  "status": "draft",
+  "questions": [
+    {
+      "question_text": {
+        "en": "I usually expect the best outcome in uncertain situations.",
+        "ar": "عادةً أتوقع أفضل نتيجة في المواقف غير المؤكدة."
+      },
+      "question_type": "single_choice",
+      "question_order": 1,
+      "weight": 1,
+      "is_required": true,
+      "options": [
+        {"value": "strongly_disagree", "text": {"en": "Strongly disagree", "ar": "أعارض بشدة"}},
+        {"value": "disagree", "text": {"en": "Disagree", "ar": "أعارض"}},
+        {"value": "neutral", "text": {"en": "Neutral", "ar": "محايد"}},
+        {"value": "agree", "text": {"en": "Agree", "ar": "أوافق"}},
+        {"value": "strongly_agree", "text": {"en": "Strongly agree", "ar": "أوافق بشدة"}}
+      ],
+      "help_text": {
+        "en": "Rate your agreement with this optimistic statement.",
+        "ar": "قيّم مدى موافقتك على هذا التصريح المتفائل."
+      }
+    },
+    {
+      "question_text": {
+        "en": "When things go wrong, I tend to assume they will keep getting worse.",
+        "ar": "عندما تسوء الأمور، أفترض عادةً أنها ستستمر في الأسوأ."
+      },
+      "question_type": "single_choice",
+      "question_order": 2,
+      "weight": 1,
+      "is_required": true,
+      "options": [
+        {"value": "strongly_disagree", "text": {"en": "Strongly disagree", "ar": "أعارض بشدة"}},
+        {"value": "disagree", "text": {"en": "Disagree", "ar": "أعارض"}},
+        {"value": "neutral", "text": {"en": "Neutral", "ar": "محايد"}},
+        {"value": "agree", "text": {"en": "Agree", "ar": "أوافق"}},
+        {"value": "strongly_agree", "text": {"en": "Strongly agree", "ar": "أوافق بشدة"}}
+      ],
+      "help_text": {
+        "en": "Rate your agreement with this pessimistic statement.",
+        "ar": "قيّم مدى موافقتك على هذا التصريح المتشائم."
+      }
+    },
+    {
+      "question_text": {
+        "en": "I believe that good things will happen to me in the future.",
+        "ar": "أعتقد أن الأشياء الجيدة ستحدث لي في المستقبل."
+      },
+      "question_type": "single_choice",
+      "question_order": 3,
+      "weight": 1,
+      "is_required": true,
+      "options": [
+        {"value": "strongly_disagree", "text": {"en": "Strongly disagree", "ar": "أعارض بشدة"}},
+        {"value": "disagree", "text": {"en": "Disagree", "ar": "أعارض"}},
+        {"value": "neutral", "text": {"en": "Neutral", "ar": "محايد"}},
+        {"value": "agree", "text": {"en": "Agree", "ar": "أوافق"}},
+        {"value": "strongly_agree", "text": {"en": "Strongly agree", "ar": "أوافق بشدة"}}
+      ],
+      "help_text": {
+        "en": "Rate your agreement with this optimistic statement.",
+        "ar": "قيّم مدى موافقتك على هذا التصريح المتفائل."
+      }
+    },
+    {
+      "question_text": {
+        "en": "I often worry that things will turn out badly.",
+        "ar": "غالبًا ما أقلق من أن الأمور ستسوء."
+      },
+      "question_type": "single_choice",
+      "question_order": 4,
+      "weight": 1,
+      "is_required": true,
+      "options": [
+        {"value": "strongly_disagree", "text": {"en": "Strongly disagree", "ar": "أعارض بشدة"}},
+        {"value": "disagree", "text": {"en": "Disagree", "ar": "أعارض"}},
+        {"value": "neutral", "text": {"en": "Neutral", "ar": "محايد"}},
+        {"value": "agree", "text": {"en": "Agree", "ar": "أوافق"}},
+        {"value": "strongly_agree", "text": {"en": "Strongly agree", "ar": "أوافق بشدة"}}
+      ],
+      "help_text": {
+        "en": "Rate your agreement with this pessimistic statement.",
+        "ar": "قيّم مدى موافقتك على هذا التصريح المتشائم."
+      }
+    },
+    {
+      "question_text": {
+        "en": "I generally look forward to new experiences.",
+        "ar": "أتطلع عمومًا إلى التجارب الجديدة."
+      },
+      "question_type": "single_choice",
+      "question_order": 5,
+      "weight": 1,
+      "is_required": true,
+      "options": [
+        {"value": "strongly_disagree", "text": {"en": "Strongly disagree", "ar": "أعارض بشدة"}},
+        {"value": "disagree", "text": {"en": "Disagree", "ar": "أعارض"}},
+        {"value": "neutral", "text": {"en": "Neutral", "ar": "محايد"}},
+        {"value": "agree", "text": {"en": "Agree", "ar": "أوافق"}},
+        {"value": "strongly_agree", "text": {"en": "Strongly agree", "ar": "أوافق بشدة"}}
+      ],
+      "help_text": {
+        "en": "Rate your agreement with this optimistic statement.",
+        "ar": "قيّم مدى موافقتك على هذا التصريح المتفائل."
+      }
+    }
+  ],
+  "scoring": {
+    "type": "mixed_sign",
+    "mappings": {
+      "1": {
+        "strongly_disagree": -2,
+        "disagree": -1,
+        "neutral": 0,
+        "agree": 1,
+        "strongly_agree": 2
+      },
+      "2": {
+        "strongly_disagree": 2,
+        "disagree": 1,
+        "neutral": 0,
+        "agree": -1,
+        "strongly_agree": -2
+      },
+      "3": {
+        "strongly_disagree": -2,
+        "disagree": -1,
+        "neutral": 0,
+        "agree": 1,
+        "strongly_agree": 2
+      },
+      "4": {
+        "strongly_disagree": 2,
+        "disagree": 1,
+        "neutral": 0,
+        "agree": -1,
+        "strongly_agree": -2
+      },
+      "5": {
+        "strongly_disagree": -2,
+        "disagree": -1,
+        "neutral": 0,
+        "agree": 1,
+        "strongly_agree": 2
+      }
+    },
+    "thresholds": {
+      "-10--6": {
+        "en": "Strong pessimistic tendency",
+        "ar": "ميل متشائم قوي"
+      },
+      "-5--2": {
+        "en": "Mild pessimistic tendency",
+        "ar": "ميل متشائم خفيف"
+      },
+      "-1-1": {
+        "en": "Balanced outlook",
+        "ar": "نظرة متوازنة"
+      },
+      "2-5": {
+        "en": "Mild optimistic tendency",
+        "ar": "ميل متفائل خفيف"
+      },
+      "6-10": {
+        "en": "Strong optimistic tendency",
+        "ar": "ميل متفائل قوي"
+      }
+    },
+    "max_score": 10,
+    "description": {
+      "en": "Optimistic statements score positively when you agree, while pessimistic statements reverse the scoring to balance the index.",
+      "ar": "تحصل التصريحات المتفائلة على نقاط إيجابية عند الموافقة، بينما تعكس التصريحات المتشائمة الدرجات لتحقيق توازن في المؤشر."
+    }
+  }
+}

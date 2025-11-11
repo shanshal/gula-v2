@@ -1,0 +1,248 @@
+{
+  "name": {
+    "en": "Love Languages Assessment",
+    "ar": "تقييم لغات الحب"
+  },
+  "metadata": {
+    "version": "1.0",
+    "category": "psychology",
+    "language": "multilingual",
+    "created_by": "Relationship Counselor",
+    "description": {
+      "en": "Identifies the primary love language by choosing between paired statements.",
+      "ar": "يحدد لغة الحب الأساسية من خلال الاختيار بين عبارات مزدوجة."
+    },
+    "estimated_time": {
+      "en": "8 minutes",
+      "ar": "٨ دقائق"
+    },
+    "target_audience": {
+      "en": "Couples",
+      "ar": "الأزواج"
+    }
+  },
+  "status": "draft",
+  "questions": [
+    {
+      "question_text": {
+        "en": "Choose the statement that resonates more with you:",
+        "ar": "اختر العبارة الأقرب إليك:"
+      },
+      "question_type": "paired-options",
+      "question_order": 1,
+      "weight": 1,
+      "is_required": true,
+      "options": [
+        {
+          "value": "A",
+          "text": {
+            "en": "I love hearing \"I love you\" and other affirming words.",
+            "ar": "أحب سماع \"أحبك\" وكلمات التقدير."
+          },
+          "group": "A"
+        },
+        {
+          "value": "E",
+          "text": {
+            "en": "I love receiving unexpected hugs and physical affection.",
+            "ar": "أحب تلقي العناق غير المتوقع والمودة الجسدية."
+          },
+          "group": "E"
+        }
+      ]
+    },
+    {
+      "question_text": {
+        "en": "Choose the statement that resonates more with you:",
+        "ar": "اختر العبارة الأقرب إليك:"
+      },
+      "question_type": "paired-options",
+      "question_order": 2,
+      "weight": 1,
+      "is_required": true,
+      "options": [
+        {
+          "value": "B",
+          "text": {
+            "en": "I feel loved when we spend uninterrupted time together.",
+            "ar": "أشعر بالحب عندما نقضي وقتًا معًا دون انقطاع."
+          },
+          "group": "B"
+        },
+        {
+          "value": "D",
+          "text": {
+            "en": "I feel loved when my partner helps me with tasks.",
+            "ar": "أشعر بالحب عندما يساعدني شريكي في المهام."
+          },
+          "group": "D"
+        }
+      ]
+    },
+    {
+      "question_text": {
+        "en": "Choose the statement that resonates more with you:",
+        "ar": "اختر العبارة الأقرب إليك:"
+      },
+      "question_type": "paired-options",
+      "question_order": 3,
+      "weight": 1,
+      "is_required": true,
+      "options": [
+        {
+          "value": "C",
+          "text": {
+            "en": "I appreciate thoughtful gifts, even small ones.",
+            "ar": "أقدّر الهدايا المدروسة حتى وإن كانت بسيطة."
+          },
+          "group": "C"
+        },
+        {
+          "value": "B",
+          "text": {
+            "en": "I prefer quality conversations over material things.",
+            "ar": "أفضل المحادثات العميقة على الأشياء المادية."
+          },
+          "group": "B"
+        }
+      ]
+    },
+    {
+      "question_text": {
+        "en": "Choose the statement that resonates more with you:",
+        "ar": "اختر العبارة الأقرب إليك:"
+      },
+      "question_type": "paired-options",
+      "question_order": 4,
+      "weight": 1,
+      "is_required": true,
+      "options": [
+        {
+          "value": "D",
+          "text": {
+            "en": "Actions speak louder than words to me.",
+            "ar": "الأفعال تعني لي أكثر من الكلمات."
+          },
+          "group": "D"
+        },
+        {
+          "value": "E",
+          "text": {
+            "en": "Physical touch makes me feel most connected.",
+            "ar": "المس الجسدي يجعلني أشعر بأكبر قدر من التواصل."
+          },
+          "group": "E"
+        }
+      ]
+    },
+    {
+      "question_text": {
+        "en": "Choose the statement that resonates more with you:",
+        "ar": "اختر العبارة الأقرب إليك:"
+      },
+      "question_type": "paired-options",
+      "question_order": 5,
+      "weight": 1,
+      "is_required": true,
+      "options": [
+        {
+          "value": "C",
+          "text": {
+            "en": "I treasure meaningful gifts as symbols of love.",
+            "ar": "أعتز بالهدايا المعبرة كرمز للحب."
+          },
+          "group": "C"
+        },
+        {
+          "value": "A",
+          "text": {
+            "en": "I value encouraging words and compliments.",
+            "ar": "أقدّر الكلمات المشجعة والمديح."
+          },
+          "group": "A"
+        }
+      ]
+    }
+  ],
+  "scoring": {
+    "type": "paired-options",
+    "groups": {
+      "words_of_affirmation": ["1", "5"],
+      "quality_time": ["2", "3"],
+      "receiving_gifts": ["3", "5"],
+      "acts_of_service": ["2", "4"],
+      "physical_touch": ["1", "4"]
+    },
+    "mappings": {
+      "1": {"A": 1, "E": 1},
+      "2": {"B": 1, "D": 1},
+      "3": {"C": 1, "B": 1},
+      "4": {"D": 1, "E": 1},
+      "5": {"C": 1, "A": 1}
+    },
+    "group_mapping": {
+      "A": "words_of_affirmation",
+      "B": "quality_time",
+      "C": "receiving_gifts",
+      "D": "acts_of_service",
+      "E": "physical_touch"
+    },
+    "thresholds": {
+      "words_of_affirmation": {
+        "0-1": {
+          "en": "Not your primary love language",
+          "ar": "ليست لغة الحب الأساسية لديك"
+        },
+        "2": {
+          "en": "Primary love language",
+          "ar": "لغة الحب الأساسية لديك"
+        }
+      },
+      "quality_time": {
+        "0-1": {
+          "en": "Not your primary love language",
+          "ar": "ليست لغة الحب الأساسية لديك"
+        },
+        "2": {
+          "en": "Primary love language",
+          "ar": "لغة الحب الأساسية لديك"
+        }
+      },
+      "receiving_gifts": {
+        "0-1": {
+          "en": "Not your primary love language",
+          "ar": "ليست لغة الحب الأساسية لديك"
+        },
+        "2": {
+          "en": "Primary love language",
+          "ar": "لغة الحب الأساسية لديك"
+        }
+      },
+      "acts_of_service": {
+        "0-1": {
+          "en": "Not your primary love language",
+          "ar": "ليست لغة الحب الأساسية لديك"
+        },
+        "2": {
+          "en": "Primary love language",
+          "ar": "لغة الحب الأساسية لديك"
+        }
+      },
+      "physical_touch": {
+        "0-1": {
+          "en": "Not your primary love language",
+          "ar": "ليست لغة الحب الأساسية لديك"
+        },
+        "2": {
+          "en": "Primary love language",
+          "ar": "لغة الحب الأساسية لديك"
+        }
+      }
+    },
+    "group_aggregate": "sum",
+    "description": {
+      "en": "Each pair awards one point to the selected option. Letters map to the five love language categories to reveal the strongest preference.",
+      "ar": "يمنح كل زوج نقطة للخيار المحدد. تُخصص الحروف لفئات لغات الحب الخمس لكشف التفضيل الأقوى."
+    }
+  }
+}

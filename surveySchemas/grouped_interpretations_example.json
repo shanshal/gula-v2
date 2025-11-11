@@ -1,0 +1,304 @@
+{
+  "name": {
+    "en": "Leadership Style Assessment (with Interpretations)",
+    "ar": "تقييم أسلوب القيادة (مع تفسيرات)"
+  },
+  "status": "active",
+  "questions": [
+    {
+      "question_text": {
+        "en": "I prefer to make quick decisions and set clear direction for the team.",
+        "ar": "أفضل اتخاذ قرارات سريعة ووضع توجيه واضح للفريق."
+      },
+      "question_type": "scale",
+      "question_order": 1,
+      "weight": 1,
+      "is_required": true,
+      "min_value": 1,
+      "max_value": 5,
+      "help_text": {
+        "en": "1 = Strongly disagree, 5 = Strongly agree.",
+        "ar": "١ = أعارض بشدة، ٥ = أوافق بشدة."
+      }
+    },
+    {
+      "question_text": {
+        "en": "I involve team members when shaping plans and priorities.",
+        "ar": "أشرك أعضاء الفريق عند وضع الخطط وترتيب الأولويات."
+      },
+      "question_type": "scale",
+      "question_order": 2,
+      "weight": 1,
+      "is_required": true,
+      "min_value": 1,
+      "max_value": 5,
+      "help_text": {
+        "en": "1 = Strongly disagree, 5 = Strongly agree.",
+        "ar": "١ = أعارض بشدة، ٥ = أوافق بشدة."
+      }
+    },
+    {
+      "question_text": {
+        "en": "I coach individuals by offering feedback and growth opportunities.",
+        "ar": "أدرّب الأفراد بتقديم التغذية الراجعة وفرص التطوير."
+      },
+      "question_type": "scale",
+      "question_order": 3,
+      "weight": 1,
+      "is_required": true,
+      "min_value": 1,
+      "max_value": 5,
+      "help_text": {
+        "en": "1 = Strongly disagree, 5 = Strongly agree.",
+        "ar": "١ = أعارض بشدة، ٥ = أوافق بشدة."
+      }
+    },
+    {
+      "question_text": {
+        "en": "I step in quickly if tasks are going off track.",
+        "ar": "أتدخل بسرعة إذا خرجت المهام عن المسار."
+      },
+      "question_type": "scale",
+      "question_order": 4,
+      "weight": 1,
+      "is_required": true,
+      "min_value": 1,
+      "max_value": 5,
+      "help_text": {
+        "en": "1 = Strongly disagree, 5 = Strongly agree.",
+        "ar": "١ = أعارض بشدة، ٥ = أوافق بشدة."
+      }
+    },
+    {
+      "question_text": {
+        "en": "I facilitate discussions to build shared solutions.",
+        "ar": "أُيسّر النقاشات لبناء حلول مشتركة."
+      },
+      "question_type": "scale",
+      "question_order": 5,
+      "weight": 1,
+      "is_required": true,
+      "min_value": 1,
+      "max_value": 5,
+      "help_text": {
+        "en": "1 = Strongly disagree, 5 = Strongly agree.",
+        "ar": "١ = أعارض بشدة، ٥ = أوافق بشدة."
+      }
+    }
+  ],
+  "scoring": {
+    "type": "grouped",
+    "groups": {
+      "directive": ["1", "4"],
+      "collaborative": ["2", "5"],
+      "coaching": ["3"]
+    },
+    "group_aggregate": "average",
+    "interpretations": {
+      "directive": [
+        {
+          "min_score": 1,
+          "max_score": 2.5,
+          "title": {
+            "en": "Opportunity to Lead with Clarity",
+            "ar": "فرصة لتعزيز القيادة الواضحة"
+          },
+          "description": {
+            "en": "You may prefer consensus and can add impact by setting clearer direction when needed.",
+            "ar": "قد تفضل الإجماع ويمكنك زيادة التأثير من خلال وضع توجيه أوضح عند الحاجة."
+          },
+          "recommendations": [
+            {
+              "en": "Define decision deadlines so teams know when to expect guidance.",
+              "ar": "حدد مواعيد نهائية للقرارات ليعرف الفريق متى يتوقع التوجيه."
+            },
+            {
+              "en": "Outline success criteria early in a project.",
+              "ar": "ضع معايير النجاح في بداية المشروع."
+            }
+          ],
+          "color": "#42a5f5",
+          "icon": "compass",
+          "theme": "medium"
+        },
+        {
+          "min_score": 2.6,
+          "max_score": 3.8,
+          "title": {
+            "en": "Balanced Direction",
+            "ar": "توجيه متوازن"
+          },
+          "description": {
+            "en": "You set direction while staying receptive to feedback.",
+            "ar": "تضع توجيهًا مع البقاء منفتحًا للتغذية الراجعة."
+          },
+          "recommendations": [
+            {
+              "en": "Keep communicating the \"why\" behind priorities.",
+              "ar": "واصل شرح سبب ترتيب الأولويات."
+            }
+          ],
+          "color": "#66bb6a",
+          "icon": "target",
+          "theme": "good"
+        },
+        {
+          "min_score": 3.9,
+          "max_score": 5,
+          "title": {
+            "en": "Decisive Driver",
+            "ar": "قائد حاسم"
+          },
+          "description": {
+            "en": "You instinctively provide structure; ensure space for dialogue remains.",
+            "ar": "تقدم الهيكل تلقائيًا؛ احرص على ترك مساحة للحوار."
+          },
+          "recommendations": [
+            {
+              "en": "Invite questions before finalizing key calls.",
+              "ar": "ادعُ لطرح الأسئلة قبل حسم القرارات المهمة."
+            }
+          ],
+          "color": "#ef5350",
+          "icon": "flag",
+          "theme": "medium"
+        }
+      ],
+      "collaborative": [
+        {
+          "min_score": 1,
+          "max_score": 2.5,
+          "title": {
+            "en": "Build Shared Ownership",
+            "ar": "عزز الملكية المشتركة"
+          },
+          "description": {
+            "en": "Collaboration may be occasional; more involvement can unlock creativity.",
+            "ar": "قد يكون التعاون أحيانًا؛ زيادة المشاركة قد تطلق الإبداع."
+          },
+          "recommendations": [
+            {
+              "en": "Use short workshops to co-create action plans.",
+              "ar": "استخدم ورشًا قصيرة لوضع خطط عمل مشتركة."
+            }
+          ],
+          "color": "#ab47bc",
+          "icon": "users",
+          "theme": "medium"
+        },
+        {
+          "min_score": 2.6,
+          "max_score": 3.8,
+          "title": {
+            "en": "Inclusive Facilitator",
+            "ar": "ميسّر شامل"
+          },
+          "description": {
+            "en": "You bring voices together and balance discussion with action.",
+            "ar": "تجمع الآراء وتوازن بين النقاش والتنفيذ."
+          },
+          "recommendations": [
+            {
+              "en": "Document agreements visibly for the team.",
+              "ar": "سجّل الاتفاقات بشكل مرئي للفريق."
+            }
+          ],
+          "color": "#26a69a",
+          "icon": "handshake",
+          "theme": "good"
+        },
+        {
+          "min_score": 3.9,
+          "max_score": 5,
+          "title": {
+            "en": "Consensus Champion",
+            "ar": "داعِم الإجماع"
+          },
+          "description": {
+            "en": "Strong focus on alignment; watch for decision delays.",
+            "ar": "تركز بشدة على الاتساق؛ انتبه لتأخير القرارات."
+          },
+          "recommendations": [
+            {
+              "en": "Set time boxes for topics that spark long debates.",
+              "ar": "حدد أطرًا زمنية للمواضيع التي تثير نقاشات طويلة."
+            }
+          ],
+          "color": "#ffa726",
+          "icon": "discussion",
+          "theme": "medium"
+        }
+      ],
+      "coaching": [
+        {
+          "min_score": 1,
+          "max_score": 2.5,
+          "title": {
+            "en": "Develop the Coaching Muscle",
+            "ar": "نمِّ مهارة التدريب"
+          },
+          "description": {
+            "en": "Coaching shows up occasionally; more feedback can boost growth.",
+            "ar": "يظهر التدريب أحيانًا؛ المزيد من التغذية الراجعة قد يعزز التطور."
+          },
+          "recommendations": [
+            {
+              "en": "Schedule regular one-on-one conversations.",
+              "ar": "حدد محادثات فردية منتظمة."
+            }
+          ],
+          "color": "#8d6e63",
+          "icon": "lightbulb",
+          "theme": "medium"
+        },
+        {
+          "min_score": 2.6,
+          "max_score": 3.8,
+          "title": {
+            "en": "Supportive Coach",
+            "ar": "مدرب داعم"
+          },
+          "description": {
+            "en": "You help people learn while delivering results.",
+            "ar": "تساعد الآخرين على التعلم أثناء تحقيق النتائج."
+          },
+          "recommendations": [
+            {
+              "en": "Co-create growth goals with each teammate.",
+              "ar": "ضع أهداف النمو بالتعاون مع كل عضو في الفريق."
+            }
+          ],
+          "color": "#9ccc65",
+          "icon": "chat",
+          "theme": "good"
+        },
+        {
+          "min_score": 3.9,
+          "max_score": 5,
+          "title": {
+            "en": "Transformational Coach",
+            "ar": "مدرب تحولي"
+          },
+          "description": {
+            "en": "Coaching is a hallmark of your style; celebrate wins frequently.",
+            "ar": "التدريب سمة أساسية في أسلوبك؛ احتفل بالإنجازات باستمرار."
+          },
+          "recommendations": [
+            {
+              "en": "Share success stories to motivate the wider team.",
+              "ar": "شارك قصص النجاح لتحفيز الفريق بأكمله."
+            }
+          ],
+          "color": "#ff7043",
+          "icon": "trophy",
+          "theme": "excellent"
+        }
+      ]
+    },
+    "max_score": 5,
+    "description": {
+      "en": "Average each leadership cluster separately to reveal dominant and emerging styles.",
+      "ar": "يُحتسب متوسط كل محور قيادي على حدة للكشف عن الأساليب السائدة والناشئة."
+    }
+  }
+}

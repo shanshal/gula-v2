@@ -1,0 +1,193 @@
+{
+  "name": {
+    "en": "Customer Satisfaction Survey (with Interpretations)",
+    "ar": "استبيان رضا العملاء (مع تفسيرات)"
+  },
+  "status": "active",
+  "questions": [
+    {
+      "question_text": {
+        "en": "How satisfied are you with our product quality?",
+        "ar": "ما مدى رضاك عن جودة منتجنا؟"
+      },
+      "question_type": "single_choice",
+      "question_order": 1,
+      "weight": 1,
+      "is_required": true,
+      "options": [
+        {"value": "very_dissatisfied", "text": {"en": "Very dissatisfied", "ar": "غير راضٍ تمامًا"}},
+        {"value": "dissatisfied", "text": {"en": "Dissatisfied", "ar": "غير راضٍ"}},
+        {"value": "neutral", "text": {"en": "Neutral", "ar": "محايد"}},
+        {"value": "satisfied", "text": {"en": "Satisfied", "ar": "راضٍ"}},
+        {"value": "very_satisfied", "text": {"en": "Very satisfied", "ar": "راضٍ جدًا"}}
+      ]
+    },
+    {
+      "question_text": {
+        "en": "How would you rate our customer service?",
+        "ar": "كيف تقيّم خدمة العملاء لدينا؟"
+      },
+      "question_type": "single_choice",
+      "question_order": 2,
+      "weight": 1,
+      "is_required": true,
+      "options": [
+        {"value": "poor", "text": {"en": "Poor", "ar": "ضعيفة"}},
+        {"value": "fair", "text": {"en": "Fair", "ar": "متوسطة"}},
+        {"value": "good", "text": {"en": "Good", "ar": "جيدة"}},
+        {"value": "very_good", "text": {"en": "Very good", "ar": "جيدة جدًا"}},
+        {"value": "excellent", "text": {"en": "Excellent", "ar": "ممتازة"}}
+      ]
+    },
+    {
+      "question_text": {
+        "en": "How likely are you to recommend us to others?",
+        "ar": "ما مدى احتمالية أن توصي بنا للآخرين؟"
+      },
+      "question_type": "scale",
+      "question_order": 3,
+      "weight": 1,
+      "is_required": true,
+      "min_value": 1,
+      "max_value": 10,
+      "help_text": {
+        "en": "1 = Not likely at all, 10 = Extremely likely.",
+        "ar": "١ = غير محتمل إطلاقًا، ١٠ = محتمل جدًا."
+      }
+    }
+  ],
+  "scoring": {
+    "type": "sum",
+    "mappings": {
+      "1": {
+        "very_dissatisfied": 1,
+        "dissatisfied": 2,
+        "neutral": 3,
+        "satisfied": 4,
+        "very_satisfied": 5
+      },
+      "2": {
+        "poor": 1,
+        "fair": 2,
+        "good": 3,
+        "very_good": 4,
+        "excellent": 5
+      }
+    },
+    "weight_overrides": {
+      "1": 2,
+      "2": 1.5
+    },
+    "interpretations": [
+      {
+        "min_score": 3,
+        "max_score": 8,
+        "title": {
+          "en": "Poor Satisfaction",
+          "ar": "رضا ضعيف"
+        },
+        "description": {
+          "en": "Your experience indicates several areas that need immediate attention. We want to make things right for you.",
+          "ar": "تشير تجربتك إلى مجالات عديدة تحتاج إلى اهتمام فوري. نرغب في تصحيح الأمور لك."
+        },
+        "recommendations": [
+          {
+            "en": "Contact our customer service team for immediate support.",
+            "ar": "تواصل مع فريق خدمة العملاء للحصول على دعم فوري."
+          },
+          {
+            "en": "Let us know the specific issues you faced so we can resolve them.",
+            "ar": "أخبرنا بالمشكلات المحددة التي واجهتها حتى نتمكن من حلها."
+          },
+          {
+            "en": "Consider trying our premium support if you need faster assistance.",
+            "ar": "فكر في تجربة الدعم المميز إذا كنت بحاجة إلى مساعدة أسرع."
+          }
+        ],
+        "color": "#ff6b6b",
+        "icon": "alert-triangle",
+        "theme": "low"
+      },
+      {
+        "min_score": 9,
+        "max_score": 15,
+        "title": {
+          "en": "Fair Satisfaction",
+          "ar": "رضا متوسط"
+        },
+        "description": {
+          "en": "You're having an okay experience, but we know we can do better together.",
+          "ar": "تجربتك جيدة نوعًا ما، لكن يمكننا تحسينها معًا."
+        },
+        "recommendations": [
+          {
+            "en": "Explore our help center for useful tips and tutorials.",
+            "ar": "تصفح مركز المساعدة لدينا للحصول على نصائح وشروحات مفيدة."
+          },
+          {
+            "en": "Share specific suggestions so we can focus on what matters to you.",
+            "ar": "شاركنا اقتراحات محددة لنركز على ما يهمك."
+          }
+        ],
+        "color": "#ffa726",
+        "icon": "info",
+        "theme": "medium"
+      },
+      {
+        "min_score": 16,
+        "max_score": 22,
+        "title": {
+          "en": "Good Satisfaction",
+          "ar": "رضا جيد"
+        },
+        "description": {
+          "en": "Great! You're having a positive experience and we're meeting expectations.",
+          "ar": "رائع! تمر بتجربة إيجابية ونلبي توقعاتك."
+        },
+        "recommendations": [
+          {
+            "en": "Discover advanced features you may not be using yet.",
+            "ar": "اكتشف الميزات المتقدمة التي قد لا تستخدمها بعد."
+          },
+          {
+            "en": "Join our community to learn from other customers.",
+            "ar": "انضم إلى مجتمعنا للتعلم من العملاء الآخرين."
+          }
+        ],
+        "color": "#66bb6a",
+        "icon": "check-circle",
+        "theme": "good"
+      },
+      {
+        "min_score": 23,
+        "max_score": 30,
+        "title": {
+          "en": "Excellent Satisfaction",
+          "ar": "رضا ممتاز"
+        },
+        "description": {
+          "en": "Outstanding! You're having an exceptional experience and we appreciate your loyalty.",
+          "ar": "ممتاز! تمر بتجربة استثنائية ونحن نقدر ولاءك."
+        },
+        "recommendations": [
+          {
+            "en": "Share your success story with our community.",
+            "ar": "شارك قصة نجاحك مع مجتمعنا."
+          },
+          {
+            "en": "Refer friends to earn loyalty rewards.",
+            "ar": "أوصِ أصدقاءك لتحصل على مكافآت ولاء."
+          }
+        ],
+        "color": "#2e7d32",
+        "icon": "star",
+        "theme": "excellent"
+      }
+    ],
+    "max_score": 30,
+    "description": {
+      "en": "Weighted sum: product quality (×2) + service (×1.5) + recommendation likelihood (×1).",
+      "ar": "مجموع موزون: جودة المنتج (×٢) + الخدمة (×١٫٥) + احتمال التوصية (×١)."
+    }
+  }
+}

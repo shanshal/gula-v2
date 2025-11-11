@@ -1,0 +1,189 @@
+{
+  "name": {
+    "en": "Leadership Style Assessment",
+    "ar": "تقييم أسلوب القيادة"
+  },
+  "metadata": {
+    "version": "1.1",
+    "category": "assessment",
+    "language": "multilingual",
+    "created_by": "HR Department",
+    "description": {
+      "en": "Measures tendencies across three leadership styles using grouped scoring.",
+      "ar": "يقيس الميول عبر ثلاثة أساليب قيادية باستخدام تجميع الدرجات."
+    },
+    "estimated_time": {
+      "en": "10 minutes",
+      "ar": "١٠ دقائق"
+    },
+    "target_audience": {
+      "en": "People managers",
+      "ar": "المديرون"
+    }
+  },
+  "status": "draft",
+  "questions": [
+    {
+      "question_text": {
+        "en": "I prefer to make decisions quickly without extensive consultation.",
+        "ar": "أفضل اتخاذ قرارات سريعة دون استشارات مطولة."
+      },
+      "question_type": "scale",
+      "question_order": 1,
+      "weight": 1,
+      "is_required": true,
+      "min_value": 1,
+      "max_value": 5,
+      "help_text": {
+        "en": "1 = Strongly disagree, 5 = Strongly agree.",
+        "ar": "١ = أعارض بشدة، ٥ = أوافق بشدة."
+      }
+    },
+    {
+      "question_text": {
+        "en": "Team input is essential for effective decision-making.",
+        "ar": "مشاركة الفريق ضرورية لاتخاذ القرارات بفاعلية."
+      },
+      "question_type": "scale",
+      "question_order": 2,
+      "weight": 1,
+      "is_required": true,
+      "min_value": 1,
+      "max_value": 5,
+      "help_text": {
+        "en": "1 = Strongly disagree, 5 = Strongly agree.",
+        "ar": "١ = أعارض بشدة، ٥ = أوافق بشدة."
+      }
+    },
+    {
+      "question_text": {
+        "en": "I believe people perform best with minimal supervision.",
+        "ar": "أؤمن أن الناس يؤدون بشكل أفضل مع إشراف محدود."
+      },
+      "question_type": "scale",
+      "question_order": 3,
+      "weight": 1,
+      "is_required": true,
+      "min_value": 1,
+      "max_value": 5,
+      "help_text": {
+        "en": "1 = Strongly disagree, 5 = Strongly agree.",
+        "ar": "١ = أعارض بشدة، ٥ = أوافق بشدة."
+      }
+    },
+    {
+      "question_text": {
+        "en": "Clear rules and procedures keep teams on track.",
+        "ar": "القواعد والإجراءات الواضحة تحافظ على مسار الفرق."
+      },
+      "question_type": "scale",
+      "question_order": 4,
+      "weight": 1,
+      "is_required": true,
+      "min_value": 1,
+      "max_value": 5,
+      "help_text": {
+        "en": "1 = Strongly disagree, 5 = Strongly agree.",
+        "ar": "١ = أعارض بشدة، ٥ = أوافق بشدة."
+      }
+    },
+    {
+      "question_text": {
+        "en": "I encourage collaborative problem-solving.",
+        "ar": "أشجع حل المشكلات بشكل تعاوني."
+      },
+      "question_type": "scale",
+      "question_order": 5,
+      "weight": 1,
+      "is_required": true,
+      "min_value": 1,
+      "max_value": 5,
+      "help_text": {
+        "en": "1 = Strongly disagree, 5 = Strongly agree.",
+        "ar": "١ = أعارض بشدة، ٥ = أوافق بشدة."
+      }
+    },
+    {
+      "question_text": {
+        "en": "People should have freedom to choose their own approach.",
+        "ar": "ينبغي أن يكون لدى الأفراد حرية اختيار أسلوبهم الخاص."
+      },
+      "question_type": "scale",
+      "question_order": 6,
+      "weight": 1,
+      "is_required": true,
+      "min_value": 1,
+      "max_value": 5,
+      "help_text": {
+        "en": "1 = Strongly disagree, 5 = Strongly agree.",
+        "ar": "١ = أعارض بشدة، ٥ = أوافق بشدة."
+      }
+    }
+  ],
+  "scoring": {
+    "type": "grouped",
+    "groups": {
+      "authoritarian": ["1", "4"],
+      "democratic": ["2", "5"],
+      "laissez_faire": ["3", "6"]
+    },
+    "mappings": {
+      "*": {
+        "1": 1,
+        "2": 2,
+        "3": 3,
+        "4": 4,
+        "5": 5
+      }
+    },
+    "group_aggregate": "sum",
+    "thresholds": {
+      "authoritarian": {
+        "2-4": {
+          "en": "Low authoritarian tendency",
+          "ar": "ميل استبدادي منخفض"
+        },
+        "5-7": {
+          "en": "Moderate authoritarian tendency",
+          "ar": "ميل استبدادي متوسط"
+        },
+        "8-10": {
+          "en": "High authoritarian tendency",
+          "ar": "ميل استبدادي مرتفع"
+        }
+      },
+      "democratic": {
+        "2-4": {
+          "en": "Low democratic tendency",
+          "ar": "ميل ديمقراطي منخفض"
+        },
+        "5-7": {
+          "en": "Moderate democratic tendency",
+          "ar": "ميل ديمقراطي متوسط"
+        },
+        "8-10": {
+          "en": "High democratic tendency",
+          "ar": "ميل ديمقراطي مرتفع"
+        }
+      },
+      "laissez_faire": {
+        "2-4": {
+          "en": "Low laissez-faire tendency",
+          "ar": "ميل تفويض منخفض"
+        },
+        "5-7": {
+          "en": "Moderate laissez-faire tendency",
+          "ar": "ميل تفويض متوسط"
+        },
+        "8-10": {
+          "en": "High laissez-faire tendency",
+          "ar": "ميل تفويض مرتفع"
+        }
+      }
+    },
+    "description": {
+      "en": "Groups answers into leadership styles and sums each cluster to reveal the dominant tendency.",
+      "ar": "يجمع الإجابات ضمن أساليب القيادة ويجمع كل مجموعة لإظهار الميل السائد."
+    }
+  }
+}

@@ -1,0 +1,292 @@
+{
+  "name": {
+    "en": "Mental Health Screening Survey",
+    "ar": "استبيان الفحص النفسي"
+  },
+  "metadata": {
+    "version": "2.0",
+    "category": "mental_health",
+    "language": "multilingual",
+    "created_by": "Clinical Team",
+    "description": {
+      "en": "Self-report screening to monitor mood and anxiety indicators over the past two weeks.",
+      "ar": "استبيان ذاتي لمتابعة مؤشرات المزاج والقلق خلال الأسبوعين الماضيين."
+    },
+    "instructions": {
+      "en": "Please answer every question by selecting the option that best describes your experience during the last 14 days.",
+      "ar": "يرجى الإجابة على جميع الأسئلة باختيار الخيار الذي يصف تجربتك خلال الأيام الأربعة عشر الماضية."
+    },
+    "estimated_time": {
+      "en": "5 minutes",
+      "ar": "٥ دقائق"
+    },
+    "target_audience": {
+      "en": "Adults",
+      "ar": "البالغون"
+    }
+  },
+  "status": "active",
+  "questions": [
+    {
+      "question_text": {
+        "en": "How often have you been bothered by feeling down, depressed, or hopeless?",
+        "ar": "كم مرة شعرت بالضيق أو الاكتئاب أو اليأس؟"
+      },
+      "question_type": "single_choice",
+      "question_order": 1,
+      "weight": 1,
+      "is_required": true,
+      "options": [
+        {
+          "value": "not_at_all",
+          "text": {"en": "Not at all", "ar": "أبدًا"}
+        },
+        {
+          "value": "several_days",
+          "text": {"en": "Several days", "ar": "عدة أيام"}
+        },
+        {
+          "value": "more_than_half_days",
+          "text": {"en": "More than half the days", "ar": "أكثر من نصف الأيام"}
+        },
+        {
+          "value": "nearly_every_day",
+          "text": {"en": "Nearly every day", "ar": "تقريبًا كل يوم"}
+        }
+      ]
+    },
+    {
+      "question_text": {
+        "en": "How often have you had little interest or pleasure in doing things?",
+        "ar": "كم مرة فقدت الاهتمام أو المتعة في القيام بالأشياء؟"
+      },
+      "question_type": "single_choice",
+      "question_order": 2,
+      "weight": 1,
+      "is_required": true,
+      "options": [
+        {"value": "not_at_all", "text": {"en": "Not at all", "ar": "أبدًا"}},
+        {"value": "several_days", "text": {"en": "Several days", "ar": "عدة أيام"}},
+        {"value": "more_than_half_days", "text": {"en": "More than half the days", "ar": "أكثر من نصف الأيام"}},
+        {"value": "nearly_every_day", "text": {"en": "Nearly every day", "ar": "تقريبًا كل يوم"}}
+      ]
+    },
+    {
+      "question_text": {
+        "en": "How often have you felt tired or had little energy?",
+        "ar": "كم مرة شعرت بالتعب أو قلة الطاقة؟"
+      },
+      "question_type": "single_choice",
+      "question_order": 3,
+      "weight": 1,
+      "is_required": true,
+      "options": [
+        {"value": "not_at_all", "text": {"en": "Not at all", "ar": "أبدًا"}},
+        {"value": "several_days", "text": {"en": "Several days", "ar": "عدة أيام"}},
+        {"value": "more_than_half_days", "text": {"en": "More than half the days", "ar": "أكثر من نصف الأيام"}},
+        {"value": "nearly_every_day", "text": {"en": "Nearly every day", "ar": "تقريبًا كل يوم"}}
+      ]
+    },
+    {
+      "question_text": {
+        "en": "How often have you had trouble falling or staying asleep, or sleeping too much?",
+        "ar": "كم مرة واجهت صعوبة في النوم أو نمت كثيرًا؟"
+      },
+      "question_type": "single_choice",
+      "question_order": 4,
+      "weight": 1,
+      "is_required": true,
+      "options": [
+        {"value": "not_at_all", "text": {"en": "Not at all", "ar": "أبدًا"}},
+        {"value": "several_days", "text": {"en": "Several days", "ar": "عدة أيام"}},
+        {"value": "more_than_half_days", "text": {"en": "More than half the days", "ar": "أكثر من نصف الأيام"}},
+        {"value": "nearly_every_day", "text": {"en": "Nearly every day", "ar": "تقريبًا كل يوم"}}
+      ]
+    },
+    {
+      "question_text": {
+        "en": "How often have you had poor appetite or overeating?",
+        "ar": "كم مرة كان لديك ضعف في الشهية أو كنت تأكل بإفراط؟"
+      },
+      "question_type": "single_choice",
+      "question_order": 5,
+      "weight": 1,
+      "is_required": true,
+      "options": [
+        {"value": "not_at_all", "text": {"en": "Not at all", "ar": "أبدًا"}},
+        {"value": "several_days", "text": {"en": "Several days", "ar": "عدة أيام"}},
+        {"value": "more_than_half_days", "text": {"en": "More than half the days", "ar": "أكثر من نصف الأيام"}},
+        {"value": "nearly_every_day", "text": {"en": "Nearly every day", "ar": "تقريبًا كل يوم"}}
+      ]
+    },
+    {
+      "question_text": {
+        "en": "How often have you felt bad about yourself — or that you are a failure or have let yourself or your family down?",
+        "ar": "كم مرة شعرت بأنك سيئ أو أنك فاشل أو خيبت أملك أو أمل عائلتك؟"
+      },
+      "question_type": "single_choice",
+      "question_order": 6,
+      "weight": 1,
+      "is_required": true,
+      "options": [
+        {"value": "not_at_all", "text": {"en": "Not at all", "ar": "أبدًا"}},
+        {"value": "several_days", "text": {"en": "Several days", "ar": "عدة أيام"}},
+        {"value": "more_than_half_days", "text": {"en": "More than half the days", "ar": "أكثر من نصف الأيام"}},
+        {"value": "nearly_every_day", "text": {"en": "Nearly every day", "ar": "تقريبًا كل يوم"}}
+      ]
+    },
+    {
+      "question_text": {
+        "en": "How often have you had trouble concentrating on things, such as reading or watching television?",
+        "ar": "كم مرة واجهت صعوبة في التركيز على أشياء مثل القراءة أو مشاهدة التلفاز؟"
+      },
+      "question_type": "single_choice",
+      "question_order": 7,
+      "weight": 1,
+      "is_required": true,
+      "options": [
+        {"value": "not_at_all", "text": {"en": "Not at all", "ar": "أبدًا"}},
+        {"value": "several_days", "text": {"en": "Several days", "ar": "عدة أيام"}},
+        {"value": "more_than_half_days", "text": {"en": "More than half the days", "ar": "أكثر من نصف الأيام"}},
+        {"value": "nearly_every_day", "text": {"en": "Nearly every day", "ar": "تقريبًا كل يوم"}}
+      ]
+    }
+  ],
+  "scoring": {
+    "type": "sum",
+    "mappings": {
+      "*": {
+        "not_at_all": 0,
+        "several_days": 1,
+        "more_than_half_days": 2,
+        "nearly_every_day": 3
+      }
+    },
+    "weight_overrides": {
+      "5": 2
+    },
+    "interpretations": [
+      {
+        "min_score": 0,
+        "max_score": 4,
+        "title": {
+          "en": "Minimal Symptoms",
+          "ar": "أعراض طفيفة"
+        },
+        "description": {
+          "en": "Your responses show minimal signs of depression or anxiety at this time.",
+          "ar": "إجاباتك تشير إلى أعراض طفيفة للاكتئاب أو القلق في الوقت الحالي."
+        },
+        "recommendations": [
+          {
+            "en": "Continue maintaining healthy sleep, nutrition, and activity routines.",
+            "ar": "استمر في الحفاظ على عادات صحية في النوم والتغذية والنشاط."
+          },
+          {
+            "en": "Stay connected with supportive friends and family.",
+            "ar": "حافظ على تواصلك مع الأصدقاء والعائلة الداعمين."
+          },
+          {
+            "en": "Monitor your mood and reach out if anything changes.",
+            "ar": "راقب مزاجك وتواصل مع المختصين إذا طرأ أي تغيير."
+          }
+        ],
+        "color": "#4caf50",
+        "icon": "check-circle",
+        "theme": "good"
+      },
+      {
+        "min_score": 5,
+        "max_score": 9,
+        "title": {
+          "en": "Mild to Moderate Symptoms",
+          "ar": "أعراض خفيفة إلى متوسطة"
+        },
+        "description": {
+          "en": "Some symptoms are present and may be affecting daily life. Support can make a difference.",
+          "ar": "هناك بعض الأعراض التي قد تؤثر على حياتك اليومية، ويمكن للدعم أن يحدث فرقًا."
+        },
+        "recommendations": [
+          {
+            "en": "Consider speaking with a counselor or mental health professional.",
+            "ar": "فكر في التحدث مع مستشار أو مختص بالصحة النفسية."
+          },
+          {
+            "en": "Establish consistent sleep and exercise habits.",
+            "ar": "حافظ على عادات منتظمة للنوم وممارسة الرياضة."
+          },
+          {
+            "en": "Practice relaxation techniques such as breathing or mindfulness.",
+            "ar": "مارس تقنيات الاسترخاء مثل التنفس العميق أو اليقظة الذهنية."
+          }
+        ],
+        "color": "#ff9800",
+        "icon": "info",
+        "theme": "medium"
+      },
+      {
+        "min_score": 10,
+        "max_score": 15,
+        "title": {
+          "en": "Moderate to Severe Symptoms",
+          "ar": "أعراض متوسطة إلى شديدة"
+        },
+        "description": {
+          "en": "Symptoms are significant and professional support is strongly recommended.",
+          "ar": "الأعراض ملحوظة ويُنصح بشدة بطلب الدعم المهني."
+        },
+        "recommendations": [
+          {
+            "en": "Schedule an appointment with a mental health specialist soon.",
+            "ar": "حدد موعدًا مع مختص بالصحة النفسية في أقرب وقت."
+          },
+          {
+            "en": "Reach out to trusted friends or family members for support.",
+            "ar": "تواصل مع أصدقاء أو أفراد عائلة موثوقين للحصول على الدعم."
+          },
+          {
+            "en": "If symptoms worsen, contact emergency or crisis services immediately.",
+            "ar": "إذا ساءت الأعراض، تواصل فورًا مع خدمات الطوارئ أو الأزمات."
+          }
+        ],
+        "color": "#f44336",
+        "icon": "alert-triangle",
+        "theme": "low"
+      },
+      {
+        "min_score": 16,
+        "max_score": 21,
+        "title": {
+          "en": "Severe Symptoms - Immediate Help Needed",
+          "ar": "أعراض شديدة - احتج إلى مساعدة فورية"
+        },
+        "description": {
+          "en": "Severe symptoms are present. Please seek immediate professional or emergency support.",
+          "ar": "أعراض شديدة موجودة. يرجى طلب الدعم المهني أو الطارئ فورًا."
+        },
+        "recommendations": [
+          {
+            "en": "Contact emergency services or a crisis hotline right away if you feel unsafe.",
+            "ar": "اتصل بخدمات الطوارئ أو بخط الأزمات فورًا إذا شعرت بعدم الأمان."
+          },
+          {
+            "en": "Do not stay alone—ask someone you trust to stay with you.",
+            "ar": "لا تبقَ بمفردك — اطلب من شخص تثق به أن يبقى معك."
+          },
+          {
+            "en": "Follow up with mental health professionals for ongoing care.",
+            "ar": "تابع مع مختصين بالصحة النفسية للحصول على رعاية مستمرة."
+          }
+        ],
+        "color": "#d32f2f",
+        "icon": "warning",
+        "theme": "low"
+      }
+    ],
+    "max_score": 21,
+    "description": {
+      "en": "Weighted sum scoring with additional emphasis on appetite changes (question 5).",
+      "ar": "حساب مجموع مرجح مع تركيز إضافي على تغيّرات الشهية (السؤال ٥)."
+    }
+  }
+}
