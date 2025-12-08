@@ -20,7 +20,7 @@ const buildPoolConfig = () => {
     user: process.env.PGUSER || "shanshal",
     host: process.env.PGHOST || "localhost",
     database: process.env.PGDATABASE || "gula_v2_app",
-    password: process.env.PGPASSWORD || "RUSTneversl33ps",
+    password: process.env.PGPASSWORD || "SecureP@ssword",
     port: Number(process.env.PGPORT) || 5432,
     ssl: shouldUseSsl ? { rejectUnauthorized: false } : undefined,
   };
