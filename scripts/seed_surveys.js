@@ -1,5 +1,5 @@
-const surveyModel = require('../models/surveyModel');
-const pool = require('../db');
+const { Survey, Question } = require('../src/models');
+const sequelize = require('../src/config/db');
 
 const CATEGORY_OPTIONS = [
   {
@@ -81,36 +81,52 @@ const buildMandatorySurveyPayload = () => {
 };
 
 const seedSurveys = async () => {
-  const client = await pool.connect();
+  const transaction = await sequelize.transaction();
   try {
-    await client.query('BEGIN');
-
-    await client.query('TRUNCATE survey_answers, survey_submissions, questions, surveys RESTART IDENTITY CASCADE');
+    // Clear existing data
+    await Question.destroy({ where: {}, transaction });
+    await Survey.destroy({ where: {}, transaction });
 
     const payload = buildMandatorySurveyPayload();
-    await surveyModel.createSurvey(payload);
+    
+    // Create survey
+    const survey = await Survey.create({
+      name: payload.name,
+      status: payload.status,
+      metadata: payload.metadata,
+      scoring: payload.scoring,
+      interpretation: payload.interpretation
+    }, { transaction });
 
-    await client.query('COMMIT');
+    // Create questions
+    const questions = payload.questions.map(q => ({
+      ...q,
+      survey_id: survey.id
+    }));
+    
+    await Question.bulkCreate(questions, { transaction });
+
+    await transaction.commit();
     console.log('✓ Seeded mandatory daily check-in survey');
     return 1;
   } catch (error) {
-    await client.query('ROLLBACK');
+    await transaction.rollback();
     throw error;
-  } finally {
-    client.release();
   }
 };
 
 if (require.main === module) {
   (async () => {
     try {
+      await sequelize.authenticate();
+      await sequelize.sync({ alter: true });
       const count = await seedSurveys();
       console.log(`\nFinished seeding surveys. Created ${count} survey.`);
-      await pool.end();
+      await sequelize.close();
       process.exit(0);
     } catch (error) {
       console.error('Survey seeding failed:', error);
-      await pool.end();
+      await sequelize.close();
       process.exit(1);
     }
   })();
