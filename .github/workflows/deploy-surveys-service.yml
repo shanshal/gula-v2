@@ -1,0 +1,23 @@
+name: Deploy gula-surveys-service to Render
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - "MicroServices/gula-surveys/**"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Trigger Render deploy (gula-surveys)
+        run: |
+          if [ -z "${{ secrets.RENDER_DEPLOY_HOOK_URL_SURVEYS }}" ]; then
+            echo "RENDER_DEPLOY_HOOK_URL_SURVEYS not set, skipping."
+            exit 0
+          fi
+          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL_SURVEYS }}"
