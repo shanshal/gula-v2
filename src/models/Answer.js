@@ -10,10 +10,7 @@ const Answer = sequelize.define('Answer', {
   user_id: {
     type: DataTypes.UUID,
     allowNull: false,
-    references: {
-      model: 'users',
-      key: 'id',
-    },
+    // No foreign key constraint - users are managed by auth microservice
   },
   survey_id: {
     type: DataTypes.UUID,

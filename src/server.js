@@ -79,10 +79,10 @@ app.get('/health', (_req, res) => res.status(200).json({ status: 'ok' }));
 
 
 // Routes
-app.use('/surveys', surveyRoutes);
-app.use('/questions', questionRoutes);
-app.use('/answers', answerRoutes);
-app.use('/scoring', scoringRoutes);
+app.use('/api/surveys', surveyRoutes);
+app.use('/api/surveys/questions', questionRoutes);
+app.use('/api/surveys/answers', answerRoutes);
+app.use('/api/surveys/scoring', scoringRoutes);
 
 
 // Error handling

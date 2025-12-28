@@ -11,15 +11,62 @@ const {
   validateSurveyIdParam,
 } = require('../middleware/validation');
 
-router.get('/user/:userId/survey/:surveyId/score', validateUserSurveyParams, getSurveyScore);
-router.get('/', answerController.getAnswers);
-router.get('/:id', validateIdParam, answerController.getAnswerById);
-router.post('/', validateSingleAnswer, answerController.createAnswer);
-router.put('/:id', validateIdParam, validateSingleAnswer, answerController.updateAnswer);
-router.delete('/:id', validateIdParam, answerController.deleteAnswer);
-router.get('/user/:userId', validateUserIdParam, answerController.getAnswersByUserId);
-router.get('/question/:questionId', answerController.getAnswersByQuestionId);
-router.get('/survey/:surveyId', validateSurveyIdParam, answerController.getAnswersBySurveyId);
+const internalAuth = require('../middleware/internalAuth');
+const asyncHandler = require('../utils/asyncHandler');
+
+router.get(
+    '/user/:userId/survey/:surveyId/score',
+    internalAuth,
+    validateUserSurveyParams,
+    asyncHandler(getSurveyScore)
+);
+router.get(
+    '/',
+    internalAuth,
+    asyncHandler(answerController.getAnswers)
+);
+router.get(
+    '/:id',
+    internalAuth,
+    validateIdParam,
+    asyncHandler(answerController.getAnswerById)
+);
+router.post(
+    '/',
+    internalAuth,
+    validateSingleAnswer,
+    asyncHandler(answerController.createAnswer)
+);
+router.put(
+    '/:id',
+    internalAuth,
+    validateIdParam,
+    validateSingleAnswer,
+    asyncHandler(answerController.updateAnswer)
+);
+router.delete(
+    '/:id',
+    internalAuth,
+    validateIdParam,
+    asyncHandler(answerController.deleteAnswer)
+);
+router.get(
+    '/user/:userId',
+    internalAuth,
+    validateUserIdParam,
+    asyncHandler(answerController.getAnswersByUserId)
+);
+router.get(
+    '/question/:questionId',
+    internalAuth,
+    asyncHandler(answerController.getAnswersByQuestionId)
+);
+router.get(
+    '/survey/:surveyId',
+    internalAuth,
+    validateSurveyIdParam,
+    asyncHandler(answerController.getAnswersBySurveyId)
+);
 /**
  * @swagger
  * components:
@@ -183,7 +230,12 @@ router.get('/survey/:surveyId', validateSurveyIdParam, answerController.getAnswe
  *                   type: string
  *                   example: "Internal server error"
  */
-router.get('/user/:userId/survey/:surveyId', validateUserSurveyParams, answerController.getUserAnswersForSurvey)
+router.get(
+    '/user/:userId/survey/:surveyId',
+    internalAuth,
+    validateUserSurveyParams,
+    asyncHandler(answerController.getUserAnswersForSurvey)
+);
 /**
  * @swagger
  * /answers/user/{userId}/survey/{surveyId}:
@@ -333,14 +385,28 @@ router.get('/user/:userId/survey/:surveyId', validateUserSurveyParams, answerCon
  *       500:
  *         description: Internal server error
  */
-router.post('/user/:userId/survey/:surveyId', validateAnswerSubmission, answerController.submitAnswersForSurvey);
+router.post(
+    '/user/:userId/survey/:surveyId',
+    internalAuth,
+    validateAnswerSubmission,
+    asyncHandler(answerController.submitAnswersForSurvey)
+);
 
 
 
 
 // Bulk delete routes
-router.delete('/user/:userId/all', validateUserIdParam, answerController.deleteAnswersByUserId);
-router.delete('/question/:questionId/all', answerController.deleteAnswersByQuestionId);
+router.delete(
+    '/user/:userId/all',
+    internalAuth,
+    validateUserIdParam,
+    asyncHandler(answerController.deleteAnswersByUserId)
+);
+router.delete(
+    '/question/:questionId/all',
+    internalAuth,
+    asyncHandler(answerController.deleteAnswersByQuestionId)
+);
 
 module.exports = router;
 

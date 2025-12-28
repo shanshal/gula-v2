@@ -1,5 +1,6 @@
 const { Survey, Question } = require('../models');
 const { Op } = require('sequelize');
+const { seedSurveys } = require('../../scripts/seed_surveys');
 
 const getSurveys = async (req, res) => {
   try {
@@ -211,11 +212,25 @@ const deleteSurvey = async (req, res) => {
   }
 };
 
+const runSeeder = async (req, res) => {
+  try {
+    const count = await seedSurveys();
+    res.status(200).json({ 
+      message: 'Seeder completed successfully', 
+      surveysCreated: count 
+    });
+  } catch (error) {
+    console.error('Error running seeder:', error);
+    res.status(500).json({ error: 'Failed to run seeder' });
+  }
+};
+
 module.exports = {
   getSurveys,
   getSurveyById,
   createSurvey,
   updateSurvey,
   patchSurvey,
-  deleteSurvey
+  deleteSurvey,
+  runSeeder
 };

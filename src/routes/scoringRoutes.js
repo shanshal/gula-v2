@@ -3,6 +3,9 @@ const router = express.Router();
 const scoringController = require('../controllers/scoringController');
 const { validateUserSurveyParams, validateSurveyIdParam } = require('../middleware/validation');
 
+const internalAuth = require('../middleware/internalAuth');
+const asyncHandler = require('../utils/asyncHandler');
+
 /**
  * @swagger
  * /scoring/{surveyId}/user/{userId}/score:
@@ -178,7 +181,12 @@ const { validateUserSurveyParams, validateSurveyIdParam } = require('../middlewa
  *                   type: string
  *                   example: "Failed to calculate score"
  */
-router.get('/:surveyId/user/:userId/score', validateUserSurveyParams, scoringController.getSurveyScore);
+router.get(
+    '/:surveyId/user/:userId/score',
+    internalAuth,
+    validateUserSurveyParams,
+    asyncHandler(scoringController.getSurveyScore)
+);
 
 /**
  * @swagger
@@ -342,6 +350,11 @@ router.get('/:surveyId/user/:userId/score', validateUserSurveyParams, scoringCon
  *                   type: string
  *                   example: "Failed to retrieve result pages"
  */
-router.get('/:surveyId/result-pages', validateSurveyIdParam, scoringController.getSurveyResultPages);
+router.get(
+    '/:surveyId/result-pages',
+    internalAuth,
+    validateSurveyIdParam,
+    asyncHandler(scoringController.getSurveyResultPages)
+);
 
 module.exports = router;
