@@ -1,4 +1,4 @@
-const { Answer, Survey, Question } = require('../models');
+const { Answer, Survey, Question, SurveySubmission, SurveyAnswer } = require('../models');
 const scoringService = require('../services/scoring.js');
 const authClient = require('../services/authClient');
 
@@ -38,7 +38,7 @@ const serializeSubmission = (submission, responsesByQuestion, scorePayload) => {
     ? submission.responses.map((response) => ({
         id: response.id,
         questionId: response.question_id,
-        questionOrder: response.question_order,
+        questionOrder: response.question?.question_order || 0,
         answerValue: response.answer_value,
         answerText: response.answer_text,
         createdAt: response.created_at,
@@ -65,7 +65,7 @@ const serializeSubmission = (submission, responsesByQuestion, scorePayload) => {
 // Get all answers
 const getAnswers = async (req, res) => {
   try {
-    const answers = await answerModel.getAnswers();
+    const answers = await Answer.findAll();
     res.status(200).json(answers);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -76,7 +76,7 @@ const getAnswers = async (req, res) => {
 const getAnswerById = async (req, res) => {
   try {
     const id = parseInt(req.params.id);
-    const answer = await answerModel.getAnswerById(id);
+    const answer = await Answer.findByPk(id);
     if (!answer) {
       return res.status(404).json({ error: 'Answer not found' });
     }
@@ -94,8 +94,40 @@ const getAnswersByUserId = async (req, res) => {
     if (!user) {
       return;
     }
-    const answers = await answerModel.getAnswersByUserId(user.id);
-    res.status(200).json(answers);
+    
+    // Get all survey answers for this user from the new structure
+    const surveyAnswers = await SurveyAnswer.findAll({
+      where: {},
+      include: [{
+        model: SurveySubmission,
+        as: 'submission',
+        where: { user_id: user.id },
+        include: [{
+          model: Survey,
+          as: 'survey',
+        }]
+      }, {
+        model: Question,
+        as: 'question',
+      }],
+      order: [['created_at', 'DESC']],
+    });
+
+    // Format the response to match the expected structure
+    const formattedAnswers = surveyAnswers.map(answer => ({
+      id: answer.id,
+      user_id: answer.submission.user_id,
+      survey_id: answer.submission.survey_id,
+      question_id: answer.question_id,
+      answer_value: answer.answer_value,
+      answer_text: answer.answer_text,
+      created_at: answer.created_at,
+      submission_id: answer.submission_id,
+      survey_name: answer.submission.survey?.name || null,
+      question_text: answer.question?.question_text || null,
+    }));
+
+    res.status(200).json(formattedAnswers);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -105,7 +137,7 @@ const getAnswersByUserId = async (req, res) => {
 const getAnswersByQuestionId = async (req, res) => {
   try {
     const questionId = parseInt(req.params.questionId);
-    const answers = await answerModel.getAnswersByQuestionId(questionId);
+    const answers = await Answer.findAll({ where: { question_id: questionId } });
     res.status(200).json(answers);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -116,7 +148,7 @@ const getAnswersByQuestionId = async (req, res) => {
 const getAnswersBySurveyId = async (req, res) => {
   try {
     const { surveyId } = req.params;
-    const answers = await answerModel.getAnswersBySurveyId(surveyId);
+    const answers = await Answer.findAll({ where: { survey_id: surveyId } });
     res.status(200).json(answers);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -139,12 +171,12 @@ const createAnswer = async (req, res) => {
       return;
     }
 
-    const newAnswer = await answerModel.createAnswer(
-      user.id,
+    const newAnswer = await Answer.create({
+      user_id: user.id,
       question_id,
       answer_value,
       answer_text
-    );
+    });
 
     res.status(201).json(newAnswer);
   } catch (error) {
@@ -162,7 +194,14 @@ const updateAnswer = async (req, res) => {
       return res.status(400).json({ error: 'answer_value is required' });
     }
 
-    const updatedAnswer = await answerModel.updateAnswer(id, answer_value, answer_text);
+    const [updatedCount] = await Answer.update(
+      { answer_value, answer_text },
+      { where: { id } }
+    );
+    if (updatedCount === 0) {
+      return res.status(404).json({ error: 'Answer not found' });
+    }
+    const updatedAnswer = await Answer.findByPk(id);
     if (!updatedAnswer) {
       return res.status(404).json({ error: 'Answer not found' });
     }
@@ -177,7 +216,7 @@ const updateAnswer = async (req, res) => {
 const deleteAnswer = async (req, res) => {
   try {
     const id = parseInt(req.params.id);
-    await answerModel.deleteAnswer(id);
+    await Answer.destroy({ where: { id } });
     res.status(200).json({ message: `Answer deleted with ID: ${id}` });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -192,7 +231,7 @@ const deleteAnswersByUserId = async (req, res) => {
     if (!user) {
       return;
     }
-    await answerModel.deleteAnswersByUserId(user.id);
+    await Answer.destroy({ where: { user_id: user.id } });
     res.status(200).json({ message: `All answers deleted for user ID: ${userId}` });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -203,7 +242,7 @@ const deleteAnswersByUserId = async (req, res) => {
 const deleteAnswersByQuestionId = async (req, res) => {
   try {
     const questionId = parseInt(req.params.questionId);
-    await answerModel.deleteAnswersByQuestionId(questionId);
+    await Answer.destroy({ where: { question_id: questionId } });
     res.status(200).json({ message: `All answers deleted for question ID: ${questionId}` });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -227,7 +266,20 @@ const getUserAnswersForSurvey = async (req, res) => {
       ? requestedOffset
       : undefined;
 
-    const submissions = await answerModel.getSubmissionHistory(user.id, surveyId, {
+    const submissions = await SurveySubmission.findAll({
+      where: {
+        user_id: user.id,
+        survey_id: surveyId,
+      },
+      include: [{
+        model: SurveyAnswer,
+        as: 'responses',
+        include: [{
+          model: Question,
+          as: 'question',
+        }],
+      }],
+      order: [['submitted_at', 'DESC']],
       limit: historyLimit,
       offset: historyOffset,
     });
@@ -290,10 +342,21 @@ const submitAnswersForSurvey = async (req, res) => {
       }
     }
 
-    const { submission, answers: createdAnswers } = await answerModel.replaceAnswersForSurvey(
-      user.id,
-      surveyId,
-      answers,
+    // Create or update submission
+    const submission = await SurveySubmission.create({
+      user_id: user.id,
+      survey_id: surveyId,
+      status: 'completed',
+    });
+
+    // Create new answers for this submission
+    const createdAnswers = await Promise.all(
+      answers.map(answer => SurveyAnswer.create({
+        submission_id: submission.id,
+        question_id: answer.question_id,
+        answer_value: answer.answer_value,
+        answer_text: answer.answer_text,
+      }))
     );
 
     res.status(201).json({

@@ -1,4 +1,4 @@
-const { Answer, Survey, Question } = require('../models');
+const { Answer, Survey, Question, SurveySubmission, SurveyAnswer } = require('../models');
 const protocoles = require('../../protocoles');
 const { pickLocalizedText } = require('../../surveySchemas/localization');
 
@@ -659,18 +659,24 @@ const calculateSurveyScore = async (userId, surveyId, options = {}) => {
     if (providedResponses && Object.keys(providedResponses).length > 0) {
       responseSource = providedResponses;
     } else {
-      // Get user answers using Sequelize
-      const answers = await Answer.findAll({
-        where: {
-          user_id: userId,
-          survey_id: surveyId
-        },
-        include: [{ model: Question, as: 'question' }]
+      // Get user answers from the new SurveyAnswer structure
+      const surveyAnswers = await SurveyAnswer.findAll({
+        include: [{
+          model: SurveySubmission,
+          as: 'submission',
+          where: {
+            user_id: userId,
+            survey_id: surveyId
+          }
+        }, {
+          model: Question,
+          as: 'question'
+        }]
       });
 
       // Convert answers to response format
-      for (const answer of answers) {
-        responseSource[answer.question_id] = answer.answer_value || answer.numeric_value;
+      for (const answer of surveyAnswers) {
+        responseSource[answer.question_id] = answer.answer_value;
       }
     }
 

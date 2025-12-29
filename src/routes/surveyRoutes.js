@@ -29,7 +29,7 @@ router.post(
     '/',
     internalAuth,
     validateSurveyCreation,
-    asyncHandler(surveyController.getSurveyById),
+    asyncHandler(surveyController.createSurvey),
 );
 
 router.post(

@@ -77,6 +77,18 @@ app.get('/health', (_req, res) => res.status(200).json({ status: 'ok' }));
 //   })
 // );
 
+// Swagger documentation
+// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+//     explorer: true,
+//     customCss: '.swagger-ui .topbar { display: none }',
+//     customSiteTitle: 'Gula Leadership Survey API Documentation'
+// }));
+//
+// // API documentation JSON
+// app.get('/api-docs.json', (req, res) => {
+//     res.setHeader('Content-Type', 'application/json');
+//     res.send(swaggerSpec);
+// });
 
 // Routes
 app.use('/api/surveys', surveyRoutes);
