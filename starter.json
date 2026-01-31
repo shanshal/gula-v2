@@ -1,0 +1,192 @@
+{
+  "name": { "en": "Starter Survey Template", "ar": "قالب استبيان البداية" },
+  "status": "draft",
+  "metadata": {
+    "version": "1.0",
+    "category": "feedback",
+    "language": "multilingual",
+    "created_by": "Gula Team",
+    "description": {
+      "en": "Multi-question template covering all supported question types.",
+      "ar": "قالب متعدد الأسئلة يغطي جميع أنواع الأسئلة المدعومة."
+    },
+    "instructions": {
+      "en": "Please answer every question as accurately as possible.",
+      "ar": "يرجى الإجابة على جميع الأسئلة بدقة."
+    },
+    "estimated_time": { "en": "5 minutes", "ar": "٥ دقائق" },
+    "target_audience": { "en": "general", "ar": "عام" },
+    "placement": "post_session",
+    "frequency": "on_demand",
+    "cooldown_hours": 24,
+    "mandatory": false,
+    "tags": ["starter", "example", "feedback"]
+  },
+  "questions": [
+    {
+      "question_text": {
+        "en": "How satisfied are you overall?",
+        "ar": "ما مدى رضاك بشكل عام؟"
+      },
+      "question_type": "single_choice",
+      "question_order": 1,
+      "is_required": true,
+      "options": [
+        { "value": "very_dissatisfied", "text": { "en": "Very dissatisfied", "ar": "غير راضٍ تمامًا" } },
+        { "value": "dissatisfied", "text": { "en": "Dissatisfied", "ar": "غير راضٍ" } },
+        { "value": "neutral", "text": { "en": "Neutral", "ar": "محايد" } },
+        { "value": "satisfied", "text": { "en": "Satisfied", "ar": "راضٍ" } },
+        { "value": "very_satisfied", "text": { "en": "Very satisfied", "ar": "راضٍ جدًا" } }
+      ]
+    },
+    {
+      "question_text": {
+        "en": "Select the areas you want to improve (choose all that apply).",
+        "ar": "اختر المجالات التي تريد تحسينها (يمكن اختيار أكثر من خيار)."
+      },
+      "question_type": "multiple_choice",
+      "question_order": 2,
+      "is_required": false,
+      "options": [
+        { "value": "sleep", "text": { "en": "Sleep", "ar": "النوم" } },
+        { "value": "nutrition", "text": { "en": "Nutrition", "ar": "التغذية" } },
+        { "value": "stress", "text": { "en": "Stress", "ar": "التوتر" } },
+        { "value": "movement", "text": { "en": "Movement", "ar": "الحركة" } }
+      ]
+    },
+    {
+      "question_text": {
+        "en": "Rate your mood today (1-10).",
+        "ar": "قيّم مزاجك اليوم (١-١٠)."
+      },
+      "question_type": "number",
+      "question_order": 3,
+      "is_required": true,
+      "min_value": 1,
+      "max_value": 10,
+      "help_text": {
+        "en": "1 = Very low, 10 = Excellent.",
+        "ar": "١ = منخفض جدًا، ١٠ = ممتاز."
+      }
+    },
+    {
+      "question_text": {
+        "en": "How likely are you to recommend us?",
+        "ar": "ما مدى احتمالية أن توصي بنا؟"
+      },
+      "question_type": "scale",
+      "question_order": 4,
+      "is_required": true,
+      "min_value": 1,
+      "max_value": 10,
+      "help_text": {
+        "en": "1 = Not likely, 10 = Extremely likely.",
+        "ar": "١ = غير محتمل، ١٠ = محتمل جدًا."
+      }
+    },
+    {
+      "question_text": {
+        "en": "Please share any additional feedback.",
+        "ar": "يرجى مشاركة أي ملاحظات إضافية."
+      },
+      "question_type": "text",
+      "question_order": 5,
+      "is_required": false,
+      "placeholder": {
+        "en": "Write your feedback here...",
+        "ar": "اكتب ملاحظاتك هنا..."
+      }
+    },
+    {
+      "question_text": {
+        "en": "Do you feel your goals were met today?",
+        "ar": "هل تشعر أن أهدافك تحققت اليوم؟"
+      },
+      "question_type": "boolean",
+      "question_order": 6,
+      "is_required": true,
+      "options": [
+        { "value": "yes", "text": { "en": "Yes", "ar": "نعم" } },
+        { "value": "no", "text": { "en": "No", "ar": "لا" } }
+      ]
+    },
+    {
+      "question_text": {
+        "en": "Pick the statement that resonates more.",
+        "ar": "اختر العبارة الأقرب إليك."
+      },
+      "question_type": "paired-options",
+      "question_order": 7,
+      "is_required": true,
+      "options": [
+        {
+          "value": "A",
+          "text": { "en": "I prefer guided steps.", "ar": "أفضل الخطوات الموجهة." },
+          "group": "A"
+        },
+        {
+          "value": "B",
+          "text": { "en": "I prefer exploring on my own.", "ar": "أفضل الاستكشاف بمفردي." },
+          "group": "B"
+        }
+      ]
+    }
+  ],
+  "scoring": {
+    "type": "sum",
+    "mappings": {
+      "1": {
+        "very_dissatisfied": 1,
+        "dissatisfied": 2,
+        "neutral": 3,
+        "satisfied": 4,
+        "very_satisfied": 5
+      },
+      "4": {
+        "1": 1,
+        "10": 10
+      }
+    },
+    "weight_overrides": {
+      "1": 2,
+      "4": 1
+    },
+    "interpretations": [
+      {
+        "min_score": 0,
+        "max_score": 8,
+        "title": { "en": "Needs Attention", "ar": "بحاجة إلى اهتمام" },
+        "description": {
+          "en": "Your responses suggest areas to improve.",
+          "ar": "تشير إجاباتك إلى وجود مجالات للتحسين."
+        },
+        "recommendations": [
+          { "en": "Explore suggested resources.", "ar": "استعرض الموارد المقترحة." }
+        ],
+        "color": "#f44336",
+        "icon": "alert-triangle",
+        "theme": "low"
+      },
+      {
+        "min_score": 9,
+        "max_score": 16,
+        "title": { "en": "On Track", "ar": "على المسار الصحيح" },
+        "description": {
+          "en": "You are doing well overall.",
+          "ar": "أنت تسير بشكل جيد بشكل عام."
+        },
+        "recommendations": [
+          { "en": "Keep up your habits.", "ar": "حافظ على عاداتك." }
+        ],
+        "color": "#4caf50",
+        "icon": "check-circle",
+        "theme": "good"
+      }
+    ],
+    "max_score": 16,
+    "description": {
+      "en": "Weighted sum of satisfaction and recommendation.",
+      "ar": "مجموع موزون للرضا واحتمالية التوصية."
+    }
+  }
+}

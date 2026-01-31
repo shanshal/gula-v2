@@ -1,0 +1,162 @@
+{
+  "name": {
+    "en": "Post Consultation Survey",
+    "ar": "استبيان ما بعد الاستشارة"
+  },
+  "metadata": {
+    "tags": ["internal"]
+  },
+  "status": "draft",
+  "questions": [
+    {
+      "question_text": {
+        "en": "How would you rate your overall experience with today's consultation?",
+        "ar": "كيف تقيم تجربتك العامة مع استشارة اليوم؟"
+      },
+      "question_type": "single_choice",
+      "question_order": 1,
+      "is_required": true,
+      "options": [
+        {"value": "very_poor", "text": {"en": "Very poor", "ar": "سيئة جدا"}},
+        {"value": "poor", "text": {"en": "Poor", "ar": "سيئة"}},
+        {"value": "fair", "text": {"en": "Fair", "ar": "مقبولة"}},
+        {"value": "good", "text": {"en": "Good", "ar": "جيدة"}},
+        {"value": "excellent", "text": {"en": "Excellent", "ar": "ممتازة"}}
+      ]
+    },
+    {
+      "question_text": {
+        "en": "The clinician listened carefully to my concerns.",
+        "ar": "استمع الطبيب بعناية لمخاوفي."
+      },
+      "question_type": "single_choice",
+      "question_order": 2,
+      "is_required": true,
+      "options": [
+        {"value": "strongly_disagree", "text": {"en": "Strongly disagree", "ar": "لا أوافق بشدة"}},
+        {"value": "disagree", "text": {"en": "Disagree", "ar": "لا أوافق"}},
+        {"value": "neutral", "text": {"en": "Neutral", "ar": "محايد"}},
+        {"value": "agree", "text": {"en": "Agree", "ar": "أوافق"}},
+        {"value": "strongly_agree", "text": {"en": "Strongly agree", "ar": "أوافق بشدة"}}
+      ]
+    },
+    {
+      "question_text": {
+        "en": "I felt respected and taken seriously during the consultation.",
+        "ar": "شعرت بالاحترام وبأنني أؤخذ بجدية خلال الاستشارة."
+      },
+      "question_type": "single_choice",
+      "question_order": 3,
+      "is_required": true,
+      "options": [
+        {"value": "yes", "text": {"en": "Yes", "ar": "نعم"}},
+        {"value": "somewhat", "text": {"en": "Somewhat", "ar": "إلى حد ما"}},
+        {"value": "no", "text": {"en": "No", "ar": "لا"}}
+      ]
+    },
+    {
+      "question_text": {
+        "en": "The explanation of my condition and next steps was clear.",
+        "ar": "كان شرح حالتي والخطوات التالية واضحا."
+      },
+      "question_type": "single_choice",
+      "question_order": 4,
+      "is_required": true,
+      "options": [
+        {"value": "very_clear", "text": {"en": "Very clear", "ar": "واضح جدا"}},
+        {"value": "clear", "text": {"en": "Clear", "ar": "واضح"}},
+        {"value": "not_clear", "text": {"en": "Not clear", "ar": "غير واضح"}}
+      ]
+    },
+    {
+      "question_text": {
+        "en": "After the consultation, I know what to do next.",
+        "ar": "بعد الاستشارة، أعرف ما الذي يجب فعله بعد ذلك."
+      },
+      "question_type": "single_choice",
+      "question_order": 5,
+      "is_required": true,
+      "options": [
+        {"value": "yes", "text": {"en": "Yes", "ar": "نعم"}},
+        {"value": "not_completely", "text": {"en": "Not completely", "ar": "ليس تماما"}},
+        {"value": "no", "text": {"en": "No", "ar": "لا"}}
+      ]
+    },
+    {
+      "question_text": {
+        "en": "How would you rate the audio and video quality?",
+        "ar": "كيف تقيم جودة الصوت والصورة؟"
+      },
+      "question_type": "single_choice",
+      "question_order": 6,
+      "is_required": true,
+      "options": [
+        {"value": "excellent", "text": {"en": "Excellent", "ar": "ممتازة"}},
+        {"value": "acceptable", "text": {"en": "Acceptable", "ar": "مقبولة"}},
+        {"value": "poor", "text": {"en": "Poor", "ar": "سيئة"}}
+      ]
+    },
+    {
+      "question_text": {
+        "en": "Did you experience any technical problems during the consultation?",
+        "ar": "هل واجهت أي مشاكل تقنية خلال الاستشارة؟"
+      },
+      "question_type": "single_choice",
+      "question_order": 7,
+      "is_required": true,
+      "options": [
+        {"value": "no", "text": {"en": "No", "ar": "لا"}},
+        {"value": "minor_issues_no_impact", "text": {"en": "Minor issues (did not affect the consultation)", "ar": "مشاكل بسيطة (لم تؤثر على الاستشارة)"}},
+        {"value": "yes_affected", "text": {"en": "Yes (affected the consultation)", "ar": "نعم (أثرت على الاستشارة)"}}
+      ]
+    },
+    {
+      "question_text": {
+        "en": "I trust the medical advice I received today.",
+        "ar": "أثق في النصيحة الطبية التي تلقيتها اليوم."
+      },
+      "question_type": "single_choice",
+      "question_order": 8,
+      "is_required": true,
+      "options": [
+        {"value": "yes", "text": {"en": "Yes", "ar": "نعم"}},
+        {"value": "somewhat", "text": {"en": "Somewhat", "ar": "إلى حد ما"}},
+        {"value": "no", "text": {"en": "No", "ar": "لا"}}
+      ]
+    },
+    {
+      "question_text": {
+        "en": "Would you use this service again?",
+        "ar": "هل ستستخدم هذه الخدمة مرة أخرى؟"
+      },
+      "question_type": "single_choice",
+      "question_order": 9,
+      "is_required": true,
+      "options": [
+        {"value": "yes", "text": {"en": "Yes", "ar": "نعم"}},
+        {"value": "maybe", "text": {"en": "Maybe", "ar": "ربما"}},
+        {"value": "no", "text": {"en": "No", "ar": "لا"}}
+      ]
+    },
+    {
+      "question_text": {
+        "en": "What is one thing we could improve?",
+        "ar": "ما الشيء الوحيد الذي يمكننا تحسينه؟"
+      },
+      "question_type": "text",
+      "question_order": 10,
+      "is_required": false,
+      "placeholder": {"en": "Share your feedback", "ar": "شاركنا ملاحظاتك"}
+    },
+    {
+      "question_text": {
+        "en": "Doctor ID",
+        "ar": "معرف الطبيب"
+      },
+      "question_type": "text",
+      "question_order": 11,
+      "is_required": true,
+      "placeholder": {"en": "Enter doctor ID", "ar": "أدخل معرف الطبيب"}
+    }
+  ]
+}
